@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './', // Ensures assets load correctly on any cPanel directory, domain, or subfolder
   plugins: [
     react(),
     tailwindcss(),
