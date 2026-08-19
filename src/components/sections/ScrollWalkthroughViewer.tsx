@@ -15,7 +15,7 @@ interface ScrollWalkthroughViewerProps {
  * ScrollWalkthroughViewer
  * 
  * Apple-style canvas scroll-scrubbed image-sequence viewer.
- * Preloads a sequence of frames and ties scroll progress linearly to frame rendering.
+ * Ties scroll progress linearly to frame rendering with ultra-fast real-time RAF canvas drawing.
  * Features live HUD overlays: Frame Counter, Dynamic Rotating Compass, and Interactive 2D Floor Plan mini-map.
  */
 export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = ({
@@ -28,8 +28,8 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Preloading & Loading state
-  const [loadProgress, setLoadProgress] = useState<number>(0);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [loadProgress, setLoadProgress] = useState<number>(100);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
   const [currentFrame, setCurrentFrame] = useState<number>(0);
 
   // References for performant rendering
@@ -39,500 +39,400 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
   const rafIdRef = useRef<number | null>(null);
 
   /**
-   * Generates or retrieves placeholder frames when real asset URLs are not yet supplied.
-   * Generates a procedural 3D architectural perspective walkthrough across 81 frames.
+   * Directly render procedural 3D architectural perspective walkthrough onto canvas in real-time
    */
-  const generatePlaceholderFrame = useCallback((frameIdx: number, total: number): Promise<HTMLImageElement> => {
-    return new Promise((resolve) => {
-      const offscreen = document.createElement('canvas');
-      offscreen.width = 1920;
-      offscreen.height = 1080;
-      const ctx = offscreen.getContext('2d');
+  const renderProceduralFrame = useCallback((ctx: CanvasRenderingContext2D, frameIdx: number, total: number, width: number, height: number) => {
+    const p = frameIdx / (total - 1 || 1); // 0 to 1 progress
 
-      if (!ctx) {
-        const img = new Image();
-        resolve(img);
-        return;
-      }
+    // Dark Architectural Room Background
+    const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, width * 0.7);
+    bgGrad.addColorStop(0, '#11141A');
+    bgGrad.addColorStop(0.6, '#0B0D11');
+    bgGrad.addColorStop(1, '#050608');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
 
-      const p = frameIdx / (total - 1 || 1); // 0 to 1 progress
+    // Perspective Camera Coordinates based on progress
+    const camZ = p * 600;
+    const vanishingX = width / 2 + Math.sin(p * Math.PI * 1.5) * (width * 0.12);
+    const vanishingY = height * 0.46 + Math.cos(p * Math.PI) * (height * 0.04);
 
-      // Dark Architectural Room Background
-      const bgGrad = ctx.createRadialGradient(960, 540, 100, 960, 540, 1100);
-      bgGrad.addColorStop(0, '#11141A');
-      bgGrad.addColorStop(0.6, '#0B0D11');
-      bgGrad.addColorStop(1, '#050608');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, 1920, 1080);
-
-      // Perspective Camera Coordinates based on progress
-      const camZ = p * 600;
-      const vanishingX = 960 + Math.sin(p * Math.PI * 1.5) * 220;
-      const vanishingY = 500 + Math.cos(p * Math.PI) * 40;
-
-      // Floor Grid (Perspective Lines)
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
-      ctx.lineWidth = 2;
-      for (let x = -600; x <= 2520; x += 160) {
-        ctx.beginPath();
-        ctx.moveTo(x, 1080);
-        ctx.lineTo(vanishingX + (x - 960) * 0.05, vanishingY);
-        ctx.stroke();
-      }
-
-      // Horizontal Floor Beams
-      for (let y = 1080; y >= vanishingY; y -= Math.max(8, (y - vanishingY) * 0.22)) {
-        ctx.strokeStyle = 'rgba(212, 163, 115, 0.15)';
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(1920, y);
-        ctx.stroke();
-      }
-
-      // Ceiling Trusses & Beams
-      ctx.strokeStyle = 'rgba(139, 92, 246, 0.2)';
-      for (let x = 0; x <= 1920; x += 240) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(vanishingX + (x - 960) * 0.08, vanishingY);
-        ctx.stroke();
-      }
-
-      // Architectural Room Pillars (Moving closer with camZ)
-      const pillars = [
-        { baseX: 400 - camZ * 0.4, baseY: 1080, topY: 100 },
-        { baseX: 1520 + camZ * 0.4, baseY: 1080, topY: 100 },
-        { baseX: 700 - camZ * 0.2, baseY: 900, topY: 250 },
-        { baseX: 1220 + camZ * 0.2, baseY: 900, topY: 250 }
-      ];
-
-      pillars.forEach((pil, idx) => {
-        ctx.strokeStyle = idx % 2 === 0 ? '#38BDF8' : '#D4A373';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(pil.baseX, pil.baseY);
-        ctx.lineTo(pil.baseX, pil.topY);
-        ctx.stroke();
-
-        // Cross truss
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(pil.baseX, pil.topY);
-        ctx.lineTo(vanishingX, vanishingY);
-        ctx.stroke();
-      });
-
-      // Spatial Room Zone Label
-      const zones = [
-        'ENTRY FOYER & VESTIBULE',
-        'MAIN RESIDENTIAL ATRIUM',
-        'CENTRAL LIVING & MEZZANINE',
-        'KITCHEN & DINING SUITE',
-        'PANORAMIC TERRACE VISTA'
-      ];
-      const currentZone = zones[Math.min(zones.length - 1, Math.floor(p * zones.length))];
-
-      // Central Walkthrough Reticle & HUD overlay rendered into frame
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
-      ctx.lineWidth = 1.5;
+    // Floor Grid (Perspective Lines)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
+    ctx.lineWidth = 1.5;
+    for (let x = -width * 0.3; x <= width * 1.3; x += width * 0.08) {
       ctx.beginPath();
-      ctx.arc(vanishingX, vanishingY, 40, 0, Math.PI * 2);
+      ctx.moveTo(x, height);
+      ctx.lineTo(vanishingX + (x - width / 2) * 0.05, vanishingY);
       ctx.stroke();
+    }
 
-      ctx.fillStyle = '#38BDF8';
+    // Horizontal Floor Beams
+    for (let y = height; y >= vanishingY; y -= Math.max(6, (y - vanishingY) * 0.22)) {
+      ctx.strokeStyle = 'rgba(212, 163, 115, 0.18)';
       ctx.beginPath();
-      ctx.arc(vanishingX, vanishingY, 4, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
 
-      // Draw Big Tech Frame Stamp
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.font = 'bold 36px "Space Grotesk", sans-serif';
-      ctx.fillText(
-        `FRAME_${String(frameIdx).padStart(3, '0')}.RAW`,
-        120,
-        140
-      );
+    // Ceiling Trusses & Beams
+    ctx.strokeStyle = 'rgba(139, 92, 246, 0.2)';
+    for (let x = 0; x <= width; x += width * 0.12) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(vanishingX + (x - width / 2) * 0.08, vanishingY);
+      ctx.stroke();
+    }
 
-      ctx.fillStyle = '#D4A373';
-      ctx.font = '20px "JetBrains Mono", monospace';
-      ctx.fillText(`SPATIAL VECTOR: [X: ${(p * 24.5).toFixed(2)}M, Y: 3.20M, Z: ${(camZ * 0.05).toFixed(2)}M]`, 120, 180);
-      ctx.fillText(`ZONE: ${currentZone}`, 120, 215);
+    // Architectural Structural Pillars (Left & Right)
+    const pillars = [
+      { baseX: width * 0.15 + (1 - p) * 120, topY: height * 0.2, h: height * 0.8, color: '#38BDF8' },
+      { baseX: width * 0.32 + (1 - p) * 80, topY: height * 0.3, h: height * 0.7, color: '#D4A373' },
+      { baseX: width * 0.68 - (1 - p) * 80, topY: height * 0.3, h: height * 0.7, color: '#D4A373' },
+      { baseX: width * 0.85 - (1 - p) * 120, topY: height * 0.2, h: height * 0.8, color: '#38BDF8' }
+    ];
 
-      // Watermark Stamp
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.font = 'bold 120px "Space Grotesk", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('3D NAKSHA BIM WALKTHROUGH', 960, 560);
-      ctx.textAlign = 'left';
+    pillars.forEach((pil) => {
+      ctx.fillStyle = `${pil.color}15`;
+      ctx.strokeStyle = `${pil.color}50`;
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(pil.baseX - 16, pil.topY, 32, pil.h);
+      ctx.strokeRect(pil.baseX - 16, pil.topY, 32, pil.h);
 
-      // Convert to image object
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.src = offscreen.toDataURL('image/jpeg', 0.85);
+      // Connect pillar top to perspective vanishing point
+      ctx.beginPath();
+      ctx.moveTo(pil.baseX, pil.topY);
+      ctx.lineTo(vanishingX, vanishingY);
+      ctx.stroke();
     });
+
+    // Spatial Room Zone Label
+    const zones = [
+      'ENTRY FOYER & VESTIBULE',
+      'MAIN RESIDENTIAL ATRIUM',
+      'CENTRAL LIVING & MEZZANINE',
+      'KITCHEN & DINING SUITE',
+      'PANORAMIC TERRACE VISTA'
+    ];
+    const currentZone = zones[Math.min(zones.length - 1, Math.floor(p * zones.length))];
+
+    // Central Walkthrough Reticle & HUD overlay rendered into frame
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(vanishingX, vanishingY, 35, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#38BDF8';
+    ctx.beginPath();
+    ctx.arc(vanishingX, vanishingY, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw Big Tech Frame Stamp
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.font = 'bold 28px "Space Grotesk", sans-serif';
+    ctx.fillText(`FRAME_${String(frameIdx).padStart(3, '0')}.RAW`, 60, 80);
+
+    ctx.fillStyle = '#D4A373';
+    ctx.font = '16px "JetBrains Mono", monospace';
+    ctx.fillText(`SPATIAL VECTOR: [X: ${(p * 24.5).toFixed(2)}M, Y: 3.20M, Z: ${(camZ * 0.05).toFixed(2)}M]`, 60, 115);
+    ctx.fillText(`ZONE: ${currentZone}`, 60, 145);
+
+    // Watermark Stamp
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.font = 'bold 64px "Space Grotesk", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('3D NAKSHA BIM WALKTHROUGH', width / 2, height * 0.52);
+    ctx.textAlign = 'left';
   }, []);
 
-  // Preload all frames sequentially or in parallel batches
+  // Preload real images if URLs are provided
   useEffect(() => {
+    if (!frameUrls && !frameUrlPattern) {
+      setIsLoaded(true);
+      setLoadProgress(100);
+      return;
+    }
+
     let isCancelled = false;
     const loadedImages: HTMLImageElement[] = [];
 
-    const preloadAll = async () => {
+    const preloadRealImages = async () => {
       let loadedCount = 0;
-
       for (let i = 0; i < totalFrames; i++) {
         if (isCancelled) return;
-
-        let img: HTMLImageElement;
-        if (frameUrls && frameUrls[i]) {
-          img = new Image();
-          img.src = frameUrls[i];
-          await new Promise((res) => {
-            img.onload = res;
-            img.onerror = res;
-          });
-        } else if (frameUrlPattern) {
-          const url = frameUrlPattern.replace('%03d', String(i).padStart(3, '0'));
-          img = new Image();
-          img.src = url;
-          await new Promise((res) => {
-            img.onload = res;
-            img.onerror = res;
-          });
-        } else {
-          img = await generatePlaceholderFrame(i, totalFrames);
-        }
-
+        const img = new Image();
+        const url = frameUrls ? frameUrls[i] : frameUrlPattern?.replace('%03d', String(i).padStart(3, '0')) || '';
+        img.src = url;
+        await new Promise((res) => {
+          img.onload = res;
+          img.onerror = res;
+        });
         loadedImages.push(img);
         loadedCount++;
         setLoadProgress(Math.round((loadedCount / totalFrames) * 100));
       }
-
       if (!isCancelled) {
         imagesRef.current = loadedImages;
         setIsLoaded(true);
       }
     };
 
-    preloadAll();
-
+    preloadRealImages();
     return () => {
       isCancelled = true;
     };
-  }, [totalFrames, frameUrls, frameUrlPattern, generatePlaceholderFrame]);
+  }, [totalFrames, frameUrls, frameUrlPattern]);
 
   /**
-   * High-Performance Canvas Drawer
-   * Draws frame to canvas preserving aspect ratio (Cover mode)
+   * Efficient RAF draw loop for smooth 60fps scrubbing
    */
-  const drawFrame = useCallback((frameIdx: number) => {
-    const canvas = canvasRef.current;
-    const images = imagesRef.current;
-    if (!canvas || !images || !images[frameIdx]) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const img = images[frameIdx];
-    const cw = canvas.width;
-    const ch = canvas.height;
-    const iw = img.width || 1920;
-    const ih = img.height || 1080;
-
-    // Calculate aspect ratio cover fit
-    const hRatio = cw / iw;
-    const vRatio = ch / ih;
-    const ratio = Math.max(hRatio, vRatio);
-
-    const centerShiftX = (cw - iw * ratio) / 2;
-    const centerShiftY = (ch - ih * ratio) / 2;
-
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(
-      img,
-      0,
-      0,
-      iw,
-      ih,
-      centerShiftX,
-      centerShiftY,
-      iw * ratio,
-      ih * ratio
-    );
-
-    currentDrawnFrameRef.current = frameIdx;
-  }, []);
-
-  /**
-   * RequestAnimationFrame-throttled draw trigger
-   */
-  const scheduleDraw = useCallback((frameIndex: number) => {
-    targetFrameRef.current = frameIndex;
-    setCurrentFrame(frameIndex);
-
-    if (rafIdRef.current !== null) return;
-
-    rafIdRef.current = requestAnimationFrame(() => {
-      rafIdRef.current = null;
-      if (currentDrawnFrameRef.current !== targetFrameRef.current) {
-        drawFrame(targetFrameRef.current);
-      }
-    });
-  }, [drawFrame]);
-
-  // Resize listener to maintain retina canvas buffer resolution
-  useEffect(() => {
-    const updateCanvasSize = () => {
+  const drawFrame = useCallback(
+    (frameIndex: number) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
+      const safeIdx = Math.max(0, Math.min(totalFrames - 1, Math.floor(frameIndex)));
+      if (currentDrawnFrameRef.current === safeIdx) return;
+      currentDrawnFrameRef.current = safeIdx;
 
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      // Handle resize / hi-dpi scaling
+      const width = canvas.width;
+      const height = canvas.height;
 
-      if (currentDrawnFrameRef.current >= 0) {
-        drawFrame(currentDrawnFrameRef.current);
+      const img = imagesRef.current[safeIdx];
+      if (img && img.complete && img.naturalWidth > 0) {
+        // Draw real preloaded image frame
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
       } else {
-        drawFrame(0);
+        // Render procedural frame directly
+        renderProceduralFrame(ctx, safeIdx, totalFrames, width, height);
       }
-    };
+    },
+    [totalFrames, renderProceduralFrame]
+  );
 
-    window.addEventListener('resize', updateCanvasSize);
-    updateCanvasSize();
+  // RAF Scheduler
+  const scheduleFrameDraw = useCallback(
+    (frameIdx: number) => {
+      targetFrameRef.current = frameIdx;
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(() => {
+          drawFrame(targetFrameRef.current);
+          setCurrentFrame(Math.round(targetFrameRef.current));
+          rafIdRef.current = null;
+        });
+      }
+    },
+    [drawFrame]
+  );
 
-    return () => {
-      window.removeEventListener('resize', updateCanvasSize);
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-    };
-  }, [isLoaded, drawFrame]);
-
-  // GSAP ScrollTrigger Pinning & Scrub Setup
+  // Initial draw and Canvas resize observer
   useEffect(() => {
-    if (!isLoaded) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      currentDrawnFrameRef.current = -1; // force redraw
+      drawFrame(targetFrameRef.current);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    return () => window.removeEventListener('resize', resizeCanvas);
+  }, [drawFrame]);
+
+  // ScrollTrigger Setup
+  useEffect(() => {
+    const isReduced = prefersReducedMotion();
     const container = containerRef.current;
     if (!container) return;
 
-    const isReduced = prefersReducedMotion();
+    if (isReduced) {
+      drawFrame(0);
+      return;
+    }
 
-    // Initial first frame render
-    scheduleDraw(0);
-
-    if (isReduced) return;
-
-    // Pin the container for 250% viewport height scroll distance
     const st = ScrollTrigger.create({
       trigger: container,
       start: 'top top',
       end: '+=250%',
       pin: true,
-      scrub: 0.4,
+      scrub: 0.5,
       anticipatePin: 1,
       onUpdate: (self) => {
-        const frameIndex = Math.min(
-          totalFrames - 1,
-          Math.max(0, Math.floor(self.progress * totalFrames))
-        );
-        scheduleDraw(frameIndex);
+        const frameIdx = self.progress * (totalFrames - 1);
+        scheduleFrameDraw(frameIdx);
       }
     });
 
     return () => {
       st.kill();
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, [isLoaded, totalFrames, scheduleDraw]);
+  }, [totalFrames, scheduleFrameDraw, drawFrame]);
 
-  // Calculated Progress (0 to 1)
-  const progressRatio = totalFrames > 1 ? currentFrame / (totalFrames - 1) : 0;
-  // Dynamic Compass Bearing Angle (e.g. 45° to 135° rotation during walkthrough)
-  const bearingAngle = Math.round(45 + progressRatio * 90);
+  // Derived telemetry metrics for HUD
+  const progressRatio = currentFrame / (totalFrames - 1 || 1);
+  const compassAngle = Math.round(progressRatio * 180 - 90);
+  const mapPointX = 15 + progressRatio * 70;
+  const mapPointY = 30 + Math.sin(progressRatio * Math.PI) * 45;
 
   return (
     <section
       ref={containerRef}
-      id="scroll-walkthrough"
-      className={`relative h-screen w-full overflow-hidden bg-[#08090B] select-none border-t border-b border-white/10 ${className}`}
+      id="walkthrough-viewer"
+      className={`relative h-screen w-full overflow-hidden bg-[#08090B] select-none flex items-center justify-center border-t border-b border-gray-200 ${className}`}
+      aria-label="Scroll Scrubbed 3D Walkthrough Viewer"
     >
-      {/* Loading Overlay (Preload all frames before enabling scrub) */}
+      {/* 1. Main Canvas Scrubbing Viewport */}
+      <div className="absolute inset-0 w-full h-full">
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full object-cover block will-change-transform"
+        />
+      </div>
+
+      {/* Preloading Overlay if using external network assets */}
       {!isLoaded && (
-        <div className="absolute inset-0 z-50 bg-[#08090B] flex flex-col items-center justify-center p-6 text-center">
-          <div className="max-w-md w-full space-y-6">
-            <div className="w-12 h-12 rounded-lg bg-[#14171D] border border-[#D4A373]/40 mx-auto flex items-center justify-center text-[#D4A373]">
-              <Layers className="w-6 h-6 animate-pulse" />
-            </div>
-
-            <div>
-              <div className="font-mono-tech text-xs text-[#D4A373] tracking-[0.25em] uppercase mb-2 font-semibold">
-                INITIALIZING SPATIAL WALKTHROUGH STREAM
-              </div>
-              <h3 className="font-display font-bold text-2xl text-white">
-                Preloading {totalFrames} HD Sequence Frames
-              </h3>
-            </div>
-
-            {/* Linear Progress Bar */}
-            <div className="space-y-2">
-              <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#D4A373] via-[#38BDF8] to-[#8B5CF6] transition-all duration-150"
-                  style={{ width: `${loadProgress}%` }}
-                />
-              </div>
-              <div className="flex justify-between font-mono-tech text-xs text-[#8A92A0]">
-                <span>BUFFERING CANVASES</span>
-                <span className="text-[#38BDF8] font-bold">{loadProgress}%</span>
-              </div>
-            </div>
+        <div className="absolute inset-0 bg-[#08090B] z-40 flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-12 h-12 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-4" />
+          <div className="font-mono-tech text-xs text-white tracking-widest uppercase mb-2">
+            PRELOADING HIGH-RES FRAMES // {loadProgress}%
+          </div>
+          <div className="w-64 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-[#38BDF8] via-[#D4A373] to-[#E5A93B] transition-all duration-150"
+              style={{ width: `${loadProgress}%` }}
+            />
           </div>
         </div>
       )}
 
-      {/* Main Canvas Viewport */}
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full object-cover block will-change-transform"
-      />
-
-      {/* Top & Bottom Vignettes for smooth edge contrast */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#08090B] via-[#08090B]/50 to-transparent pointer-events-none z-10" />
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#08090B] via-[#08090B]/50 to-transparent pointer-events-none z-10" />
-
       {/* =========================================================
-          HUD OVERLAY 1: Top-Left "FRAME 000 / 081" Counter
+          2. HUD OVERLAYS (Kept Dark Frosted Glass on Canvas)
          ========================================================= */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-30 pointer-events-auto">
-        <div className="rounded-md bg-[#08090B]/90 backdrop-blur-xl border border-white/15 px-4 py-3 shadow-2xl font-mono-tech corner-crosshairs">
-          <div className="flex items-center gap-2 text-[10px] text-[#8A92A0] mb-1">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-            <span>INTERACTIVE SCROLL-SCRUB</span>
-          </div>
 
-          <div className="flex items-baseline gap-2">
-            <span className="text-white text-lg font-bold">
-              FRAME {String(currentFrame).padStart(3, '0')}
-            </span>
-            <span className="text-[#5A6270] text-xs">/ {String(totalFrames).padStart(3, '0')}</span>
+      {/* Top Left: Frame Index Counter */}
+      <div className="absolute top-6 sm:top-8 left-6 sm:left-8 z-30 pointer-events-auto">
+        <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-4 py-2.5 shadow-2xl corner-crosshairs flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+          <div className="font-mono-tech text-xs text-white tracking-wider">
+            FRAME{' '}
+            <span className="text-[#38BDF8] font-bold">
+              {String(currentFrame).padStart(3, '0')}
+            </span>{' '}
+            / {String(totalFrames - 1).padStart(3, '0')}
           </div>
-
-          <div className="text-[10px] text-[#38BDF8] mt-1 pt-1 border-t border-white/10 flex items-center justify-between gap-4">
-            <span>SCRUB: {Math.round(progressRatio * 100)}%</span>
-            <span>TIMECODE 00:00:0{Math.floor(currentFrame / 30)}:{(currentFrame % 30).toString().padStart(2, '0')}</span>
+          <span className="text-white/20">|</span>
+          <div className="font-mono-tech text-[10px] text-[#D4A373]">
+            {Math.round(progressRatio * 100)}% SCRUB
           </div>
         </div>
       </div>
 
-      {/* =========================================================
-          HUD OVERLAY 2: Top-Center "BEARING" Compass Widget
-         ========================================================= */}
-      <div className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto hidden sm:block">
-        <div className="rounded-md bg-[#08090B]/90 backdrop-blur-xl border border-white/15 px-6 py-2.5 shadow-2xl font-mono-tech flex flex-col items-center">
-          <div className="flex items-center gap-1.5 text-[10px] text-[#D4A373] tracking-widest uppercase font-semibold mb-1">
-            <Compass className="w-3.5 h-3.5" />
-            <span>BEARING // {bearingAngle}° {bearingAngle < 90 ? 'ENE' : bearingAngle === 90 ? 'E' : 'ESE'}</span>
-          </div>
-
-          {/* Compass Ribbon with Tick Marks */}
-          <div className="relative w-48 h-5 overflow-hidden flex items-center justify-center border-t border-b border-white/10">
-            {/* Center Reticle Notch */}
-            <div className="absolute top-0 bottom-0 w-[2px] bg-[#38BDF8] z-10" />
-
-            {/* Sliding Degree Scale */}
-            <div
-              className="flex items-center gap-4 text-[10px] text-[#8A92A0] whitespace-nowrap transition-transform duration-75"
-              style={{ transform: `translateX(${-bearingAngle * 1.5 + 130}px)` }}
-            >
-              <span>N 0°</span>
-              <span>•</span>
-              <span>NE 45°</span>
-              <span>•</span>
-              <span className="text-[#38BDF8] font-bold">E 90°</span>
-              <span>•</span>
-              <span>SE 135°</span>
-              <span>•</span>
-              <span>S 180°</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* =========================================================
-          HUD OVERLAY 3: Top-Right "FLOORPLAN" Mini-Map Box
-         ========================================================= */}
-      <div className="absolute top-6 right-6 md:top-8 md:right-8 z-30 pointer-events-auto">
-        <div className="rounded-md bg-[#08090B]/90 backdrop-blur-xl border border-white/15 p-3.5 shadow-2xl w-48 sm:w-56 font-mono-tech corner-crosshairs">
-          <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 text-[10px]">
-            <div className="flex items-center gap-1 text-[#38BDF8] font-bold">
-              <Navigation className="w-3 h-3" />
-              <span>FLOORPLAN</span>
-            </div>
-            <span className="text-[#5A6270]">LVL 01</span>
-          </div>
-
-          {/* 2D Vector Architectural Floor Plan Graphic */}
-          <div className="relative h-24 rounded bg-[#0E1013] border border-white/10 p-1.5 bg-grid-dense overflow-hidden">
-            <svg viewBox="0 0 160 80" className="w-full h-full text-[#4B5563]" stroke="currentColor" fill="none">
-              {/* Outer Room Walls */}
-              <polygon points="10,10 150,10 150,70 10,70" strokeWidth="1.5" />
-              {/* Room Partitions */}
-              <line x1="60" y1="10" x2="60" y2="70" strokeWidth="1" strokeDasharray="3 2" />
-              <line x1="110" y1="10" x2="110" y2="70" strokeWidth="1" strokeDasharray="3 2" />
-              <line x1="60" y1="40" x2="110" y2="40" strokeWidth="1" />
-
-              {/* Room Labels */}
-              <text x="18" y="24" fontSize="6" fill="#8A92A0">FOYER</text>
-              <text x="68" y="24" fontSize="6" fill="#8A92A0">ATRIUM</text>
-              <text x="68" y="58" fontSize="6" fill="#8A92A0">LIVING</text>
-              <text x="116" y="24" fontSize="6" fill="#8A92A0">TERRACE</text>
-
-              {/* Walkthrough Path Line */}
-              <path
-                d="M 25,45 Q 60,25 85,50 T 135,35"
-                stroke="rgba(56, 189, 248, 0.4)"
-                strokeWidth="1.5"
-                strokeDasharray="2 2"
+      {/* Top Center: Bearing Compass Widget */}
+      <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto hidden sm:block">
+        <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-5 py-2 shadow-2xl flex items-center gap-3 font-mono-tech text-xs text-white">
+          <Compass className="w-4 h-4 text-[#D4A373]" />
+          <div className="flex items-center gap-2 text-[11px]">
+            <span className="text-[#8A92A0]">BEARING</span>
+            <div className="flex items-center gap-1">
+              <Navigation
+                className="w-3.5 h-3.5 text-[#38BDF8] transition-transform duration-75"
+                style={{ transform: `rotate(${compassAngle}deg)` }}
               />
-
-              {/* Dynamic Animated Position Marker Dot */}
-              {(() => {
-                // Approximate parametric coordinates along walkthrough path
-                const markerX = 25 + progressRatio * 110;
-                const markerY = 45 - Math.sin(progressRatio * Math.PI) * 15;
-                return (
-                  <g transform={`translate(${markerX}, ${markerY})`}>
-                    {/* View Cone (Field of View radiating forward) */}
-                    <path
-                      d="M 0,0 L 14,-8 L 14,8 Z"
-                      fill="rgba(56, 189, 248, 0.25)"
-                      stroke="rgba(56, 189, 248, 0.6)"
-                      strokeWidth="0.5"
-                      transform={`rotate(${bearingAngle - 90})`}
-                    />
-                    {/* Pulsing Position Dot */}
-                    <circle cx="0" cy="0" r="3.5" fill="#38BDF8" />
-                    <circle cx="0" cy="0" r="1.5" fill="#FFFFFF" />
-                  </g>
-                );
-              })()}
-            </svg>
+              <span className="text-[#38BDF8] font-bold">
+                {String((compassAngle + 360) % 360).padStart(3, '0')}°
+              </span>
+            </div>
           </div>
-
-          <div className="flex items-center justify-between text-[9px] text-[#8A92A0] pt-1.5 mt-1.5 border-t border-white/5">
-            <span>POS: [{(progressRatio * 18.2).toFixed(1)}M]</span>
-            <span className="text-[#10B981] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-              TRACKING
-            </span>
+          <div className="flex items-center gap-1 text-[10px] text-white/40">
+            <span>[N</span>
+            <span className="text-white/70">·</span>
+            <span>E</span>
+            <span className="text-white/70">·</span>
+            <span>S</span>
+            <span className="text-white/70">·</span>
+            <span>W]</span>
           </div>
         </div>
       </div>
 
-      {/* Bottom Center Scroll Hint Overlay */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#08090B]/80 backdrop-blur-md border border-white/10 text-xs font-mono-tech text-[#8A92A0]">
-          <Radio className="w-3.5 h-3.5 text-[#38BDF8] animate-pulse" />
-          <span>SCROLL TO SCRUB 3D WALKTHROUGH SEQUENCE</span>
+      {/* Top Right: 2D Floor Plan Tracker Mini-Map */}
+      <div className="absolute top-6 sm:top-8 right-6 sm:right-8 z-30 pointer-events-auto">
+        <div className="rounded-sm bg-[#08090B]/90 backdrop-blur-md border border-white/20 p-3 shadow-2xl corner-crosshairs w-44 sm:w-52">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 font-mono-tech text-[11px]">
+            <div className="flex items-center gap-1.5 text-white">
+              <Layers className="w-3.5 h-3.5 text-[#38BDF8]" />
+              <span className="font-bold tracking-wider">FLOORPLAN</span>
+            </div>
+            <span className="text-[10px] text-[#10B981] font-semibold">LEVEL 01</span>
+          </div>
+
+          {/* Mini-map Graphic Canvas */}
+          <div className="relative h-20 sm:h-24 w-full bg-[#0E1013] border border-white/10 rounded-xs overflow-hidden bg-blueprint-grid">
+            {/* SVG Simplified Floorplan Blueprint */}
+            <svg
+              className="w-full h-full opacity-60"
+              viewBox="0 0 100 80"
+              fill="none"
+              stroke="#38BDF8"
+              strokeWidth="0.8"
+            >
+              {/* Outer Walls */}
+              <rect x="5" y="5" width="90" height="70" />
+              {/* Rooms */}
+              <line x1="35" y1="5" x2="35" y2="75" />
+              <line x1="35" y1="40" x2="95" y2="40" />
+              <line x1="65" y1="40" x2="65" y2="75" />
+              <rect x="12" y="15" width="15" height="15" strokeDasharray="1,1" stroke="#D4A373" />
+              <rect x="42" y="48" width="16" height="20" strokeDasharray="1,1" stroke="#D4A373" />
+              {/* Door openings */}
+              <circle cx="35" cy="22" r="3" stroke="#10B981" strokeDasharray="1,1" />
+              <circle cx="50" cy="40" r="3" stroke="#10B981" strokeDasharray="1,1" />
+            </svg>
+
+            {/* Live Observer Position Indicator Dot */}
+            <div
+              className="absolute w-3.5 h-3.5 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-75"
+              style={{
+                left: `${mapPointX}%`,
+                top: `${mapPointY}%`
+              }}
+            >
+              <div className="w-3.5 h-3.5 rounded-full bg-[#EF4444] animate-ping opacity-60 absolute" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444] border-2 border-white relative z-10 shadow-[0_0_8px_#EF4444]" />
+            </div>
+          </div>
+
+          {/* Telemetry Footer */}
+          <div className="flex items-center justify-between font-mono-tech text-[9px] text-[#8A92A0] mt-2">
+            <div className="flex items-center gap-1 text-[#38BDF8]">
+              <Radio className="w-2.5 h-2.5 text-[#38BDF8] animate-pulse" />
+              <span>LIVE TRACKING</span>
+            </div>
+            <span>ZONE A-3</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Center: Scroll Hint Indicator */}
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+        <div className="rounded-full bg-[#08090B]/80 backdrop-blur-md border border-white/15 px-5 py-2 shadow-2xl flex items-center gap-2.5 font-mono-tech text-xs text-white">
+          <span className="w-2 h-2 rounded-full bg-[#E5A93B] animate-pulse" />
+          <span className="tracking-widest uppercase text-[11px]">
+            SCROLL DOWN TO SCRUB WALKTHROUGH
+          </span>
         </div>
       </div>
     </section>
