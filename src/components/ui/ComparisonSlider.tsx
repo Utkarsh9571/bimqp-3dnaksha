@@ -73,25 +73,25 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   return (
     <div className="w-full">
       {/* Top Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-white/10">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-gray-200">
         <div>
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#D4A373] animate-pulse"></span>
-            <h4 className="font-display font-semibold text-white text-base md:text-lg">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#D97706] animate-pulse"></span>
+            <h4 className="font-display font-bold text-[#0A0A0A] text-base md:text-lg">
               {projectTitle}
             </h4>
           </div>
-          <p className="font-mono-tech text-xs text-[#8A92A0] mt-0.5">{projectMeta}</p>
+          <p className="font-mono-tech text-xs text-[#4B5563] mt-0.5">{projectMeta}</p>
         </div>
 
         {/* View Toggle Tabs */}
-        <div className="flex items-center gap-1 bg-[#14171D] p-1 rounded-sm border border-white/10 text-xs font-mono-tech">
+        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-sm border border-gray-200 text-xs font-mono-tech">
           <button
             onClick={() => setPreset('blueprint')}
             className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'blueprint'
-                ? 'bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-blue-50 text-[#0284C7] font-bold border border-blue-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -101,8 +101,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             onClick={() => setPreset('split')}
             className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'split'
-                ? 'bg-[#D4A373]/20 text-[#D4A373] border border-[#D4A373]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-amber-50 text-[#9A6A38] font-bold border border-amber-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -112,8 +112,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             onClick={() => setPreset('render')}
             className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'render'
-                ? 'bg-[#E5A93B]/20 text-[#E5A93B] border border-[#E5A93B]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-amber-50 text-[#B45309] font-bold border border-amber-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -125,7 +125,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
       {/* Main Slider Canvas */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-white/15 bg-[#0E1013] select-none cursor-ew-resize corner-crosshairs group shadow-2xl"
+        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl"
         onMouseDown={() => setIsDragging(true)}
         onTouchStart={() => setIsDragging(true)}
       >
@@ -138,7 +138,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             loading="lazy"
           />
           {/* Label Badge */}
-          <div className="absolute bottom-4 right-4 z-10 bg-[#08090B]/85 backdrop-blur-md px-3 py-1.5 rounded-sm border border-[#D4A373]/30 text-xs font-mono-tech text-[#D4A373] flex items-center gap-2 pointer-events-none">
+          <div className="absolute bottom-4 right-4 z-10 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/20 text-xs font-mono-tech text-[#E5A93B] flex items-center gap-2 pointer-events-none">
             <Sparkles className="w-3.5 h-3.5 text-[#E5A93B]" />
             <span>{renderLabel}</span>
           </div>
@@ -169,7 +169,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             </div>
 
             {/* Blueprint Label Badge */}
-            <div className="absolute bottom-4 left-4 z-10 bg-[#08090B]/85 backdrop-blur-md px-3 py-1.5 rounded-sm border border-[#38BDF8]/30 text-xs font-mono-tech text-[#38BDF8] flex items-center gap-2 pointer-events-none">
+            <div className="absolute bottom-4 left-4 z-10 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/20 text-xs font-mono-tech text-[#38BDF8] flex items-center gap-2 pointer-events-none">
               <Layers className="w-3.5 h-3.5" />
               <span>{blueprintLabel}</span>
             </div>
@@ -178,29 +178,31 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
 
         {/* Draggable Divider Line */}
         <div
-          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#38BDF8] via-white to-[#D4A373] shadow-[0_0_12px_rgba(212,163,115,0.8)]"
+          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#0284C7] via-white to-[#D97706] shadow-sm"
           style={{ left: `${sliderPosition}%` }}
         >
           {/* Circular Handle */}
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-[#0E1013] border-2 border-[#D4A373] shadow-lg flex items-center justify-center text-[#D4A373] group-hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white border-2 border-[#9A6A38] shadow-md flex items-center justify-center text-[#9A6A38] group-hover:scale-110 transition-transform">
             <div className="flex items-center gap-0.5">
-              <span className="w-1 h-3 bg-[#38BDF8] rounded-full"></span>
-              <span className="w-1 h-3 bg-[#D4A373] rounded-full"></span>
+              <span className="w-1 h-3 bg-[#0284C7] rounded-full"></span>
+              <span className="w-1 h-3 bg-[#D97706] rounded-full"></span>
             </div>
           </div>
 
           {/* Top Indicator */}
-          <div className="absolute top-2 -translate-x-1/2 bg-[#08090B]/90 text-[10px] font-mono-tech px-2 py-0.5 rounded-xs border border-white/20 text-white whitespace-nowrap">
+          <div className="absolute top-2 -translate-x-1/2 bg-black/90 text-[10px] font-mono-tech px-2 py-0.5 rounded-xs border border-white/20 text-white whitespace-nowrap">
             {Math.round(sliderPosition)}% SPLIT
           </div>
         </div>
 
         {/* Drag Hint Overlay for new visitors */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-mono-tech text-[#8A92A0] border border-white/10 opacity-70 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
-          <Eye className="w-3 h-3 text-[#D4A373]" />
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-mono-tech text-gray-700 border border-gray-300 shadow-xs opacity-80 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
+          <Eye className="w-3 h-3 text-[#D97706]" />
           <span>Drag slider left / right to compare</span>
         </div>
       </div>
     </div>
   );
 };
+
+export default ComparisonSlider;

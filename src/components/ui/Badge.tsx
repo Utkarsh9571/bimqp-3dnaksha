@@ -16,11 +16,11 @@ export const Badge: React.FC<BadgeProps> = ({
   icon
 }) => {
   const variantStyles = {
-    bronze: 'bg-[#D4A373]/10 text-[#D4A373] border-[#D4A373]/30',
-    blue: 'bg-[#38BDF8]/10 text-[#38BDF8] border-[#38BDF8]/30',
-    amber: 'bg-[#E5A93B]/10 text-[#E5A93B] border-[#E5A93B]/30',
-    neutral: 'bg-white/5 text-[#F3F4F6] border-white/10',
-    outline: 'bg-transparent text-[#8A92A0] border-white/15'
+    bronze: 'bg-amber-50 text-[#9A6A38] border-amber-200 font-bold',
+    blue: 'bg-blue-50 text-[#0284C7] border-blue-200 font-bold',
+    amber: 'bg-amber-50 text-[#B45309] border-amber-200 font-bold',
+    neutral: 'bg-gray-100 text-gray-800 border-gray-200 font-medium',
+    outline: 'bg-white text-gray-700 border-gray-300 font-medium'
   };
 
   const sizeStyles = {
@@ -30,10 +30,12 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-mono-tech uppercase font-medium rounded-sm border ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      className={`inline-flex items-center gap-1.5 font-mono-tech uppercase rounded-sm border ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
     >
       {icon && <span className="opacity-90">{icon}</span>}
       {children}
     </span>
   );
 };
+
+export default Badge;
