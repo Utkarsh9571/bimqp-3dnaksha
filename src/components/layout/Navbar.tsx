@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'About Us', href: '#about', id: 'about' },
   { label: 'Our Services', href: '#services', id: 'services' },
   { label: 'Our Clients', href: '#clients', id: 'clients' },
-  { label: 'Our Mission', href: '#mission', id: 'mission' }
+  { label: 'Our Mission', href: '#mission', id: 'mission' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
@@ -27,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
   const navRef = useRef<HTMLElement>(null);
   const underlineRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const isNavigatingRef = useRef<boolean>(false);
 
   // Function to smoothly animate the underline to the active link position
   const updateUnderlinePosition = useCallback((targetId: string, immediate = false) => {
@@ -57,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
         x: targetX,
         width: targetWidth,
         opacity: 1,
-        duration: 0.4,
+        duration: 0.35,
         ease: 'power2.out',
         overwrite: 'auto'
       });
@@ -89,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ScrollTrigger section in-view detection
+  // ScrollTrigger section in-view detection (set up once on mount)
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
 
@@ -100,46 +101,54 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
 
         const st = ScrollTrigger.create({
           trigger: section,
-          start: 'top 50%',
-          end: 'bottom 50%',
-          onEnter: () => setActiveId(item.id),
-          onEnterBack: () => setActiveId(item.id)
+          start: 'top 55%',
+          end: 'bottom 45%',
+          onEnter: () => {
+            if (!isNavigatingRef.current) setActiveId(item.id);
+          },
+          onEnterBack: () => {
+            if (!isNavigatingRef.current) setActiveId(item.id);
+          }
         });
 
         triggers.push(st);
       });
 
-      // Handle top of page hero fallback
-      const hero = document.getElementById('hero') || document.querySelector('main > section:first-child');
-      if (hero) {
-        const heroTrigger = ScrollTrigger.create({
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom 50%',
-          onEnterBack: () => setActiveId('about')
-        });
-        triggers.push(heroTrigger);
-      }
-
       // Initial position update after ScrollTrigger refresh
       ScrollTrigger.refresh();
-      updateUnderlinePosition(activeId, true);
+      updateUnderlinePosition('about', true);
     };
 
-    // Small delay to ensure all section DOM nodes are fully mounted
-    const timer = setTimeout(setupTriggers, 150);
+    // Delay slightly to ensure lazy-loaded sections mount into DOM
+    const timer = setTimeout(setupTriggers, 300);
 
     return () => {
       clearTimeout(timer);
       triggers.forEach((trigger) => trigger.kill());
     };
-  }, [activeId, updateUnderlinePosition]);
+  }, [updateUnderlinePosition]);
 
   const handleNavClick = (href: string, id: string) => {
     setIsMobileMenuOpen(false);
     setActiveId(id);
     updateUnderlinePosition(id);
-    smoothScrollTo(href, { offset: -70 });
+
+    // Lock scroll trigger updates while smooth scroll is traveling to target
+    isNavigatingRef.current = true;
+
+    smoothScrollTo(href, {
+      offset: -70,
+      onComplete: () => {
+        setTimeout(() => {
+          isNavigatingRef.current = false;
+        }, 100);
+      }
+    });
+
+    // Fallback release in case onComplete is delayed
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 1200);
   };
 
   const registerLinkRef = (id: string, el: HTMLAnchorElement | null) => {
@@ -153,15 +162,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
             ? 'bg-white/92 backdrop-blur-md border-b border-gray-200/90 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]'
             : 'bg-[#F8F7F5]/80 backdrop-blur-sm border-b border-gray-200/60 py-4'
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo & BIMQP Endorsement */}
-          <div className="flex items-center gap-3 md:gap-4">
+          {/* Brand Logo & Home Action */}
+          <div className="flex items-center">
             <a
               href="/"
               onClick={(e) => {
@@ -172,52 +180,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                   window.history.pushState('', document.title, window.location.pathname + window.location.search);
                 }
               }}
-              className="flex items-center gap-2.5 group cursor-pointer"
+              className="flex items-center group cursor-pointer focus:outline-hidden"
               aria-label="3D Naksha Homepage"
             >
-              {/* Architectural Vector Cube Logo */}
-              <div className="w-9 h-9 rounded-sm bg-white border border-[#9A6A38]/30 flex items-center justify-center text-[#9A6A38] shadow-xs group-hover:border-[#9A6A38] transition-colors relative overflow-hidden">
-                <svg
-                  className="w-5 h-5 transition-transform group-hover:scale-110 duration-300"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 2L2 7L12 12L22 7L12 2Z"
-                    stroke="#9A6A38"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2 17L12 22L22 17"
-                    stroke="#D97706"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2 12L12 17L22 12"
-                    stroke="#0284C7"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold text-lg md:text-xl tracking-tight text-[#0A0A0A] group-hover:text-[#9A6A38] transition-colors">
-                    3D Naksha
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 font-mono-tech text-[10px] text-gray-500">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse"></span>
-                  <span>BIMQP Ecosystem</span>
-                </div>
-              </div>
+              <img
+                src="/logo-up.jpeg"
+                alt="3D Naksha Logo"
+                className="h-11 sm:h-13 md:h-14 lg:h-16 w-auto max-w-[220px] sm:max-w-[270px] md:max-w-[320px] object-contain rounded-lg transition-transform group-hover:scale-[1.03] duration-300 shadow-2xs"
+              />
             </a>
           </div>
 
@@ -239,11 +209,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                     e.preventDefault();
                     handleNavClick(link.href, link.id);
                   }}
-                  className={`px-4 py-2 text-xs font-mono-tech transition-colors relative z-10 ${
-                    isActive
+                  className={`px-4 py-2 text-xs font-mono-tech transition-colors relative z-10 ${isActive
                       ? 'text-[#0A0A0A] font-bold'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70 rounded-sm'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </a>
@@ -306,11 +275,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                     e.preventDefault();
                     handleNavClick(link.href, link.id);
                   }}
-                  className={`flex items-center justify-between p-3 rounded-sm border transition-all text-sm font-mono-tech ${
-                    isActive
+                  className={`flex items-center justify-between p-3 rounded-sm border transition-all text-sm font-mono-tech ${isActive
                       ? 'bg-amber-50 border-amber-300 text-amber-900 font-semibold'
                       : 'bg-white border-gray-200 text-gray-800 hover:border-amber-400'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-2">
                     {isActive && (

@@ -182,10 +182,10 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
         />
 
         {/* Main Interactive VR Stage */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-16">
           {/* Interactive Spatial Hotspot Canvas with Drag-to-Pan */}
           <div
-            className="lg:col-span-8 relative transition-all duration-700"
+            className="lg:col-span-8 relative h-full flex flex-col min-h-[480px] lg:min-h-0 transition-all duration-700"
             style={{
               opacity: isInView ? 1 : 0,
               transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 24px, 0)',
@@ -194,7 +194,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
           >
             <div
               ref={viewportRef}
-              className="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-900 shadow-xl corner-crosshairs group aspect-[16/10] sm:aspect-[16/9] cursor-grab active:cursor-grabbing touch-pan-y"
+              className="relative w-full h-full min-h-[440px] rounded-lg overflow-hidden border border-gray-200 bg-gray-900 shadow-xl corner-crosshairs group cursor-grab active:cursor-grabbing touch-pan-y"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -202,7 +202,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
               {/* Wide Panorama Container (Wider than viewport for natural 360° pan) */}
               <div
                 ref={panoramaRef}
-                className="absolute inset-0 w-[140%] sm:w-[150%] -left-[20%] sm:-left-[25%] h-100px will-change-transform"
+                className="absolute inset-0 w-[140%] sm:w-[150%] -left-[20%] sm:-left-[25%] h-full will-change-transform"
                 style={{ transform: 'translate3d(0, 0, 0)' }}
               >
                 <img

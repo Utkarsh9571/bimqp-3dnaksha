@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUp, Mail, MapPin, Box } from 'lucide-react';
+import { ArrowUp, Mail, MapPin } from 'lucide-react';
 import { BRAND_CONFIG } from '../../data/content';
 import { smoothScrollTo } from '../../lib/animations';
 
@@ -21,12 +21,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-gray-300">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-sm bg-white border border-[#9A6A38]/40 flex items-center justify-center text-[#9A6A38] shadow-2xs">
-                <Box className="w-4 h-4" />
-              </div>
-              <span className="font-display font-bold text-xl text-[#0A0A0A]">3D Naksha</span>
-            </div>
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                smoothScrollTo(0);
+              }}
+              className="inline-block group cursor-pointer focus:outline-hidden"
+              aria-label="3D Naksha Homepage"
+            >
+              <img
+                src="/logo-up.jpeg"
+                alt="3D Naksha Logo"
+                className="h-12 sm:h-14 md:h-16 w-auto max-w-[260px] object-contain rounded-lg transition-transform group-hover:scale-[1.03] duration-300 shadow-2xs"
+              />
+            </a>
 
             <p className="text-sm text-[#4B5563] leading-relaxed max-w-sm">
               Architectural visualization, 3D BIM modeling, and immersive VR services. Helping stakeholders experience spaces, evaluate designs, and make confident construction decisions before breaking ground.

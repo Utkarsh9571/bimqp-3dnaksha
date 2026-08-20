@@ -59,9 +59,9 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
         />
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Left Column: Service Selection Cards */}
-          <div className="lg:col-span-5 space-y-3">
+          <div className="lg:col-span-5 flex flex-col gap-3 h-full">
             {SERVICES.map((service, idx) => {
               const isSelected = activeServiceId === service.id;
               const delay = idx * 90;
@@ -69,7 +69,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                 <div
                   key={service.id}
                   onClick={() => handleSelectService(service.id)}
-                  className={`p-4 sm:p-5 rounded-md border cursor-pointer relative transition-all duration-300 ${
+                  className={`flex-1 flex flex-col justify-center p-3.5 sm:p-4 rounded-md border cursor-pointer relative transition-all duration-300 ${
                     isSelected
                       ? 'bg-white border-[#9A6A38] shadow-md translate-x-1.5 ring-1 ring-[#9A6A38]/40'
                       : 'bg-white/80 border-gray-200 hover:border-gray-300 hover:bg-white'
@@ -100,7 +100,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                           <span className="font-mono-tech text-xs text-gray-500 font-bold">
                             {service.number} //
                           </span>
-                          <h4 className="font-display font-bold text-[#0A0A0A] text-base">
+                          <h4 className="font-display font-bold text-[#0A0A0A] text-sm sm:text-base">
                             {service.title}
                           </h4>
                         </div>
@@ -127,7 +127,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
 
           {/* Right Column: In-Depth Editorial Showcase of Active Service */}
           <div
-            className="lg:col-span-7 transition-all duration-700"
+            className="lg:col-span-7 h-full flex flex-col transition-all duration-700"
             style={{
               opacity: isInView ? 1 : 0,
               transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 24px, 0)',
