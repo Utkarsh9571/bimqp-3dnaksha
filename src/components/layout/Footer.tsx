@@ -54,37 +54,37 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
             </h4>
             <ul className="space-y-2 text-xs font-mono-tech">
               <li>
-                <a href="#about" className="hover:text-black transition-colors">
+                <a href="#about" onClick={(e) => { e.preventDefault(); smoothScrollTo('#about', { offset: -70 }); }} className="hover:text-black transition-colors">
                   About Us (Experience Unbuilt)
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-black transition-colors">
+                <a href="#services" onClick={(e) => { e.preventDefault(); smoothScrollTo('#services', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Our Services
                 </a>
               </li>
               <li>
-                <a href="#clients" className="hover:text-black transition-colors">
+                <a href="#clients" onClick={(e) => { e.preventDefault(); smoothScrollTo('#clients', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Our Clients
                 </a>
               </li>
               <li>
-                <a href="#mission" className="hover:text-black transition-colors">
+                <a href="#mission" onClick={(e) => { e.preventDefault(); smoothScrollTo('#mission', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Our Mission (AEC Lifecycle)
                 </a>
               </li>
               <li>
-                <a href="#vr-centerpiece" className="hover:text-[#9A6A38] text-[#9A6A38] font-semibold transition-colors">
+                <a href="#vr-centerpiece" onClick={(e) => { e.preventDefault(); smoothScrollTo('#vr-centerpiece', { offset: -70 }); }} className="hover:text-[#9A6A38] text-[#9A6A38] font-semibold transition-colors">
                   Immersive VR Services
                 </a>
               </li>
               <li>
-                <a href="#showcase" className="hover:text-black transition-colors">
+                <a href="#showcase" onClick={(e) => { e.preventDefault(); smoothScrollTo('#showcase', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Selected Visualizations
                 </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-black transition-colors">
+                <a href="#faq" onClick={(e) => { e.preventDefault(); smoothScrollTo('#faq', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Technical FAQ
                 </a>
               </li>
@@ -119,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-[#0284C7] shrink-0 mt-0.5" />
-                <span>3dnaksha.com</span>
+                <span className="leading-snug">IT- 9(A), EPIP, IT Park Rd<br/>Sitapura, Jaipur, RJ 302022</span>
               </div>
               <div className="pt-2">
                 <button

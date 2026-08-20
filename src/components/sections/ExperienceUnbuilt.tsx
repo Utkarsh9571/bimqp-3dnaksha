@@ -29,8 +29,8 @@ export const ExperienceUnbuilt: React.FC = () => {
       name: 'Residential Architecture Study',
       subtitle: 'Exterior Proportions & Natural Light',
       specs: 'Contemporary Form • Material & Light Study',
-      blueprintImg: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
-      renderImg: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85',
+      blueprintImg: '/images/residential_2d.jpg',
+      renderImg: '/images/residential_3d.jpg',
       blueprintLabel: '2D Architectural Plan & Grid',
       renderLabel: '3D Photorealistic Lighting & Material View'
     },
@@ -39,8 +39,8 @@ export const ExperienceUnbuilt: React.FC = () => {
       name: 'Interior Living Space Study',
       subtitle: 'Double-Height Living & Joinery Layout',
       specs: 'Material Harmony • Daylight Visualization',
-      blueprintImg: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85',
-      renderImg: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85',
+      blueprintImg: '/images/interior_2d.jpg',
+      renderImg: '/images/interior_3d.jpg',
       blueprintLabel: 'Interior Layout & Coordination Drawing',
       renderLabel: 'Interior Material & Ambiance Rendering'
     },
@@ -49,8 +49,8 @@ export const ExperienceUnbuilt: React.FC = () => {
       name: 'Commercial Atrium & Facade Study',
       subtitle: 'Multi-Level Space & Glass Envelope',
       specs: 'Volumetric Study • Spatial Circulation',
-      blueprintImg: 'https://images.unsplash.com/photo-1541888946425-d0fbb18fe0f6?auto=format&fit=crop&w=1200&q=85',
-      renderImg: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
+      blueprintImg: '/images/commercial_2d.jpg',
+      renderImg: '/images/commercial_3d.jpg',
       blueprintLabel: '3D Structural & Architectural Coordination',
       renderLabel: 'Finished Architectural Visualization'
     }
@@ -222,7 +222,7 @@ export const ExperienceUnbuilt: React.FC = () => {
                   {/* Layer 1: 2D Blueprint */}
                   <div className="absolute inset-0 w-full h-full bg-[#0A1628]">
                     <img
-                      src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85"
+                      src="/images/residential_2d.jpg"
                       alt="Stage 1: 2D Architectural Blueprint"
                       className="w-full h-full object-cover filter contrast-125 saturate-50 hue-rotate-180 brightness-90"
                     />
@@ -242,7 +242,7 @@ export const ExperienceUnbuilt: React.FC = () => {
                     }}
                   >
                     <img
-                      src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85"
+                      src="/images/residential_3d.jpg"
                       alt="Stage 2: 3D BIM Coordinated Model"
                       className="w-full h-full object-cover brightness-95 contrast-105"
                     />
@@ -262,7 +262,7 @@ export const ExperienceUnbuilt: React.FC = () => {
                     }}
                   >
                     <img
-                      src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85"
+                      src="/images/residential_3d.jpg"
                       alt="Stage 3: Finished Immersive Visualization"
                       className="w-full h-full object-cover"
                     />

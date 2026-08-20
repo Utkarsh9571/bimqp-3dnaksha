@@ -46,6 +46,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
   const modelGroupRef = useRef<THREE.Group | null>(null);
   const wireframeGroupRef = useRef<THREE.Group | null>(null);
   const solidGroupRef = useRef<THREE.Group | null>(null);
+  const headsetGroupRef = useRef<THREE.Group | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const isInitializedRef = useRef<boolean>(false);
   const userInteractionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -70,6 +71,82 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     return () => {
       observer.disconnect();
     };
+  }, []);
+
+  // 1.5 Build Procedural Headset Model
+  const buildProceduralHeadset = useCallback((scene: THREE.Scene) => {
+    const headsetGroup = new THREE.Group();
+
+    // Stylized VR Headset Materials matching BIM aesthetic
+    const bodyMaterial = new THREE.MeshStandardMaterial({
+      color: 0x08090B, // dark shell
+      roughness: 0.2,
+      metalness: 0.8
+    });
+    
+    const lensMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x000000,
+      roughness: 0.1,
+      metalness: 0.9,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1
+    });
+
+    const highlightMaterial = new THREE.LineBasicMaterial({
+      color: 0x38BDF8, // Cyan brand color
+      transparent: true,
+      opacity: 0.8
+    });
+
+    // Main Visor
+    const visorGeo = new THREE.BoxGeometry(3.2, 1.8, 1.6, 4, 4, 4);
+    const visorMesh = new THREE.Mesh(visorGeo, bodyMaterial);
+    headsetGroup.add(visorMesh);
+
+    // Wireframe edges for the visor
+    const visorEdges = new THREE.EdgesGeometry(visorGeo);
+    const visorWire = new THREE.LineSegments(visorEdges, highlightMaterial);
+    headsetGroup.add(visorWire);
+
+    // Front Plate (The lens we fly into)
+    const frontPlateGeo = new THREE.BoxGeometry(3.0, 1.6, 0.1);
+    const frontPlateMesh = new THREE.Mesh(frontPlateGeo, lensMaterial);
+    frontPlateMesh.position.z = 0.85;
+    headsetGroup.add(frontPlateMesh);
+
+    // Head strap rings
+    const strapRingGeo = new THREE.TorusGeometry(0.5, 0.05, 8, 24);
+    
+    const leftRing = new THREE.Mesh(strapRingGeo, bodyMaterial);
+    leftRing.rotation.y = Math.PI / 2;
+    leftRing.position.set(-1.7, 0, -0.2);
+    headsetGroup.add(leftRing);
+
+    const rightRing = leftRing.clone();
+    rightRing.position.set(1.7, 0, -0.2);
+    headsetGroup.add(rightRing);
+
+    // Brand accent lines (simulating tracking sensors)
+    const sensorGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.05, 16);
+    const sensorMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+    
+    const positions = [
+      [-1.2, -0.6, 0.86],
+      [1.2, -0.6, 0.86],
+      [1.2, 0.6, 0.86],
+      [-1.2, 0.6, 0.86]
+    ];
+
+    positions.forEach(([x, y, z]) => {
+      const s = new THREE.Mesh(sensorGeo, sensorMat);
+      s.rotation.x = Math.PI / 2;
+      s.position.set(x, y, z);
+      headsetGroup.add(s);
+    });
+
+    headsetGroup.visible = true; // Visible by default for scroll start
+    scene.add(headsetGroup);
+    headsetGroupRef.current = headsetGroup;
   }, []);
 
   // 2. Build Procedural Architectural BIM Model
@@ -245,6 +322,8 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     const vertexPoints = new THREE.Points(vertexPointsGeo, vertexPointMaterial);
     wireGroup.add(vertexPoints);
 
+    modelGroup.visible = false; // Hidden by default, Phase 1 starts with headset
+
     modelGroup.add(solidGroup);
     modelGroup.add(wireGroup);
     scene.add(modelGroup);
@@ -286,7 +365,9 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     sceneRef.current = scene;
 
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
-    camera.position.set(16, 10, 18);
+    // Start strictly framed on the headset for Phase 1
+    camera.position.set(0, 0, 12);
+    camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
@@ -304,7 +385,10 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
+    controls.dampingFactor = 0.05;
+    controls.rotateSpeed = 0.4; // Reduced from default 1.0 for precise dragging
+    controls.zoomSpeed = 0.7; // Reduced from default 1.0
+    controls.panSpeed = 0.6; // Reduced from default 1.0
     controls.minDistance = 6;
     controls.maxDistance = 45;
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
@@ -364,11 +448,13 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
           }
         },
         () => {
+          buildProceduralHeadset(scene);
           buildProceduralBIMModel(scene);
           setIsLoading(false);
         }
       );
     } else {
+      buildProceduralHeadset(scene);
       buildProceduralBIMModel(scene);
       setIsLoading(false);
       setLoadProgress(100);
@@ -440,18 +526,67 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
 
   // 5. Scroll-Driven Camera & Assembly Control
   useEffect(() => {
-    if (!isInViewport || isUserInteracting || isReduced || !cameraRef.current || !controlsRef.current) return;
+    if (!isInViewport || isReduced || !cameraRef.current || !controlsRef.current) return;
 
-    const targetAngle = scrollProgress * Math.PI * 0.75 + 0.6;
-    const targetElevation = 6 + scrollProgress * 7;
-    const targetRadius = 22 - scrollProgress * 4;
+    const headsetGroup = headsetGroupRef.current;
+    const bimGroup = modelGroupRef.current;
+    if (!headsetGroup || !bimGroup) return;
 
-    const targetX = Math.sin(targetAngle) * targetRadius;
-    const targetZ = Math.cos(targetAngle) * targetRadius;
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
 
-    cameraRef.current.position.x += (targetX - cameraRef.current.position.x) * 0.1;
-    cameraRef.current.position.y += (targetElevation - cameraRef.current.position.y) * 0.1;
-    cameraRef.current.position.z += (targetZ - cameraRef.current.position.z) * 0.1;
+    if (scrollProgress < 0.4) {
+      // PHASE 1: Headset Intro Sequence
+      headsetGroup.visible = true;
+      bimGroup.visible = false;
+      controls.enabled = false; // Lock orbit controls during headset phase
+
+      // Subtle headset rotation tied to scroll
+      headsetGroup.rotation.y = Math.sin(scrollProgress * Math.PI) * 0.4;
+      headsetGroup.rotation.x = scrollProgress * 0.5;
+
+      // Dolly camera straight into the front plate of the headset
+      // Headset is at origin (0,0,0). Front plate is at z=0.85
+      // Start camera back at z=12, push to z=0.8 (right against the black plate)
+      const startZ = 12;
+      const endZ = 0.8;
+      
+      const localProgress = scrollProgress / 0.4; // 0.0 to 1.0
+      // Expo ease in for dramatic push
+      const eased = Math.pow(localProgress, 3);
+      
+      const targetZ = startZ - (startZ - endZ) * eased;
+      
+      // Update camera directly (no lerp, rigidly tied to scroll)
+      camera.position.set(0, 0, targetZ);
+      camera.lookAt(0, 0, 0);
+
+    } else {
+      // PHASE 2: BIM Model Reveal
+      headsetGroup.visible = false;
+      bimGroup.visible = true;
+      
+      if (!isUserInteracting) {
+        controls.enabled = true; // Unlock controls
+
+        const bimProgress = (scrollProgress - 0.4) / 0.6; // 0.0 to 1.0
+        
+        const targetAngle = bimProgress * Math.PI * 0.75 + 0.6;
+        const targetElevation = 6 + bimProgress * 7;
+        const targetRadius = 22 - bimProgress * 4;
+
+        const targetX = Math.sin(targetAngle) * targetRadius;
+        const targetZ = Math.cos(targetAngle) * targetRadius;
+
+        camera.position.x += (targetX - camera.position.x) * 0.1;
+        camera.position.y += (targetElevation - camera.position.y) * 0.1;
+        camera.position.z += (targetZ - camera.position.z) * 0.1;
+        camera.lookAt(0, 3.5, 0);
+      } else {
+        controls.enabled = true;
+      }
+    }
+
   }, [scrollProgress, isInViewport, isUserInteracting, isReduced]);
 
   const toggleWireframe = () => {

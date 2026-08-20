@@ -71,10 +71,14 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn"
+      data-lenis-prevent="true"
+    >
       <div
         className="relative w-full max-w-2xl bg-white border border-gray-300 rounded-lg shadow-2xl p-6 sm:p-8 text-gray-900 corner-crosshairs my-8 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
+        data-lenis-prevent="true"
       >
         {/* Close Button */}
         <button

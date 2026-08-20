@@ -202,7 +202,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
               {/* Wide Panorama Container (Wider than viewport for natural 360° pan) */}
               <div
                 ref={panoramaRef}
-                className="absolute inset-0 w-[140%] sm:w-[150%] -left-[20%] sm:-left-[25%] h-full will-change-transform"
+                className="absolute inset-0 w-[140%] sm:w-[150%] -left-[20%] sm:-left-[25%] h-100px will-change-transform"
                 style={{ transform: 'translate3d(0, 0, 0)' }}
               >
                 <img
@@ -224,25 +224,22 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                         setActiveHotspot(spot.id);
                       }}
                       style={{ top: spot.y, left: `${spot.x}%` }}
-                      className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 group/spot flex items-center justify-center transition-all cursor-pointer ${
-                        isActive ? 'scale-125' : 'scale-100 hover:scale-115'
-                      }`}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 group/spot flex items-center justify-center transition-all cursor-pointer ${isActive ? 'scale-125' : 'scale-100 hover:scale-115'
+                        }`}
                       aria-label={spot.title}
                     >
                       {/* Pulsing ring */}
                       <span
-                        className={`absolute w-10 h-10 rounded-full opacity-75 ${
-                          isActive ? 'animate-ping bg-[#D97706]' : 'bg-[#0284C7]/40'
-                        }`}
+                        className={`absolute w-10 h-10 rounded-full opacity-75 ${isActive ? 'animate-ping bg-[#D97706]' : 'bg-[#0284C7]/40'
+                          }`}
                       ></span>
-                      
+
                       {/* Core Button */}
                       <span
-                        className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors ${
-                          isActive
+                        className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors ${isActive
                             ? 'bg-[#D4A373] text-[#08090B] border-white'
                             : 'bg-black/90 text-[#38BDF8] border-[#38BDF8]'
-                        }`}
+                          }`}
                       >
                         {spot.icon}
                       </span>
@@ -264,9 +261,8 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
 
               {/* Drag to Look Around Hint */}
               <div
-                className={`absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[10px] sm:text-[11px] font-mono-tech text-white/80 flex items-center gap-1.5 pointer-events-none z-30 transition-opacity duration-500 ${
-                  hasInteracted ? 'opacity-40 hover:opacity-100' : 'opacity-90 animate-pulse'
-                }`}
+                className={`absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[10px] sm:text-[11px] font-mono-tech text-white/80 flex items-center gap-1.5 pointer-events-none z-30 transition-opacity duration-500 ${hasInteracted ? 'opacity-40 hover:opacity-100' : 'opacity-90 animate-pulse'
+                  }`}
               >
                 <MoveHorizontal className="w-3.5 h-3.5 text-[#38BDF8]" />
                 <span>DRAG TO PAN 360° VIEW</span>

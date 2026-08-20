@@ -34,10 +34,12 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/75 backdrop-blur-md animate-fadeIn"
       onClick={onClose}
+      data-lenis-prevent="true"
     >
       <div
         className="relative w-full max-w-5xl bg-white border border-gray-300 rounded-lg overflow-hidden shadow-2xl flex flex-col lg:flex-row max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
+        data-lenis-prevent="true"
       >
         {/* Close Button */}
         <button
@@ -62,7 +64,10 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
         </div>
 
         {/* Info & Metadata Panel (Light Theme) */}
-        <div className="lg:w-2/5 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto bg-white border-t lg:border-t-0 lg:border-l border-gray-200">
+        <div 
+          className="lg:w-2/5 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto bg-white border-t lg:border-t-0 lg:border-l border-gray-200"
+          data-lenis-prevent="true"
+        >
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Badge variant="amber" size="sm">

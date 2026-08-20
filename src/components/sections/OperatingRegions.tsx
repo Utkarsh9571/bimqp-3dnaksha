@@ -15,44 +15,14 @@ interface OperationalRegion {
 
 const REGIONS: OperationalRegion[] = [
   {
-    id: 'mh',
-    state: 'MAHARASHTRA',
-    city: 'MUMBAI',
-    coordinates: '19.0760° N, 72.8777° E',
+    id: 'rj',
+    state: 'RAJASTHAN',
+    city: 'JAIPUR',
+    coordinates: '26.7978° N, 75.8456° E',
     statusDotColor: '#059669',
-    statusLabel: 'FLAGSHIP HUB',
-    coverageDetail: 'High-End Architecture & VR Center',
-    hubCode: 'HUB-BOM-01'
-  },
-  {
-    id: 'dl',
-    state: 'DELHI NCR',
-    city: 'NEW DELHI',
-    coordinates: '28.6139° N, 77.2090° E',
-    statusDotColor: '#0284C7',
-    statusLabel: 'ACTIVE REGION',
-    coverageDetail: 'Commercial & Institutional BIM Models',
-    hubCode: 'HUB-DEL-02'
-  },
-  {
-    id: 'ka',
-    state: 'KARNATAKA',
-    city: 'BENGALURU',
-    coordinates: '12.9716° N, 77.5946° E',
-    statusDotColor: '#D97706',
-    statusLabel: 'VR & SPATIAL LAB',
-    coverageDetail: 'Immersive Real-Time Walkthroughs',
-    hubCode: 'HUB-BLR-03'
-  },
-  {
-    id: 'tg',
-    state: 'TELANGANA',
-    city: 'HYDERABAD',
-    coordinates: '17.3850° N, 78.4867° E',
-    statusDotColor: '#7C3AED',
-    statusLabel: 'EXPANDED OPERATIONS',
-    coverageDetail: 'Large-Scale Masterplan Visualization',
-    hubCode: 'HUB-HYD-04'
+    statusLabel: 'HEADQUARTERS',
+    coverageDetail: 'IT- 9(A), EPIP, IT Park Rd, near Hotel Marigold, Sitapura Industrial Area, Sitapura, Jaipur 302022',
+    hubCode: 'HQ-JPR-01'
   }
 ];
 
@@ -137,7 +107,7 @@ export const OperatingRegions: React.FC = () => {
               <span>REGIONAL PRESENCE & COVERAGE</span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
-              Currently Operating In
+              Our Headquarters
             </h2>
           </div>
 
@@ -146,15 +116,15 @@ export const OperatingRegions: React.FC = () => {
           </div>
         </div>
 
-        {/* 4-Column Layout with Vertical Divider Lines */}
-        <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+        {/* Single Location Layout */}
+        <div className="relative">
           {REGIONS.map((region, index) => {
             const isLast = index === REGIONS.length - 1;
 
             return (
               <React.Fragment key={region.id}>
                 {/* Column Card Content */}
-                <div className="operating-column lg:px-8 first:lg:pl-0 last:lg:pr-0 flex flex-col justify-between group">
+                <div className="operating-column flex flex-col justify-between group max-w-lg">
                   <div>
                     {/* Top: Status Dot + State Label */}
                     <div className="flex items-center justify-between mb-4">

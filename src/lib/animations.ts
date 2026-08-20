@@ -179,16 +179,29 @@ export const smoothScrollTo = (
       onComplete: options?.onComplete
     });
   } else {
+    let targetY = 0;
+    
     if (typeof target === 'string') {
       const el = document.querySelector(target);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+        const rect = el.getBoundingClientRect();
+        targetY = rect.top + window.scrollY;
       }
     } else if (target instanceof HTMLElement) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      const rect = target.getBoundingClientRect();
+      targetY = rect.top + window.scrollY;
     } else if (typeof target === 'number') {
-      window.scrollTo({ top: target, behavior: 'smooth' });
+      targetY = target;
     }
+
+    targetY += (options?.offset ?? 0);
+
+    if (options?.immediate) {
+      window.scrollTo(0, targetY);
+    } else {
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }
+
     if (options?.onComplete) {
       setTimeout(options.onComplete, (options.duration ?? 0.8) * 1000);
     }

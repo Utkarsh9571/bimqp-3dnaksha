@@ -163,11 +163,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
           {/* Brand Logo & BIMQP Endorsement */}
           <div className="flex items-center gap-3 md:gap-4">
             <a
-              href="#"
+              href="/"
               onClick={(e) => {
-                e.preventDefault();
-                smoothScrollTo(0);
-                setActiveId('about');
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  smoothScrollTo(0);
+                  setActiveId('about');
+                  window.history.pushState('', document.title, window.location.pathname + window.location.search);
+                }
               }}
               className="flex items-center gap-2.5 group cursor-pointer"
               aria-label="3D Naksha Homepage"
