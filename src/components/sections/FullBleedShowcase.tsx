@@ -1,47 +1,56 @@
-import React, { useEffect, useRef } from 'react';
-import { Sparkles, Glasses, Radio, Activity } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
+import { Sparkles, Glasses, Radio, Activity, Box } from 'lucide-react';
 import { VRLensEffect } from '../ui/VRLensEffect';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
 
+// Lazy-load the Three.js BIM Model Viewer
+const BIMModelViewer3D = lazy(() => import('../ui/BIMModelViewer3D'));
+
 interface FullBleedShowcaseProps {
-  imageSrc?: string;
-  imageAlt?: string;
+  modelUrl?: string;
   captionTitle?: string;
   captionSubtitle?: string;
 }
 
 export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
-  imageSrc = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90',
-  imageAlt = 'Ultra-photorealistic Architectural Interior Render',
-  captionTitle = 'SEE THROUGH THE FUTURE OF REAL ESTATE',
-  captionSubtitle = 'Immersive real-time spatial visualisations and lighting studies before groundbreaking.'
+  modelUrl,
+  captionTitle = 'INTERACTIVE BIM & 3D ARCHITECTURAL MODEL',
+  captionSubtitle = 'Click and drag to orbit around the structure. Evaluate spatial volumes, structural steel, and material daylighting in real time.'
 }) => {
   const containerRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
   const liveVrBadgeRef = useRef<HTMLDivElement>(null);
   const redDotRef = useRef<HTMLSpanElement>(null);
   const vrHeadsetPreviewRef = useRef<HTMLDivElement>(null);
   const hudRef = useRef<HTMLDivElement>(null);
 
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [cameraTelemetry, setCameraTelemetry] = useState<{ azimuth: number; elevation: number; distance: number }>({
+    azimuth: 42,
+    elevation: 25,
+    distance: 18.2
+  });
+
+  const handleCameraChange = useCallback((azimuth: number, elevation: number, distance: number) => {
+    setCameraTelemetry({ azimuth, elevation, distance });
+  }, []);
+
   useEffect(() => {
     const isReduced = prefersReducedMotion();
     const container = containerRef.current;
-    const image = imageRef.current;
     const caption = captionRef.current;
     const liveVrBadge = liveVrBadgeRef.current;
     const redDot = redDotRef.current;
     const vrHeadsetPreview = vrHeadsetPreviewRef.current;
 
-    if (!container || !image || !caption) return;
+    if (!container || !caption) return;
 
     if (isReduced) {
       gsap.set([caption, liveVrBadge, vrHeadsetPreview], { opacity: 1, y: 0, scale: 1 });
-      gsap.set(image, { scale: 1 });
       return;
     }
 
-    // Set initial element states (hidden and slightly scaled/shifted)
+    // Set initial element states
     gsap.set(caption, { opacity: 0, y: 35 });
     gsap.set('.caption-accent-line', { scaleX: 0, transformOrigin: 'center' });
     gsap.set(liveVrBadge, { opacity: 0, scale: 0.85, y: 15 });
@@ -67,30 +76,22 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       delay: 0.4
     });
 
-    // 3. GSAP ScrollTrigger Pinned Timeline
+    // 3. GSAP ScrollTrigger Pinned Timeline (Ties camera arc to scroll)
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: 'top top',
-        end: '+=80%', // Pinned for a short scroll distance (80% viewport height)
+        end: '+=100%', // Pinned for 100% viewport height
         pin: true,
         scrub: 0.6,
-        anticipatePin: 1
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          setScrollProgress(self.progress);
+        }
       }
     });
 
-    // Ken Burns zoom (scale 1.0 -> 1.08) tied to scroll progress
-    tl.to(
-      image,
-      {
-        scale: 1.08,
-        ease: 'none',
-        duration: 1
-      },
-      0
-    );
-
-    // Stagger 1: LIVE VR Badge reveals shortly after image enters viewport
+    // Stagger 1: LIVE VR Badge reveals shortly after entering viewport
     tl.to(
       liveVrBadge,
       {
@@ -103,7 +104,7 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       0.06
     );
 
-    // Stagger 2: Floating Mini VR Headset Preview reveals next (not simultaneous)
+    // Stagger 2: Floating Mini VR Headset Preview reveals next
     tl.to(
       vrHeadsetPreview,
       {
@@ -116,7 +117,7 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       0.14
     );
 
-    // Stagger 3: Caption bar fades in & slides up once image is fully centered
+    // Stagger 3: Caption bar fades in & slides up
     tl.to(
       caption,
       {
@@ -152,40 +153,41 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       ref={containerRef}
       id="cinematic-showcase"
       className="relative h-screen w-full overflow-hidden bg-[#08090B] select-none flex items-center justify-center border-t border-b border-gray-200"
-      aria-label="Cinematic Full-Bleed Architectural Interior"
+      aria-label="Interactive 3D Architectural BIM Showcase"
     >
-      {/* Full-Bleed Large Interior Image with Ken Burns Zoom */}
+      {/* Interactive 3D Model Viewer Viewport */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <img
-          ref={imageRef}
-          src={imageSrc || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80"}
-          srcSet="
-            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=640&q=75 640w,
-            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1080&q=80 1080w,
-            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=85 1920w,
-            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90 2400w
-          "
-          sizes="100vw"
-          alt={imageAlt}
-          className="w-full h-full object-cover object-center will-change-transform scale-100"
-          loading="lazy"
-          decoding="async"
-        />
+        <Suspense
+          fallback={
+            <div className="w-full h-full bg-[#08090B] flex flex-col items-center justify-center">
+              <div className="w-10 h-10 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-3" />
+              <span className="font-mono-tech text-[10px] text-gray-400 tracking-widest uppercase">
+                INITIALIZING 3D ENGINE
+              </span>
+            </div>
+          }
+        >
+          <BIMModelViewer3D
+            modelUrl={modelUrl}
+            scrollProgress={scrollProgress}
+            onCameraChange={handleCameraChange}
+          />
+        </Suspense>
 
-        {/* Top Gradient Vignette for smooth transition from previous section */}
-        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-[#F8F7F5] via-[#F8F7F5]/50 to-transparent pointer-events-none z-10" />
+        {/* Top Gradient Vignette for smooth transition */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#F8F7F5] via-[#F8F7F5]/40 to-transparent pointer-events-none z-10" />
 
-        {/* Bottom Gradient Vignette for seamless transition to next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#F8F7F5] via-[#F8F7F5]/60 to-transparent pointer-events-none z-10" />
+        {/* Bottom Gradient Vignette for seamless transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#F8F7F5] via-[#F8F7F5]/50 to-transparent pointer-events-none z-10" />
 
         {/* VR Optical Lens Effect Overlay (Curvature, Chromatic Aberration, Glint) */}
         <VRLensEffect
           triggerElement={containerRef.current}
-          fovLabel="FOV 110° // OPTICAL PASSTHROUGH // DUAL-4K VR"
+          fovLabel="FOV 110° // 3D BIM GEOMETRY // DUAL-4K VR"
         />
       </div>
 
-      {/* 1. Bottom-Left Pinned "LIVE VR" Badge with Pulsing Red Dot (Kept Dark Glass for Photo Contrast) */}
+      {/* 1. Bottom-Left Pinned "LIVE VR" Badge with Pulsing Red Dot */}
       <div
         ref={liveVrBadgeRef}
         className="absolute bottom-8 sm:bottom-10 left-6 sm:left-10 z-30 pointer-events-auto"
@@ -202,17 +204,17 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
 
           <div className="flex items-center gap-2">
             <span className="font-mono-tech text-xs font-bold text-white tracking-widest uppercase">
-              LIVE VR
+              LIVE 3D BIM
             </span>
             <span className="w-1 h-1 rounded-full bg-white/40" />
             <span className="font-mono-tech text-[10px] text-[#EF4444] font-semibold">
-              ACTIVE FEED
+              INTERACTIVE
             </span>
           </div>
         </div>
       </div>
 
-      {/* 2. Top-Right Floating Mini VR Headset UI Preview (Kept Dark Glass for Photo Contrast) */}
+      {/* 2. Top-Right Floating Mini VR Headset UI Preview with Live Camera Telemetry */}
       <div
         ref={vrHeadsetPreviewRef}
         className="absolute top-8 sm:top-10 right-6 sm:right-10 z-30 pointer-events-auto"
@@ -222,25 +224,23 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-xs font-mono-tech">
             <div className="flex items-center gap-1.5 text-[#38BDF8]">
               <Glasses className="w-4 h-4" />
-              <span className="font-bold tracking-wider">VR RETICLE</span>
+              <span className="font-bold tracking-wider">BIM TELEMETRY</span>
             </div>
             <div className="flex items-center gap-1 text-[10px] text-[#10B981]">
               <Activity className="w-3 h-3" />
-              <span>90 FPS</span>
+              <span>60 FPS</span>
             </div>
           </div>
 
           {/* Mini Stereoscopic Viewport Preview Box */}
-          <div className="relative h-16 rounded bg-[#0E1013] border border-white/10 overflow-hidden flex items-center justify-center mb-2 bg-grid-dense">
-            {/* Crosshair target reticle */}
-            <div className="w-6 h-6 rounded-full border border-[#38BDF8]/60 flex items-center justify-center">
-              <div className="w-1 h-1 rounded-full bg-[#38BDF8]" />
+          <div className="relative h-16 rounded bg-[#0E1013] border border-white/10 overflow-hidden flex flex-col justify-between p-2 mb-2 bg-grid-dense font-mono-tech text-[9px]">
+            <div className="flex items-center justify-between text-[#8A92A0]">
+              <span>AZIMUTH: <strong className="text-white">{cameraTelemetry.azimuth}°</strong></span>
+              <span>ELEV: <strong className="text-white">{cameraTelemetry.elevation}°</strong></span>
             </div>
-            <div className="absolute top-1 left-2 font-mono-tech text-[9px] text-[#8A92A0]">
-              FOV: 110°
-            </div>
-            <div className="absolute bottom-1 right-2 font-mono-tech text-[9px] text-[#38BDF8]">
-              DEPTH: 8.4M
+            <div className="flex items-center justify-between">
+              <span className="text-[#38BDF8]">DIST: {cameraTelemetry.distance}M</span>
+              <span className="text-[#10B981] font-semibold">AUTOCAD / REVIT</span>
             </div>
           </div>
 
@@ -248,9 +248,9 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
           <div className="flex items-center justify-between font-mono-tech text-[10px] text-[#8A92A0]">
             <div className="flex items-center gap-1">
               <Radio className="w-3 h-3 text-[#E5A93B] animate-pulse" />
-              <span>SPATIAL AUDIO</span>
+              <span>WEBGL 2.0</span>
             </div>
-            <span className="text-[#38BDF8]">12MS LATENCY</span>
+            <span className="text-[#38BDF8]">HARDWARE ACCEL</span>
           </div>
         </div>
       </div>
@@ -262,13 +262,13 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       >
         <div className="flex items-center justify-start font-mono-tech text-[11px]">
           <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-sm bg-[#08090B]/80 backdrop-blur-md border border-white/15 text-[#38BDF8]">
-            <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
-            <span className="tracking-widest uppercase">SPATIAL IMMERSION // 8K</span>
+            <Box className="w-3.5 h-3.5 text-[#38BDF8]" />
+            <span className="tracking-widest uppercase">SPATIAL BIM VIEWER // GLTF 2.0</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Bottom Center Floating Caption Bar (Light Glass Architecture Card) */}
+      {/* 3. Bottom Center Floating Caption Bar */}
       <div
         ref={captionRef}
         className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-30 w-[92%] max-w-3xl pointer-events-auto"
@@ -285,14 +285,12 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
           {/* Micro Tagline */}
           <div className="inline-flex items-center gap-2 mb-2 font-mono-tech text-[10px] sm:text-xs text-[#9A6A38] tracking-[0.2em] uppercase font-bold">
             <Sparkles className="w-3.5 h-3.5 text-[#D97706]" />
-            <span>ARCHITECTURAL CINEMATICS</span>
+            <span>ARCHITECTURAL 3D DELIVERABLES</span>
           </div>
 
           {/* Main Caption Title */}
           <h2 className="font-display font-black text-xl sm:text-2xl md:text-3xl lg:text-4xl text-[#0A0A0A] tracking-tight leading-tight uppercase mb-2">
-            <span>
-              {captionTitle}
-            </span>
+            <span>{captionTitle}</span>
           </h2>
 
           {/* Subtitle */}
