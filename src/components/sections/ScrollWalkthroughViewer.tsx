@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Compass, Navigation, Radio, Layers } from 'lucide-react';
+import { VRLensEffect } from '../ui/VRLensEffect';
 import { ScrollTrigger, prefersReducedMotion } from '../../lib/animations';
 
 interface ScrollWalkthroughViewerProps {
@@ -299,6 +300,11 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
           ref={canvasRef}
           className="w-full h-full object-cover block will-change-transform"
         />
+        {/* VR Optical Lens Overlay (Curvature, Chromatic Aberration, Lens Glint) */}
+        <VRLensEffect
+          triggerElement={containerRef.current}
+          fovLabel="FOV 110° // SPATIAL BIM WALKTHROUGH // 60FPS"
+        />
       </div>
 
       {/* Preloading Overlay if using external network assets */}
@@ -402,16 +408,42 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
               <circle cx="50" cy="40" r="3" stroke="#10B981" strokeDasharray="1,1" />
             </svg>
 
-            {/* Live Observer Position Indicator Dot */}
+            {/* Live Observer Position with Dynamic Rotating FOV Vision Cone */}
             <div
-              className="absolute w-3.5 h-3.5 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-75"
+              className="absolute pointer-events-none transition-all duration-75"
               style={{
                 left: `${mapPointX}%`,
-                top: `${mapPointY}%`
+                top: `${mapPointY}%`,
+                transform: 'translate(-50%, -50%)'
               }}
             >
-              <div className="w-3.5 h-3.5 rounded-full bg-[#EF4444] animate-ping opacity-60 absolute" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444] border-2 border-white relative z-10 shadow-[0_0_8px_#EF4444]" />
+              {/* Rotating FOV Vision Radar Cone */}
+              <div
+                className="absolute w-24 h-24 -top-12 -left-12 pointer-events-none transition-transform duration-75"
+                style={{
+                  transform: `rotate(${compassAngle}deg)`
+                }}
+              >
+                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+                  <defs>
+                    <radialGradient id="fovConeGrad" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.6" />
+                      <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.15" />
+                      <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+                  <polygon points="50,50 15,5 85,5" fill="url(#fovConeGrad)" />
+                  <line x1="50" y1="50" x2="15" y2="5" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
+                  <line x1="50" y1="50" x2="85" y2="5" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
+                  <path d="M 25,12 A 40,40 0 0,1 75,12" stroke="#38BDF8" strokeWidth="0.6" fill="none" opacity="0.4" />
+                </svg>
+              </div>
+
+              {/* Observer Center Dot */}
+              <div className="relative flex items-center justify-center w-3.5 h-3.5">
+                <div className="w-3.5 h-3.5 rounded-full bg-[#EF4444] animate-ping opacity-60 absolute" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444] border-2 border-white relative z-10 shadow-[0_0_8px_#EF4444]" />
+              </div>
             </div>
           </div>
 

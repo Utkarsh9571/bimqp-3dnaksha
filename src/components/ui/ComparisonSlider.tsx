@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Layers, Sparkles, Sliders, Eye } from 'lucide-react';
+import { prefersReducedMotion } from '../../lib/animations';
 
 interface ComparisonSliderProps {
   blueprintImage: string;
@@ -21,7 +22,12 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [activePreset, setActivePreset] = useState<'split' | 'blueprint' | 'render'>('split');
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const renderLayerRef = useRef<HTMLDivElement>(null);
+  const blueprintLayerRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
+  const isReduced = prefersReducedMotion();
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -48,6 +54,36 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
     setIsDragging(false);
   }, []);
 
+  // RAF-throttled direct DOM mutation for depth parallax (Bypassed on touch/mobile)
+  const handlePointerMoveParallax = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isReduced || !containerRef.current || typeof window === 'undefined') return;
+    if (!window.matchMedia('(hover: hover)').matches) return; // Ignore on touch screens
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
+    const ny = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
+
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = requestAnimationFrame(() => {
+      if (renderLayerRef.current) {
+        renderLayerRef.current.style.transform = `scale(1.05) translate3d(${nx * -10}px, ${ny * -7}px, 0)`;
+      }
+      if (blueprintLayerRef.current) {
+        blueprintLayerRef.current.style.transform = `scale(1.05) translate3d(${nx * -18}px, ${ny * -13}px, 0)`;
+      }
+    });
+  };
+
+  const handlePointerLeave = () => {
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    if (renderLayerRef.current) {
+      renderLayerRef.current.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+    }
+    if (blueprintLayerRef.current) {
+      blueprintLayerRef.current.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+    }
+  };
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
@@ -60,6 +96,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleMouseUp);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
 
@@ -122,15 +159,26 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
         </div>
       </div>
 
-      {/* Main Slider Canvas */}
+      {/* Main Slider Canvas with 3D Depth Perspective */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl"
+        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl transition-shadow duration-300 hover:shadow-2xl"
         onMouseDown={() => setIsDragging(true)}
         onTouchStart={() => setIsDragging(true)}
+        onPointerMove={handlePointerMoveParallax}
+        onPointerLeave={handlePointerLeave}
+        style={{
+          perspective: '1200px'
+        }}
       >
         {/* Render Layer (Right Side / Background) */}
-        <div className="absolute inset-0 w-full h-full">
+        <div
+          ref={renderLayerRef}
+          className="absolute inset-0 w-full h-full overflow-hidden transition-transform duration-100 ease-out will-change-transform"
+          style={{
+            transform: 'scale(1.05) translate3d(0, 0, 0)'
+          }}
+        >
           <img
             src={renderImage}
             alt="3D Architectural Visualization Render"
@@ -150,9 +198,11 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
           style={{ width: `${sliderPosition}%` }}
         >
           <div
-            className="relative h-full"
+            ref={blueprintLayerRef}
+            className="relative h-full transition-transform duration-100 ease-out will-change-transform"
             style={{
-              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%'
+              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+              transform: 'scale(1.05) translate3d(0, 0, 0)'
             }}
           >
             {/* Blueprint image with stylized plan overlay */}
@@ -178,11 +228,11 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
 
         {/* Draggable Divider Line */}
         <div
-          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#0284C7] via-white to-[#D97706] shadow-sm"
+          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#0284C7] via-white to-[#D97706] shadow-sm pointer-events-none"
           style={{ left: `${sliderPosition}%` }}
         >
           {/* Circular Handle */}
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white border-2 border-[#9A6A38] shadow-md flex items-center justify-center text-[#9A6A38] group-hover:scale-110 transition-transform">
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white border-2 border-[#9A6A38] shadow-md flex items-center justify-center text-[#9A6A38] group-hover:scale-110 transition-transform pointer-events-auto cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-0.5">
               <span className="w-1 h-3 bg-[#0284C7] rounded-full"></span>
               <span className="w-1 h-3 bg-[#D97706] rounded-full"></span>

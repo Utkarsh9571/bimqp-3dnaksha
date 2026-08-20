@@ -71,6 +71,12 @@ export const initSmoothScroll = (
     return lenisInstance;
   }
 
+  // On mobile touch devices, use native momentum scrolling to eliminate main-thread touch interception overhead
+  const isTouch = 'ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.innerWidth < 768;
+  if (isTouch) {
+    return null;
+  }
+
   const {
     duration = 1.2,
     easing = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -78,7 +84,7 @@ export const initSmoothScroll = (
     gestureOrientation = 'vertical',
     smoothWheel = true,
     wheelMultiplier = 1,
-    touchMultiplier = 1.5,
+    touchMultiplier = 1,
     autoResize = true,
     ...rest
   } = options;
@@ -92,6 +98,7 @@ export const initSmoothScroll = (
     wheelMultiplier,
     touchMultiplier,
     autoResize,
+    syncTouch: false,
     ...rest
   });
 

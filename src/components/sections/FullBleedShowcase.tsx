@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Sparkles, Glasses, Radio, Activity } from 'lucide-react';
+import { VRLensEffect } from '../ui/VRLensEffect';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
 
 interface FullBleedShowcaseProps {
@@ -157,10 +158,18 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <img
           ref={imageRef}
-          src={imageSrc}
+          src={imageSrc || "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80"}
+          srcSet="
+            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=640&q=75 640w,
+            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1080&q=80 1080w,
+            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=85 1920w,
+            https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=90 2400w
+          "
+          sizes="100vw"
           alt={imageAlt}
           className="w-full h-full object-cover object-center will-change-transform scale-100"
-          loading="eager"
+          loading="lazy"
+          decoding="async"
         />
 
         {/* Top Gradient Vignette for smooth transition from previous section */}
@@ -169,8 +178,11 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({
         {/* Bottom Gradient Vignette for seamless transition to next section */}
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#F8F7F5] via-[#F8F7F5]/60 to-transparent pointer-events-none z-10" />
 
-        {/* Soft Radial Dark Vignette to focus center depth and contrast on photo */}
-        <div className="absolute inset-0 bg-black/25 pointer-events-none z-10" />
+        {/* VR Optical Lens Effect Overlay (Curvature, Chromatic Aberration, Glint) */}
+        <VRLensEffect
+          triggerElement={containerRef.current}
+          fovLabel="FOV 110° // OPTICAL PASSTHROUGH // DUAL-4K VR"
+        />
       </div>
 
       {/* 1. Bottom-Left Pinned "LIVE VR" Badge with Pulsing Red Dot (Kept Dark Glass for Photo Contrast) */}

@@ -31,17 +31,19 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
 
     // 1. Entrance animation on page load for the headline and hero elements
     const entranceCtx = gsap.context(() => {
-      gsap.fromTo(
-        headlineRef.current,
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.15 }
-      );
+      // Animate headline and stagger items without hiding text for instantaneous LCP
+      gsap.from(headlineRef.current, {
+        y: 20,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
 
-      gsap.fromTo(
-        '.hero-stagger-item',
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.3 }
-      );
+      gsap.from('.hero-stagger-item', {
+        y: 15,
+        duration: 0.6,
+        stagger: 0.06,
+        ease: 'power3.out'
+      });
 
       // Subtle bouncing loop for the scroll down indicator
       gsap.to('.hero-bounce-chevron', {
@@ -53,50 +55,55 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
       });
     }, container);
 
-    // 2. Scroll-driven Pinning & Wireframe Assembly Timeline
-    const pinTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: 'top top',
-        end: '+=100%', // Pin for exactly 1 viewport height of scroll distance
-        pin: true,
-        scrub: 0.6,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          setAssemblyProgress(self.progress);
+    // 2. Scroll-driven Pinning & Wireframe Assembly Timeline (deferred to next frame to avoid main thread contention)
+    let pinTimeline: gsap.core.Timeline | null = null;
+    const animFrame = requestAnimationFrame(() => {
+      pinTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: 'top top',
+          end: '+=100%', // Pin for exactly 1 viewport height of scroll distance
+          pin: true,
+          scrub: 0.6,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            setAssemblyProgress(self.progress);
+          }
         }
+      });
+
+      if (content && pinTimeline) {
+        pinTimeline
+          .to(
+            content,
+            {
+              opacity: 0,
+              y: -45,
+              scale: 0.96,
+              ease: 'power2.in',
+              duration: 0.35
+            },
+            0.65
+          )
+          .to(
+            scrollIndicatorRef.current,
+            {
+              opacity: 0,
+              y: 20,
+              duration: 0.2
+            },
+            0.5
+          );
       }
     });
 
-    // Animate hero content fading out on scroll-out before unpinning
-    if (content) {
-      pinTimeline
-        .to(
-          content,
-          {
-            opacity: 0,
-            y: -45,
-            scale: 0.96,
-            ease: 'power2.in',
-            duration: 0.35
-          },
-          0.65 // Starts fading at 65% scroll progress, completely clear by unpin
-        )
-        .to(
-          scrollIndicatorRef.current,
-          {
-            opacity: 0,
-            y: 20,
-            duration: 0.2
-          },
-          0.5
-        );
-    }
-
     return () => {
+      cancelAnimationFrame(animFrame);
       entranceCtx.revert();
-      pinTimeline.scrollTrigger?.kill();
-      pinTimeline.kill();
+      if (pinTimeline) {
+        pinTimeline.scrollTrigger?.kill();
+        pinTimeline.kill();
+      }
     };
   }, []);
 

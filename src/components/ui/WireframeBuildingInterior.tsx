@@ -103,10 +103,25 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
             <stop offset="100%" stopColor="#D946EF" stopOpacity="0.85" />
           </linearGradient>
 
+          <radialGradient id="floorOcclusionGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#0284C7" stopOpacity="0.18" />
+            <stop offset="45%" stopColor="#4F46E5" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#0284C7" stopOpacity="0" />
+          </radialGradient>
+
+          <radialGradient id="vertexGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#38BDF8" stopOpacity="1" />
+            <stop offset="40%" stopColor="#0284C7" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#0284C7" stopOpacity="0" />
+          </radialGradient>
+
           <pattern id="grid-dots-light" width="40" height="40" patternUnits="userSpaceOnUse">
             <circle cx="20" cy="20" r="1" fill="#9CA3AF" fillOpacity="0.4" />
           </pattern>
         </defs>
+
+        {/* Ambient Floor Depth Fog & Occlusion */}
+        <ellipse cx="600" cy="690" rx="480" ry="110" fill="url(#floorOcclusionGrad)" opacity="0.85" />
 
         {/* Phase 0: Perspective Ground Floor Plane & Floor Tiles Grid */}
         <g className="phase-ground opacity-60">
@@ -307,6 +322,21 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
           {/* Technical Dimension Bracket */}
           <path d="M 120,680 L 100,680 L 100,240 L 120,240" stroke="#4B5563" strokeWidth="1.2" fill="none" className="draw-path" />
           <text x="40" y="465" fill="#4B5563" fontSize="10" fontWeight="bold" transform="rotate(-90 40 465)">CLEAR HT 6.20M</text>
+        </g>
+
+        {/* Phase 8: Luminous Blueprint Vertex Point Cloud Nodes */}
+        <g className="phase-vertex-nodes pointer-events-none" style={{ opacity: Math.min(1, progress * 1.5) }}>
+          {[
+            { cx: 150, cy: 680 }, { cx: 600, cy: 770 }, { cx: 1050, cy: 680 }, { cx: 600, cy: 560 },
+            { cx: 600, cy: 180 }, { cx: 150, cy: 310 }, { cx: 1050, cy: 310 }, { cx: 375, cy: 435 },
+            { cx: 825, cy: 435 }, { cx: 600, cy: 120 }, { cx: 350, cy: 210 }, { cx: 850, cy: 210 },
+            { cx: 260, cy: 460 }, { cx: 940, cy: 460 }, { cx: 480, cy: 620 }, { cx: 720, cy: 620 }
+          ].map((pt, i) => (
+            <g key={i}>
+              <circle cx={pt.cx} cy={pt.cy} r="6" fill="url(#vertexGlow)" opacity="0.6" className="animate-pulse" />
+              <circle cx={pt.cx} cy={pt.cy} r="2" fill="#0284C7" stroke="#FFFFFF" strokeWidth="0.8" />
+            </g>
+          ))}
         </g>
       </svg>
 

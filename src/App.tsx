@@ -1,25 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
 import { Hero } from './components/sections/Hero';
 import { OperatingRegions } from './components/sections/OperatingRegions';
-import { ExperienceUnbuilt } from './components/sections/ExperienceUnbuilt';
-import { FeatureCardsGrid } from './components/sections/FeatureCardsGrid';
-import { LifecycleJourney } from './components/sections/LifecycleJourney';
-import { ScrollWalkthroughViewer } from './components/sections/ScrollWalkthroughViewer';
-import { Services } from './components/sections/Services';
-import { FullBleedShowcase } from './components/sections/FullBleedShowcase';
-import { ImmersiveVR } from './components/sections/ImmersiveVR';
-import { TargetAudience } from './components/sections/TargetAudience';
-import { Process } from './components/sections/Process';
-import { PortfolioGallery } from './components/sections/PortfolioGallery';
-import { FAQSection } from './components/sections/FAQSection';
-import { CallToAction } from './components/sections/CallToAction';
-import { ConsultationModal } from './components/modals/ConsultationModal';
-import { LightboxModal } from './components/modals/LightboxModal';
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScrollTo } from './lib/animations';
 import type { PortfolioItem } from './types';
+
+// Lazy-load below-the-fold sections and heavy interactive widgets
+const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
+const FeatureCardsGrid = lazy(() => import('./components/sections/FeatureCardsGrid'));
+const LifecycleJourney = lazy(() => import('./components/sections/LifecycleJourney'));
+const ScrollWalkthroughViewer = lazy(() => import('./components/sections/ScrollWalkthroughViewer'));
+const Services = lazy(() => import('./components/sections/Services'));
+const FullBleedShowcase = lazy(() => import('./components/sections/FullBleedShowcase'));
+const ImmersiveVR = lazy(() => import('./components/sections/ImmersiveVR'));
+const TargetAudience = lazy(() => import('./components/sections/TargetAudience'));
+const Process = lazy(() => import('./components/sections/Process'));
+const PortfolioGallery = lazy(() => import('./components/sections/PortfolioGallery'));
+const FAQSection = lazy(() => import('./components/sections/FAQSection'));
+const CallToAction = lazy(() => import('./components/sections/CallToAction'));
+const Footer = lazy(() => import('./components/layout/Footer'));
+const ConsultationModal = lazy(() => import('./components/modals/ConsultationModal'));
+const LightboxModal = lazy(() => import('./components/modals/LightboxModal'));
+
+// Lightweight placeholder for smooth suspense hydration
+const SectionFallback = () => (
+  <div className="w-full py-16 flex items-center justify-center opacity-30">
+    <div className="w-6 h-6 rounded-full border-2 border-[#0284C7]/20 border-t-[#0284C7] animate-spin" />
+  </div>
+);
 
 export function App() {
   const [isConsultationOpen, setIsConsultationOpen] = useState<boolean>(false);
@@ -70,68 +79,76 @@ export function App() {
 
       {/* Main Content Sections */}
       <main className="flex-grow">
-        {/* Section 1: Hero Section */}
+        {/* Section 1: Critical Above-The-Fold Hero Section */}
         <Hero
           onOpenConsultation={() => handleOpenConsultation()}
           onExploreVR={handleScrollToVR}
         />
 
-        {/* Section 1.5: Currently Operating In (4-Column Regional Hubs) */}
+        {/* Section 1.5: Critical Regional Hubs */}
         <OperatingRegions />
 
-        {/* Section 2: Experience the Unbuilt (2D vs 3D vs VR Comparison) */}
-        <ExperienceUnbuilt />
+        {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
+        <Suspense fallback={<SectionFallback />}>
+          {/* Section 2: Experience the Unbuilt */}
+          <ExperienceUnbuilt />
 
-        {/* Section 2.5: 3-Column Core Features Grid */}
-        <FeatureCardsGrid />
+          {/* Section 2.5: 3-Column Core Features Grid */}
+          <FeatureCardsGrid />
 
-        {/* Section 3: AEC Lifecycle Journey (Design → BIM / 3D Model → Immersive Experience → Better Construction Decisions) */}
-        <LifecycleJourney />
+          {/* Section 3: AEC Lifecycle Journey */}
+          <LifecycleJourney />
 
-        {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer */}
-        <ScrollWalkthroughViewer totalFrames={81} />
+          {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer */}
+          <ScrollWalkthroughViewer totalFrames={81} />
 
-        {/* Section 4: 5 Core Services */}
-        <Services onOpenConsultation={handleOpenConsultation} />
+          {/* Section 4: 5 Core Services */}
+          <Services onOpenConsultation={handleOpenConsultation} />
 
-        {/* Section 4.5: Pinned Full-Bleed Cinematic Interior Showcase */}
-        <FullBleedShowcase />
+          {/* Section 4.5: Pinned Full-Bleed Cinematic Interior Showcase */}
+          <FullBleedShowcase />
 
-        {/* Section 5: Immersive VR Flagship Centerpiece */}
-        <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
+          {/* Section 5: Immersive VR Flagship Centerpiece */}
+          <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
 
-        {/* Section 6: Who We Work With (AEC Stakeholders) */}
-        <TargetAudience onOpenConsultation={handleOpenConsultation} />
+          {/* Section 6: Who We Work With (AEC Stakeholders) */}
+          <TargetAudience onOpenConsultation={handleOpenConsultation} />
 
-        {/* Section 7: How It Works (5-Step Collaborative Process) */}
-        <Process onOpenConsultation={() => handleOpenConsultation()} />
+          {/* Section 7: How It Works (5-Step Collaborative Process) */}
+          <Process onOpenConsultation={() => handleOpenConsultation()} />
 
-        {/* Section 8: Selected Visualizations Showcase */}
-        <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />
+          {/* Section 8: Selected Visualizations Showcase */}
+          <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />
 
-        {/* Section 9: Frequently Answered Questions Accordion */}
-        <FAQSection onOpenConsultation={() => handleOpenConsultation()} />
+          {/* Section 9: Frequently Answered Questions Accordion */}
+          <FAQSection onOpenConsultation={() => handleOpenConsultation()} />
 
-        {/* Section 10: Closing High-Conversion CTA Banner */}
-        <CallToAction onOpenConsultation={() => handleOpenConsultation()} />
+          {/* Section 10: Closing High-Conversion CTA Banner */}
+          <CallToAction onOpenConsultation={() => handleOpenConsultation()} />
+
+          {/* Footer & Ecosystem Endorsements */}
+          <Footer onOpenConsultation={() => handleOpenConsultation()} />
+        </Suspense>
       </main>
 
-      {/* Footer & Ecosystem Endorsements */}
-      <Footer onOpenConsultation={() => handleOpenConsultation()} />
+      {/* Modals lazy-loaded on demand */}
+      <Suspense fallback={null}>
+        {isConsultationOpen && (
+          <ConsultationModal
+            isOpen={isConsultationOpen}
+            onClose={() => setIsConsultationOpen(false)}
+            defaultService={consultationService}
+          />
+        )}
 
-      {/* Interactive Consultation / Scope Inquiry Modal */}
-      <ConsultationModal
-        isOpen={isConsultationOpen}
-        onClose={() => setIsConsultationOpen(false)}
-        defaultService={consultationService}
-      />
-
-      {/* Portfolio Lightbox Modal */}
-      <LightboxModal
-        item={selectedLightboxItem}
-        onClose={() => setSelectedLightboxItem(null)}
-        onSelectProjectForQuote={handleSelectProjectForQuote}
-      />
+        {selectedLightboxItem && (
+          <LightboxModal
+            item={selectedLightboxItem}
+            onClose={() => setSelectedLightboxItem(null)}
+            onSelectProjectForQuote={handleSelectProjectForQuote}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }
