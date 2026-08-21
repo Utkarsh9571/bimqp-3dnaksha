@@ -8,7 +8,7 @@ interface BadgeProps {
   icon?: React.ReactNode;
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge: React.FC<BadgeProps> = React.memo(({
   children,
   variant = 'bronze',
   size = 'md',
@@ -36,6 +36,6 @@ export const Badge: React.FC<BadgeProps> = ({
       {children}
     </span>
   );
-};
+});
 
 export default Badge;

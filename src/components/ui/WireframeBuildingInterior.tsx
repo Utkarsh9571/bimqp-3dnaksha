@@ -54,6 +54,11 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
   // If progress is provided via prop, we update path strokeDashoffsets
   useEffect(() => {
     if (!svgRef.current) return;
+    // When fully drawn (progress >= 1 on mobile) or reduced motion, skip 150+ expensive getTotalLength() calculations
+    if (isReduced || progress >= 1) {
+      return;
+    }
+
     const elements = svgRef.current.querySelectorAll<SVGElement>('.draw-path');
 
     elements.forEach((el, index) => {
@@ -63,9 +68,7 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
       const length = getElementStrokeLength(el);
       // Stagger the reveal of different layers based on index & scroll progress
       const factor = (index % 5) * 0.1;
-      const effectiveProgress = isReduced
-        ? 1
-        : Math.max(0, Math.min(1, (progress - factor) / (1 - factor || 1)));
+      const effectiveProgress = Math.max(0, Math.min(1, (progress - factor) / (1 - factor || 1)));
 
       el.style.strokeDasharray = `${length}`;
       el.style.strokeDashoffset = `${length * (1 - effectiveProgress)}`;

@@ -30,26 +30,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
     // On mobile (<768px) or reduced-motion, wireframe is fully visible without pinned scroll trapping
     if (!isTabletOrDesktop || isReduced) {
       setAssemblyProgress(1);
-
-      // Simple one-time entrance animation on mobile
-      const mobileEntranceCtx = gsap.context(() => {
-        gsap.from(headlineRef.current, {
-          y: 20,
-          duration: 0.8,
-          ease: 'power3.out'
-        });
-
-        gsap.from('.hero-stagger-item', {
-          y: 15,
-          duration: 0.6,
-          stagger: 0.06,
-          ease: 'power3.out'
-        });
-      }, container);
-
-      return () => {
-        mobileEntranceCtx.revert();
-      };
+      return;
     }
 
     // --- Tablet / Desktop (>=768px) Full Animated Pinned Experience ---

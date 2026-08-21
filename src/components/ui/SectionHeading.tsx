@@ -13,7 +13,7 @@ interface SectionHeadingProps {
   className?: string;
 }
 
-export const SectionHeading: React.FC<SectionHeadingProps> = ({
+export const SectionHeading: React.FC<SectionHeadingProps> = React.memo(({
   number,
   badgeText,
   badgeVariant = 'bronze',
@@ -61,12 +61,12 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
       </h2>
 
       {subtitle && (
-        <p className="mt-4 text-base md:text-lg text-[#4B5563] font-normal leading-relaxed">
+        <p className="mt-4 text-base md:text-lg text-[#4B5563] leading-relaxed max-w-2xl font-sans">
           {subtitle}
         </p>
       )}
     </div>
   );
-};
+});
 
 export default SectionHeading;
