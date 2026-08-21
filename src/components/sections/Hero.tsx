@@ -4,6 +4,7 @@ import { WireframeBuildingInterior } from '../ui/WireframeBuildingInterior';
 import { Badge } from '../ui/Badge';
 import { BRAND_CONFIG } from '../../data/content';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
+import { useIsTabletOrDesktop } from '../../hooks/useMediaQuery';
 
 interface HeroProps {
   onOpenConsultation: () => void;
@@ -16,22 +17,44 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
-  const [assemblyProgress, setAssemblyProgress] = useState<number>(0);
+  const isTabletOrDesktop = useIsTabletOrDesktop();
+  const [assemblyProgress, setAssemblyProgress] = useState<number>(() => (isTabletOrDesktop ? 0 : 1));
 
-  // GSAP ScrollTrigger Pinning and Scrub Timeline
+  // GSAP ScrollTrigger Pinning and Scrub Timeline (Active on >=768px, skipped on mobile)
   useEffect(() => {
     const isReduced = prefersReducedMotion();
     const container = containerRef.current;
     const content = contentWrapperRef.current;
+    if (!container) return;
 
-    if (!container || isReduced) {
+    // On mobile (<768px) or reduced-motion, wireframe is fully visible without pinned scroll trapping
+    if (!isTabletOrDesktop || isReduced) {
       setAssemblyProgress(1);
-      return;
+
+      // Simple one-time entrance animation on mobile
+      const mobileEntranceCtx = gsap.context(() => {
+        gsap.from(headlineRef.current, {
+          y: 20,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+
+        gsap.from('.hero-stagger-item', {
+          y: 15,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: 'power3.out'
+        });
+      }, container);
+
+      return () => {
+        mobileEntranceCtx.revert();
+      };
     }
 
+    // --- Tablet / Desktop (>=768px) Full Animated Pinned Experience ---
     // 1. Entrance animation on page load for the headline and hero elements
     const entranceCtx = gsap.context(() => {
-      // Animate headline and stagger items without hiding text for instantaneous LCP
       gsap.from(headlineRef.current, {
         y: 20,
         duration: 0.8,
@@ -55,7 +78,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
       });
     }, container);
 
-    // 2. Scroll-driven Pinning & Wireframe Assembly Timeline (deferred to next frame to avoid main thread contention)
+    // 2. Scroll-driven Pinning & Wireframe Assembly Timeline
     let pinTimeline: gsap.core.Timeline | null = null;
     const animFrame = requestAnimationFrame(() => {
       pinTimeline = gsap.timeline({
@@ -105,7 +128,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         pinTimeline.kill();
       }
     };
-  }, []);
+  }, [isTabletOrDesktop]);
 
   return (
     <section

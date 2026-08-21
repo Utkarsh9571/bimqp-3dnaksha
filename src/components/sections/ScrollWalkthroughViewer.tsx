@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Compass, Navigation, Radio, Layers } from 'lucide-react';
 import { VRLensEffect } from '../ui/VRLensEffect';
 import { ScrollTrigger, prefersReducedMotion } from '../../lib/animations';
+import { useIsTabletOrDesktop } from '../../hooks/useMediaQuery';
 
 interface ScrollWalkthroughViewerProps {
   totalFrames?: number;
@@ -16,8 +17,8 @@ interface ScrollWalkthroughViewerProps {
  * ScrollWalkthroughViewer
  * 
  * Apple-style canvas scroll-scrubbed image-sequence viewer.
- * Ties scroll progress linearly to frame rendering with ultra-fast real-time RAF canvas drawing.
- * Features live HUD overlays: Frame Counter, Dynamic Rotating Compass, and Interactive 2D Floor Plan mini-map.
+ * Ties scroll progress linearly to frame rendering with ultra-fast real-time RAF canvas drawing on >=768px.
+ * On mobile (<768px), operates as an unpinned block with interactive tap/step controls.
  */
 export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = ({
   totalFrames = 81,
@@ -27,6 +28,8 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const isTabletOrDesktop = useIsTabletOrDesktop();
 
   // Preloading & Loading state
   const [loadProgress, setLoadProgress] = useState<number>(100);
@@ -251,14 +254,14 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
     return () => window.removeEventListener('resize', resizeCanvas);
   }, [drawFrame]);
 
-  // ScrollTrigger Setup
+  // ScrollTrigger Setup (Only on Tablet / Desktop >=768px)
   useEffect(() => {
-    const isReduced = prefersReducedMotion();
     const container = containerRef.current;
     if (!container) return;
 
-    if (isReduced) {
-      drawFrame(0);
+    // On mobile (<768px) or reduced motion, skip ScrollTrigger pin/scrub completely
+    if (!isTabletOrDesktop || prefersReducedMotion()) {
+      drawFrame(currentFrame);
       return;
     }
 
@@ -279,7 +282,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       st.kill();
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, [totalFrames, scheduleFrameDraw, drawFrame]);
+  }, [isTabletOrDesktop, totalFrames, scheduleFrameDraw, drawFrame, currentFrame]);
 
   // Derived telemetry metrics for HUD
   const progressRatio = currentFrame / (totalFrames - 1 || 1);
@@ -287,6 +290,81 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
   const mapPointX = 15 + progressRatio * 70;
   const mapPointY = 30 + Math.sin(progressRatio * Math.PI) * 45;
 
+  const handleMobileZoneSelect = (targetRatio: number) => {
+    const frameIdx = Math.round(targetRatio * (totalFrames - 1));
+    setCurrentFrame(frameIdx);
+    drawFrame(frameIdx);
+  };
+
+  // --- MOBILE VIEW (<768px): Normal Unpinned Sequential Block with Tap Stepper ---
+  if (!isTabletOrDesktop) {
+    return (
+      <section
+        ref={containerRef}
+        id="walkthrough-viewer"
+        className={`w-full bg-[#08090B] py-14 px-4 border-t border-b border-white/10 ${className}`}
+        aria-label="3D Walkthrough Viewer"
+      >
+        <div className="max-w-xl mx-auto space-y-5">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-[#38BDF8]">
+              <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+              <span>SPATIAL BIM WALKTHROUGH</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
+              Sequential <span className="text-[#38BDF8] font-medium">Room Perspectives</span>
+            </h2>
+            <p className="text-white/70 text-xs sm:text-sm">
+              Tap room zones below to inspect architectural volume and sightlines.
+            </p>
+          </div>
+
+          {/* Inline Canvas Viewport (Normal height, unpinned) */}
+          <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-white/15 bg-[#08090B] shadow-2xl">
+            <canvas
+              ref={canvasRef}
+              className="w-full h-full object-cover block"
+            />
+
+            {/* Frame Badge Overlay */}
+            <div className="absolute top-3 left-3 z-20 pointer-events-none flex items-center gap-2 px-2.5 py-1 rounded-sm bg-black/80 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+              <span>FRAME {String(currentFrame).padStart(3, '0')} / {String(totalFrames - 1).padStart(3, '0')}</span>
+            </div>
+          </div>
+
+          {/* Mobile Interactive Room Zone Stepper Tabs */}
+          <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-sm bg-white/5 border border-white/10 text-xs font-mono-tech">
+            {[
+              { label: '01 Foyer', ratio: 0 },
+              { label: '02 Atrium', ratio: 0.33 },
+              { label: '03 Living', ratio: 0.66 },
+              { label: '04 Terrace', ratio: 1 }
+            ].map((zone) => {
+              const isActive = Math.abs(progressRatio - zone.ratio) < 0.2;
+              return (
+                <button
+                  key={zone.label}
+                  type="button"
+                  onClick={() => handleMobileZoneSelect(zone.ratio)}
+                  className={`min-h-[44px] py-2 px-1 rounded-xs transition-all flex flex-col items-center justify-center cursor-pointer text-center ${
+                    isActive
+                      ? 'bg-[#38BDF8]/20 border border-[#38BDF8] text-[#38BDF8] font-bold shadow-xs'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                  }`}
+                >
+                  <span className="text-[11px] truncate w-full">{zone.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // --- TABLET / DESKTOP VIEW (>=768px): Full 250% Pinned Canvas Walkthrough ---
   return (
     <section
       ref={containerRef}
@@ -373,7 +451,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
         </div>
       </div>
 
-      {/* Top Right: 2D Floor Plan Tracker Mini-Map (Hidden on mobile <sm to prevent collision) */}
+      {/* Top Right: 2D Floor Plan Tracker Mini-Map */}
       <div className="absolute top-6 sm:top-8 right-6 sm:right-8 z-30 pointer-events-auto hidden sm:block">
         <div className="rounded-sm bg-[#08090B]/90 backdrop-blur-md border border-white/20 p-3 shadow-2xl corner-crosshairs w-44 sm:w-52">
           {/* Header */}

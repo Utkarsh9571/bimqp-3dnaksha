@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
-import { Sparkles, Activity, Box } from 'lucide-react';
+import { Sparkles, Activity, Box, Glasses, Radio } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
+import { useIsTabletOrDesktop } from '../../hooks/useMediaQuery';
 
 // Lazy-load the Three.js BIM Model Viewer
 const BIMModelViewer3D = lazy(() => import('../ui/BIMModelViewer3D'));
@@ -12,7 +13,8 @@ export const FullBleedShowcase: React.FC = () => {
   const headsetImgRef = useRef<HTMLImageElement>(null);
   const blackoutRef = useRef<HTMLDivElement>(null);
   const hudRef = useRef<HTMLDivElement>(null);
-  
+
+  const isTabletOrDesktop = useIsTabletOrDesktop();
   const [isNearViewport, setIsNearViewport] = useState<boolean>(false);
   const [cameraTelemetry, setCameraTelemetry] = useState<{ azimuth: number; elevation: number; distance: number }>({
     azimuth: 42,
@@ -21,9 +23,7 @@ export const FullBleedShowcase: React.FC = () => {
   });
 
   useEffect(() => {
-    const isReduced = prefersReducedMotion();
     const container = containerRef.current;
-    
     if (!container) return;
 
     // Intersection Observer to prepare the 3D canvas early
@@ -34,21 +34,24 @@ export const FullBleedShowcase: React.FC = () => {
           observer.disconnect();
         }
       },
-      { rootMargin: '3000px 0px 3000px 0px', threshold: 0.01 }
+      { rootMargin: '1200px 0px 1200px 0px', threshold: 0.01 }
     );
     observer.observe(container);
 
-    if (isReduced) {
+    // On mobile (<768px) or reduced motion, skip the pinned timeline completely
+    if (!isTabletOrDesktop || prefersReducedMotion()) {
       setIsNearViewport(true);
-      return;
+      return () => {
+        observer.disconnect();
+      };
     }
 
+    // --- Tablet / Desktop (>=768px): Full GSAP Pinned Scrub Timeline ---
     const headsetImg = headsetImgRef.current;
     const headsetContainer = headsetContainerRef.current;
     const blackout = blackoutRef.current;
     const hud = hudRef.current;
 
-    // ScrollTrigger timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
@@ -116,12 +119,85 @@ export const FullBleedShowcase: React.FC = () => {
       tl.kill();
       observer.disconnect();
     };
-  }, []);
+  }, [isTabletOrDesktop]);
 
   const handleCameraChange = (azimuth: number, elevation: number, distance: number) => {
     setCameraTelemetry({ azimuth, elevation, distance });
   };
 
+  // --- MOBILE VIEW (<768px): Normal Unpinned Sequential Block with Rich VR & Telemetry Styling ---
+  if (!isTabletOrDesktop) {
+    return (
+      <section 
+        ref={containerRef}
+        id="showcase"
+        className="w-full bg-[#08090B] py-14 px-4 border-t border-b border-white/10"
+      >
+        <div className="max-w-xl mx-auto space-y-6">
+          {/* Header & Intro */}
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-[#38BDF8]">
+              <Glasses className="w-3.5 h-3.5 text-[#38BDF8]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              <span>IMMERSIVE VR & 3D BIM TWIN</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
+              Explore the <span className="text-[#38BDF8] font-medium">Digital Twin</span>
+            </h2>
+            <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
+              Step inside unbuilt spaces at true 1:1 scale before breaking ground.
+            </p>
+          </div>
+
+          {/* Inline Interactive 3D BIM Viewer (Normal height, no pinning) */}
+          <div className="relative w-full h-[430px] rounded-lg overflow-hidden border border-white/15 bg-[#08090B] shadow-2xl">
+            {isNearViewport && (
+              <Suspense
+                fallback={
+                  <div className="w-full h-full bg-[#08090B] flex flex-col items-center justify-center">
+                    <div className="w-8 h-8 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-3" />
+                    <span className="font-mono-tech text-[10px] text-gray-400 tracking-widest uppercase">
+                      LOADING 3D ENGINE
+                    </span>
+                  </div>
+                }
+              >
+                <BIMModelViewer3D onCameraChange={handleCameraChange} />
+              </Suspense>
+            )}
+
+            {/* Mobile Top HUD Telemetry Overlay */}
+            <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white">
+                <Box className="w-3 h-3 text-[#38BDF8]" />
+                <span>WEBGL 3D</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-[#38BDF8]/30 text-[10px] font-mono-tech text-[#38BDF8]">
+                <Activity className="w-3 h-3 text-[#38BDF8] animate-pulse" />
+                <span>AZM: {cameraTelemetry.azimuth.toFixed(0)}°</span>
+                <span className="text-white/30">|</span>
+                <span>DST: {cameraTelemetry.distance.toFixed(0)}m</span>
+              </div>
+            </div>
+
+            {/* Mobile Bottom Badge */}
+            <div className="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white/80">
+                <Radio className="w-3 h-3 text-[#10B981] animate-pulse" />
+                <span>1:1 SCALE EXPLORER</span>
+              </div>
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-[#E5A93B]">
+                <Sparkles className="w-3 h-3 text-[#E5A93B]" />
+                <span>LIVE MODEL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // --- TABLET / DESKTOP VIEW (>=768px): Full 300vh Pinned VR Lens Sequence ---
   return (
     <section 
       ref={containerRef}
@@ -184,7 +260,7 @@ export const FullBleedShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Layer 4 (z-30): HUD Elements Overlay (pointer-events-none so 3D canvas gets drag events) */}
+        {/* Layer 4 (z-30): HUD Elements Overlay */}
         <div 
           ref={hudRef}
           className="absolute inset-0 pointer-events-none z-30 p-6 md:p-12 flex flex-col justify-between"
