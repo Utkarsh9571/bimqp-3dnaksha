@@ -5,6 +5,11 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   base: './', // Ensures assets load correctly on any cPanel directory, domain, or subfolder
+  server: {
+    watch: {
+      ignored: ['**/*.zip', '**/dist/**', '**/dist.zip', '**/scratch/**']
+    }
+  },
   plugins: [
     react(),
     tailwindcss(),

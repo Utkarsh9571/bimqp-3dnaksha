@@ -171,6 +171,11 @@ export const smoothScrollTo = (
     return;
   }
 
+  if (typeof target === 'string') {
+    const el = document.querySelector(target);
+    if (!el) return;
+  }
+
   if (lenisInstance) {
     lenisInstance.scrollTo(target, {
       offset: options?.offset ?? 0,

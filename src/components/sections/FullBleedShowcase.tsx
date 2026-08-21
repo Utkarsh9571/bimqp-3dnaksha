@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Sparkles, Activity, Box, Glasses, Radio } from 'lucide-react';
-import { gsap, prefersReducedMotion } from '../../lib/animations';
+import { gsap, ScrollTrigger, prefersReducedMotion } from '../../lib/animations';
 import { useIsTabletOrDesktop } from '../../hooks/useMediaQuery';
 
 // Lazy-load the Three.js BIM Model Viewer
@@ -63,9 +63,9 @@ export const FullBleedShowcase: React.FC = () => {
 
     if (headsetImg && headsetContainer && blackout) {
       // 1. Initial states
-      gsap.set(headsetContainer, { opacity: 1, visibility: 'visible', pointerEvents: 'none' });
+      gsap.set(headsetContainer, { opacity: 1, pointerEvents: 'none' });
       gsap.set(headsetImg, { scale: 1, rotateX: 0, rotateY: 0, transformOrigin: '50% 50%' });
-      gsap.set(blackout, { opacity: 0, visibility: 'visible', pointerEvents: 'none' });
+      gsap.set(blackout, { opacity: 0, pointerEvents: 'none' });
       if (hud) gsap.set(hud, { opacity: 0, y: 30 });
 
       // 2. Headset Zoom & Camera Dolly into Lens (Progress 0.0 -> 0.38)
@@ -84,35 +84,32 @@ export const FullBleedShowcase: React.FC = () => {
         ease: 'power1.in'
       }, 0.22);
 
-      // 4. Hide Headset completely during blackout
-      tl.set(headsetContainer, {
+      // 4. Fade out Headset container during blackout (Progress 0.34 -> 0.40)
+      tl.to(headsetContainer, {
         opacity: 0,
-        visibility: 'hidden'
-      }, 0.38);
+        duration: 0.06,
+        ease: 'none'
+      }, 0.34);
 
       // 5. Blackout fades out to reveal interactive BIM model (Progress 0.38 -> 0.50)
       tl.to(blackout, {
         opacity: 0,
         duration: 0.12,
-        ease: 'power1.out',
-        onComplete: () => {
-          gsap.set(blackout, { visibility: 'hidden', pointerEvents: 'none' });
-        },
-        onReverseComplete: () => {
-          gsap.set(blackout, { visibility: 'visible', pointerEvents: 'none' });
-        }
+        ease: 'power1.out'
       }, 0.38);
 
-      // 6. HUD elements fade in smoothly
+      // 6. HUD elements fade in smoothly (Progress 0.44 -> 0.58)
       if (hud) {
         tl.to(hud, {
           opacity: 1,
           y: 0,
-          duration: 0.15,
+          duration: 0.14,
           ease: 'power2.out'
         }, 0.44);
       }
     }
+
+    ScrollTrigger.refresh();
 
     return () => {
       tl.scrollTrigger?.kill();
@@ -290,7 +287,7 @@ export const FullBleedShowcase: React.FC = () => {
           </div>
 
           {/* Bottom Content */}
-          <div className="max-w-2xl bg-black/40 backdrop-blur-md border-l-2 border-[#38BDF8] pl-6 py-4 rounded-r-lg shadow-2xl">
+          <div className="max-w-xl bg-black/40 backdrop-blur-md border-l-2 border-[#38BDF8] pl-6 py-4 rounded-r-lg shadow-2xl">
             <h2 className="text-3xl md:text-5xl font-light text-white tracking-tight mb-3">
               Explore the <span className="text-[#38BDF8] font-medium">Digital Twin</span>
             </h2>

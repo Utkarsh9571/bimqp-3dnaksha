@@ -34,44 +34,53 @@ export const OperatingRegions: React.FC = () => {
     const section = sectionRef.current;
     if (!section) return;
 
-    if (isReduced) {
-      gsap.set('.operating-header', { opacity: 1, y: 0 });
-      gsap.set('.operating-column', { opacity: 1, y: 0 });
-      gsap.set('.operating-divider', { scaleY: 1 });
-      return;
-    }
-
-    // Set initial animated properties
-    gsap.set('.operating-header', { opacity: 0, y: 20 });
-    gsap.set('.operating-column', { opacity: 0, y: 30 });
-    gsap.set('.operating-divider', { scaleY: 0, transformOrigin: 'top center' });
-
-    // Single unified GSAP Timeline with ScrollTrigger
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 80%',
-        toggleActions: 'play none none none'
+    const ctx = gsap.context(() => {
+      if (isReduced) {
+        gsap.set('.operating-header', { opacity: 1, y: 0 });
+        gsap.set('.operating-column', { opacity: 1, y: 0 });
+        const dividers = section.querySelectorAll('.operating-divider');
+        if (dividers.length > 0) gsap.set(dividers, { scaleY: 1 });
+        return;
       }
-    });
 
-    tl.to('.operating-header', {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      ease: 'power2.out'
-    })
-      .to(
-        '.operating-divider',
-        {
-          scaleY: 1,
-          duration: 0.75,
-          stagger: 0.15,
-          ease: 'power2.out'
-        },
-        '-=0.25'
-      )
-      .to(
+      // Set initial animated properties
+      gsap.set('.operating-header', { opacity: 0, y: 20 });
+      gsap.set('.operating-column', { opacity: 0, y: 30 });
+      const dividers = section.querySelectorAll('.operating-divider');
+      if (dividers.length > 0) {
+        gsap.set(dividers, { scaleY: 0, transformOrigin: 'top center' });
+      }
+
+      // Single unified GSAP Timeline with ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+
+      tl.to('.operating-header', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      if (dividers.length > 0) {
+        tl.to(
+          dividers,
+          {
+            scaleY: 1,
+            duration: 0.75,
+            stagger: 0.15,
+            ease: 'power2.out'
+          },
+          '-=0.25'
+        );
+      }
+
+      tl.to(
         '.operating-column',
         {
           opacity: 1,
@@ -80,12 +89,12 @@ export const OperatingRegions: React.FC = () => {
           stagger: 0.15,
           ease: 'power3.out'
         },
-        '<0.05'
+        dividers.length > 0 ? '<0.05' : '-=0.2'
       );
+    }, section);
 
     return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
+      ctx.revert();
     };
   }, []);
 

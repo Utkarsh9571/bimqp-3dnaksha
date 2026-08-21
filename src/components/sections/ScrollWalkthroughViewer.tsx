@@ -254,6 +254,10 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
     return () => window.removeEventListener('resize', resizeCanvas);
   }, [drawFrame]);
 
+  // Ref for stable scheduler callback
+  const scheduleFrameDrawRef = useRef(scheduleFrameDraw);
+  scheduleFrameDrawRef.current = scheduleFrameDraw;
+
   // ScrollTrigger Setup (Only on Tablet / Desktop >=768px)
   useEffect(() => {
     const container = containerRef.current;
@@ -261,7 +265,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
 
     // On mobile (<768px) or reduced motion, skip ScrollTrigger pin/scrub completely
     if (!isTabletOrDesktop || prefersReducedMotion()) {
-      drawFrame(currentFrame);
+      drawFrame(0);
       return;
     }
 
@@ -274,15 +278,17 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       anticipatePin: 1,
       onUpdate: (self) => {
         const frameIdx = self.progress * (totalFrames - 1);
-        scheduleFrameDraw(frameIdx);
+        scheduleFrameDrawRef.current(frameIdx);
       }
     });
+
+    ScrollTrigger.refresh();
 
     return () => {
       st.kill();
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, [isTabletOrDesktop, totalFrames, scheduleFrameDraw, drawFrame, currentFrame]);
+  }, [isTabletOrDesktop, totalFrames, drawFrame]);
 
   // Derived telemetry metrics for HUD
   const progressRatio = currentFrame / (totalFrames - 1 || 1);

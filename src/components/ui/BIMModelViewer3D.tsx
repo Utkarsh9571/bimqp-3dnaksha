@@ -259,15 +259,8 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    // Check WebGL Support
-    try {
-      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-      if (!gl) {
-        setIsWebGlSupported(false);
-        setIsLoading(false);
-        return;
-      }
-    } catch {
+    // Check WebGL Support safely without acquiring a conflicting context on the render canvas
+    if (typeof window !== 'undefined' && !window.WebGLRenderingContext) {
       setIsWebGlSupported(false);
       setIsLoading(false);
       return;
@@ -286,14 +279,22 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     camera.lookAt(0, 3.5, 0);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+    } catch {
+      setIsWebGlSupported(false);
+      setIsLoading(false);
+      return;
+    }
+
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -309,16 +310,21 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     controls.maxDistance = 45;
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
     controls.target.set(0, 3.5, 0);
+    controls.mouseButtons = {
+      LEFT: THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN
+    };
 
-    // Two-finger touch gesture for mobile: 1 finger scrolls the page, 2 fingers orbit & zoom
+    // Touch support: 2 fingers orbit & zoom on touchscreens, 1 finger scrolls page
     controls.touches = {
       TWO: THREE.TOUCH.DOLLY_ROTATE
     };
-    // Ensure 1-finger touch is not assigned to any action
     delete (controls.touches as Record<string, unknown>).ONE;
     
-    // Explicitly override OrbitControls' internal touchAction='none' so single-finger vertical swipes scroll
+    // Explicitly allow vertical page scrolling on canvas
     canvas.style.touchAction = 'pan-y';
+    canvas.style.pointerEvents = 'auto';
     controlsRef.current = controls;
 
     const handleControlStart = () => {
@@ -490,45 +496,49 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
         </div>
       )}
 
-      {/* Top Center: View Mode Toggles & Camera Reset */}
-      <div className="absolute top-4 sm:top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-[#08090B]/85 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full shadow-2xl">
-        <button
-          onClick={toggleWireframe}
-          className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-mono-tech font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-            isWireframeMode
-              ? 'bg-[#38BDF8] text-[#08090B] shadow-xs'
-              : 'text-white/80 hover:text-white'
-          }`}
-          title="Toggle BIM Wireframe / Structural Layers"
-        >
-          <Layers className="w-3 h-3" />
-          <span>{isWireframeMode ? 'BIM Wireframe' : 'Solid BIM Model'}</span>
-        </button>
+      {/* Bottom Center: View Mode Toggles, Camera Reset & Orbit Gesture Hint */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 max-w-[92vw]">
+        {/* View Mode Toggle Pill (Solid vs Wireframe & Reset) */}
+        <div className="flex items-center gap-2 bg-[#08090B]/90 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full shadow-2xl pointer-events-auto">
+          <button
+            type="button"
+            onClick={toggleWireframe}
+            className={`min-h-[36px] px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-mono-tech font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+              isWireframeMode
+                ? 'bg-[#38BDF8] text-[#08090B] shadow-xs'
+                : 'text-white/80 hover:text-white'
+            }`}
+            title="Toggle BIM Wireframe / Structural Layers"
+            aria-label="Toggle BIM Wireframe / Structural Layers"
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>{isWireframeMode ? 'BIM Wireframe' : 'Solid BIM Model'}</span>
+          </button>
 
-        <span className="w-[1px] h-3.5 bg-white/20" />
+          <span className="w-[1px] h-3.5 bg-white/20" />
 
-        <button
-          onClick={resetCameraView}
-          className="p-1 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-          title="Reset Camera View"
-          aria-label="Reset Camera View"
-        >
-          <RotateCcw className="w-3 h-3" />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={resetCameraView}
+            className="min-h-[36px] min-w-[36px] flex items-center justify-center p-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Reset Camera View"
+            aria-label="Reset Camera View"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
-      {/* Bottom Center: Interactive Orbit Drag Hint (Touch vs Mouse Aware) */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-4 text-center max-w-full">
+        {/* Orbit Drag Gesture Instruction (Fades out during active user interaction) */}
         <div
-          className={`rounded-full bg-[#08090B]/85 backdrop-blur-md border border-white/20 px-4 py-1.5 shadow-2xl inline-flex items-center justify-center gap-2 font-mono-tech text-[10px] sm:text-xs text-white/90 transition-opacity duration-300 ${
-            isUserInteracting ? 'opacity-30' : 'opacity-90'
+          className={`rounded-full bg-[#08090B]/75 backdrop-blur-md border border-white/15 px-3 py-1 shadow-md inline-flex items-center justify-center gap-1.5 font-mono-tech text-[9px] sm:text-[10px] text-white/80 transition-opacity duration-300 pointer-events-none ${
+            isUserInteracting ? 'opacity-20' : 'opacity-80'
           }`}
         >
-          <Box className="w-3 h-3 text-[#38BDF8] shrink-0 animate-pulse" />
+          <Box className="w-2.5 h-2.5 text-[#38BDF8] shrink-0 animate-pulse" />
           <span className="tracking-wider uppercase">
             {isTouchDevice
               ? '2 FINGERS TO ORBIT & ZOOM • 1 FINGER TO SCROLL'
-              : 'CLICK & DRAG TO ORBIT 3D MODEL • SCROLL WHEEL TO ZOOM'}
+              : 'CLICK & DRAG TO ORBIT • SCROLL TO ZOOM'}
           </span>
         </div>
       </div>
