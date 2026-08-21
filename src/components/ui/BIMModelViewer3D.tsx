@@ -309,6 +309,16 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     controls.maxDistance = 45;
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
     controls.target.set(0, 3.5, 0);
+
+    // Two-finger touch gesture for mobile: 1 finger scrolls the page, 2 fingers orbit & zoom
+    controls.touches = {
+      TWO: THREE.TOUCH.DOLLY_ROTATE
+    };
+    // Ensure 1-finger touch is not assigned to any action
+    delete (controls.touches as Record<string, unknown>).ONE;
+    
+    // Explicitly override OrbitControls' internal touchAction='none' so single-finger vertical swipes scroll
+    canvas.style.touchAction = 'pan-y';
     controlsRef.current = controls;
 
     const handleControlStart = () => {
@@ -426,6 +436,12 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     setIsUserInteracting(false);
   };
 
+  const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsTouchDevice(Boolean('ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)));
+  }, []);
+
   return (
     <div
       ref={containerRef}
@@ -434,7 +450,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
       {/* 3D WebGL Canvas */}
       <canvas
         ref={canvasRef}
-        className="w-full h-full block touch-none cursor-grab active:cursor-grabbing"
+        className="w-full h-full block touch-pan-y cursor-grab active:cursor-grabbing"
       />
 
       {/* Loading Overlay */}
@@ -501,16 +517,18 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
         </button>
       </div>
 
-      {/* Bottom Center: Interactive Mouse Orbit Drag Hint */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+      {/* Bottom Center: Interactive Orbit Drag Hint (Touch vs Mouse Aware) */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-4 text-center max-w-full">
         <div
-          className={`rounded-full bg-[#08090B]/85 backdrop-blur-md border border-white/20 px-4 py-1.5 shadow-2xl flex items-center gap-2 font-mono-tech text-[10px] sm:text-xs text-white/90 transition-opacity duration-300 ${
+          className={`rounded-full bg-[#08090B]/85 backdrop-blur-md border border-white/20 px-4 py-1.5 shadow-2xl inline-flex items-center justify-center gap-2 font-mono-tech text-[10px] sm:text-xs text-white/90 transition-opacity duration-300 ${
             isUserInteracting ? 'opacity-30' : 'opacity-90'
           }`}
         >
-          <Box className="w-3 h-3 text-[#38BDF8] animate-pulse" />
+          <Box className="w-3 h-3 text-[#38BDF8] shrink-0 animate-pulse" />
           <span className="tracking-wider uppercase">
-            CLICK &amp; DRAG TO ORBIT 3D MODEL • SCROLL WHEEL TO ZOOM
+            {isTouchDevice
+              ? '2 FINGERS TO ORBIT & ZOOM • 1 FINGER TO SCROLL'
+              : 'CLICK & DRAG TO ORBIT 3D MODEL • SCROLL WHEEL TO ZOOM'}
           </span>
         </div>
       </div>

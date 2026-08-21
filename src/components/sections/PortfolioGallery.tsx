@@ -31,7 +31,7 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
   return (
     <section
       ref={sectionRef}
-      id="showcase"
+      id="portfolio"
       className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -47,13 +47,13 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
             className="mb-0 md:mb-0"
           />
 
-          {/* Filter Pills */}
+          {/* Filter Pills (Min 44px touch targets) */}
           <div className="flex flex-wrap items-center gap-1.5 bg-white p-1.5 rounded-sm border border-gray-200 shrink-0 shadow-2xs">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-xs text-xs font-mono-tech transition-all cursor-pointer ${
+                className={`h-[44px] min-h-[44px] px-4 rounded-xs text-xs font-mono-tech transition-all cursor-pointer flex items-center justify-center ${
                   activeCategory === cat.id
                     ? 'bg-[#D4A373] text-[#08090B] font-bold shadow-xs'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'

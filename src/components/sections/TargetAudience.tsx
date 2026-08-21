@@ -52,9 +52,9 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
           align="left"
         />
 
-        {/* Stakeholder Segment Tabs */}
+        {/* Stakeholder Segment Tabs (Reflows evenly on mobile & tablet) */}
         <div
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-8 transition-all duration-700"
+          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-8 transition-all duration-700"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 20px, 0)',
@@ -67,7 +67,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
               <button
                 key={aud.id}
                 onClick={() => setSelectedId(aud.id)}
-                className={`p-3.5 rounded-sm border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+                className={`p-3.5 min-h-[44px] rounded-sm border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 ${
                   isSelected
                     ? 'bg-white border-[#9A6A38] shadow-md ring-1 ring-[#9A6A38]/40 scale-102'
                     : 'bg-white/80 border-gray-200 hover:border-gray-300 hover:bg-white'

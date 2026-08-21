@@ -41,10 +41,10 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         data-lenis-prevent="true"
       >
-        {/* Close Button */}
+        {/* Close Button (Min 44x44px touch target) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-sm bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           aria-label="Close lightbox"
         >
           <X className="w-5 h-5" />

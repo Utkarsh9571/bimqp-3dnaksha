@@ -128,7 +128,7 @@ export const FullBleedShowcase: React.FC = () => {
       id="showcase"
       className="relative w-full h-[300vh] bg-[#08090B]"
     >
-      <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#08090B]">
+      <div className="sticky top-0 w-full h-screen h-[100dvh] overflow-hidden bg-[#08090B]">
         
         {/* Layer 1 (z-10): 3D BIM Architectural Model Viewport */}
         <div ref={bimContainerRef} className="absolute inset-0 w-full h-full overflow-hidden z-10">

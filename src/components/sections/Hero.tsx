@@ -111,7 +111,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-[#F8F7F5] pt-24 pb-8"
+      className="relative min-h-screen min-h-[100dvh] w-full flex flex-col justify-between overflow-hidden bg-[#F8F7F5] pt-24 pb-8"
     >
       {/* Background Architectural Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50 pointer-events-none" />

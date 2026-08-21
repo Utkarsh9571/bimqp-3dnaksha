@@ -42,7 +42,12 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!isDragging) return;
-    handleMove(e.touches[0].clientX);
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+    if (e.touches && e.touches.length > 0) {
+      handleMove(e.touches[0].clientX);
+    }
   }, [isDragging, handleMove]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -88,14 +93,16 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleMouseUp);
+      window.addEventListener('touchcancel', handleMouseUp);
     }
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleMouseUp);
+      window.removeEventListener('touchcancel', handleMouseUp);
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
@@ -121,39 +128,39 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
           <p className="font-mono-tech text-xs text-[#4B5563] mt-0.5">{projectMeta}</p>
         </div>
 
-        {/* View Toggle Tabs */}
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-sm border border-gray-200 text-xs font-mono-tech">
+        {/* View Toggle Tabs (Min 44px touch targets) */}
+        <div className="flex items-center gap-1.5 bg-gray-100 p-1.5 rounded-sm border border-gray-200 text-xs font-mono-tech">
           <button
             onClick={() => setPreset('blueprint')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'blueprint'
                 ? 'bg-blue-50 text-[#0284C7] font-bold border border-blue-200 shadow-2xs'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-4 h-4" />
             <span>2D Plan</span>
           </button>
           <button
             onClick={() => setPreset('split')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'split'
                 ? 'bg-amber-50 text-[#9A6A38] font-bold border border-amber-200 shadow-2xs'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5" />
+            <Sliders className="w-4 h-4" />
             <span>Interactive Split</span>
           </button>
           <button
             onClick={() => setPreset('render')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'render'
                 ? 'bg-amber-50 text-[#B45309] font-bold border border-amber-200 shadow-2xs'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-4 h-4" />
             <span>3D Render</span>
           </button>
         </div>
@@ -162,7 +169,9 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
       {/* Main Slider Canvas with 3D Depth Perspective */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl transition-shadow duration-300 hover:shadow-2xl"
+        className={`relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl transition-shadow duration-300 hover:shadow-2xl touch-pan-y ${
+          isDragging ? 'touch-none' : ''
+        }`}
         onMouseDown={() => setIsDragging(true)}
         onTouchStart={() => setIsDragging(true)}
         onPointerMove={handlePointerMoveParallax}
@@ -231,11 +240,11 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
           className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#0284C7] via-white to-[#D97706] shadow-sm pointer-events-none"
           style={{ left: `${sliderPosition}%` }}
         >
-          {/* Circular Handle */}
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white border-2 border-[#9A6A38] shadow-md flex items-center justify-center text-[#9A6A38] group-hover:scale-110 transition-transform pointer-events-auto cursor-grab active:cursor-grabbing">
+          {/* Circular Handle (Min 44x44px touch target) */}
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white border-2 border-[#9A6A38] shadow-md flex items-center justify-center text-[#9A6A38] group-hover:scale-110 transition-transform pointer-events-auto cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-0.5">
-              <span className="w-1 h-3 bg-[#0284C7] rounded-full"></span>
-              <span className="w-1 h-3 bg-[#D97706] rounded-full"></span>
+              <span className="w-1 h-3.5 bg-[#0284C7] rounded-full"></span>
+              <span className="w-1 h-3.5 bg-[#D97706] rounded-full"></span>
             </div>
           </div>
 

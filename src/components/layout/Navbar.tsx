@@ -241,10 +241,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
               <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button (Min 44x44px touch target) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden w-9 h-9 rounded-sm bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 hover:text-gray-900 transition-colors"
+              className="lg:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 hover:text-gray-900 transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

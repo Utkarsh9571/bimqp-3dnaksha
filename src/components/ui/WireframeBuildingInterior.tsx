@@ -298,8 +298,8 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
           <polygon points="660,700 720,680 760,700 700,720" stroke="#0284C7" className="draw-path" />
         </g>
 
-        {/* Phase 7: Technical Dimension Callouts & Coordinate HUD Markers */}
-        <g className="phase-annotations font-mono-tech text-[10px] fill-[#4B5563] pointer-events-none">
+        {/* Phase 7: Technical Dimension Callouts & Coordinate HUD Markers (Hidden on mobile <sm for crisp wireframe clarity) */}
+        <g className="phase-annotations font-mono-tech text-[10px] fill-[#4B5563] pointer-events-none hidden sm:inline">
           {/* Target Elevation Marker */}
           <g transform="translate(600, 180)">
             <circle cx="0" cy="0" r="14" stroke="#0284C7" strokeWidth="1.2" strokeDasharray="3 3" fill="none" />
@@ -341,7 +341,7 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
       </svg>
 
       {/* Real-time Assembly HUD Progress Overlay Badge */}
-      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-3 px-3.5 py-1.5 rounded-sm bg-white/90 backdrop-blur-md border border-gray-200 shadow-sm font-mono-tech text-[11px] text-gray-700">
+      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-sm bg-white/90 backdrop-blur-md border border-gray-200 shadow-sm font-mono-tech text-[11px] text-gray-700">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-[#0284C7] animate-pulse" />
           <span className="text-[#0A0A0A] font-bold">BIM STRUCTURE</span>

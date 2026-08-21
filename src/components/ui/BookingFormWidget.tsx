@@ -336,11 +336,11 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                       <span className="font-bold text-sm">
                         {monthName} {year}
                       </span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={prevMonth}
-                          className="w-7 h-7 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
+                          className="w-[44px] h-[44px] min-w-[44px] min-h-[44px] shrink-0 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
                           aria-label="Previous Month"
                         >
                           <ChevronLeft className="w-4 h-4" />
@@ -348,7 +348,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                         <button
                           type="button"
                           onClick={nextMonth}
-                          className="w-7 h-7 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
+                          className="w-[44px] h-[44px] min-w-[44px] min-h-[44px] shrink-0 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
                           aria-label="Next Month"
                         >
                           <ChevronRight className="w-4 h-4" />
@@ -365,11 +365,11 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                       ))}
                     </div>
 
-                    {/* Day Grid */}
+                    {/* Day Grid with Min 44px Touch Target Cells */}
                     <div className="grid grid-cols-7 gap-1 text-center font-mono-tech text-xs">
                       {/* Empty padding cells for first week offset */}
                       {Array.from({ length: firstDayIndex }).map((_, idx) => (
-                        <div key={`empty-${idx}`} className="h-8 w-8" />
+                        <div key={`empty-${idx}`} className="h-[44px] w-full" />
                       ))}
 
                       {/* Month Days */}
@@ -381,18 +381,19 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                           selectedDate?.getFullYear() === year;
 
                         return (
-                          <button
-                            key={`day-${dayNum}`}
-                            type="button"
-                            onClick={() => handleDateSelect(dayNum)}
-                            className={`h-8 w-8 mx-auto rounded-full flex items-center justify-center transition-all cursor-pointer ${
-                              isSelected
-                                ? 'bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-bold shadow-md scale-110'
-                                : 'text-gray-800 hover:bg-gray-200/70'
-                            }`}
-                          >
-                            {dayNum}
-                          </button>
+                          <div key={`day-${dayNum}`} className="flex items-center justify-center h-[44px] min-h-[44px]">
+                            <button
+                              type="button"
+                              onClick={() => handleDateSelect(dayNum)}
+                              className={`h-9 w-9 sm:h-8 sm:w-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-bold shadow-md scale-110'
+                                  : 'text-gray-800 hover:bg-gray-200/70 active:scale-95'
+                              }`}
+                            >
+                              {dayNum}
+                            </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -424,7 +425,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                                 key={slot}
                                 type="button"
                                 onClick={() => setSelectedTimeSlot(slot)}
-                                className={`py-2 px-3 rounded-sm text-xs font-mono-tech transition-all text-center cursor-pointer border ${
+                                className={`min-h-[44px] py-2.5 px-3 rounded-sm text-xs font-mono-tech transition-all text-center cursor-pointer border flex items-center justify-center ${
                                   isSlotActive
                                     ? 'bg-blue-50 border-[#0284C7] text-[#0284C7] font-bold shadow-2xs'
                                     : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'

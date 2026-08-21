@@ -88,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
                 </a>
               </li>
               <li>
-                <a href="#showcase" onClick={(e) => { e.preventDefault(); smoothScrollTo('#showcase', { offset: -70 }); }} className="hover:text-black transition-colors">
+                <a href="#portfolio" onClick={(e) => { e.preventDefault(); smoothScrollTo('#portfolio', { offset: -70 }); }} className="hover:text-black transition-colors">
                   Selected Visualizations
                 </a>
               </li>

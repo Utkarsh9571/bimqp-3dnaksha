@@ -291,7 +291,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
     <section
       ref={containerRef}
       id="walkthrough-viewer"
-      className={`relative h-screen w-full overflow-hidden bg-[#08090B] select-none flex items-center justify-center border-t border-b border-gray-200 ${className}`}
+      className={`relative h-screen h-[100dvh] w-full overflow-hidden bg-[#08090B] select-none flex items-center justify-center border-t border-b border-gray-200 ${className}`}
       aria-label="Scroll Scrubbed 3D Walkthrough Viewer"
     >
       {/* 1. Main Canvas Scrubbing Viewport */}
@@ -328,10 +328,10 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
          ========================================================= */}
 
       {/* Top Left: Frame Index Counter */}
-      <div className="absolute top-6 sm:top-8 left-6 sm:left-8 z-30 pointer-events-auto">
-        <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-4 py-2.5 shadow-2xl corner-crosshairs flex items-center gap-3">
+      <div className="absolute top-4 sm:top-8 left-4 sm:left-8 z-30 pointer-events-auto">
+        <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-3 py-1.5 sm:px-4 sm:py-2.5 shadow-2xl corner-crosshairs flex items-center gap-2 sm:gap-3">
           <div className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
-          <div className="font-mono-tech text-xs text-white tracking-wider">
+          <div className="font-mono-tech text-[11px] sm:text-xs text-white tracking-wider">
             FRAME{' '}
             <span className="text-[#38BDF8] font-bold">
               {String(currentFrame).padStart(3, '0')}
@@ -346,7 +346,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       </div>
 
       {/* Top Center: Bearing Compass Widget */}
-      <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto hidden sm:block">
+      <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto hidden md:block">
         <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-5 py-2 shadow-2xl flex items-center gap-3 font-mono-tech text-xs text-white">
           <Compass className="w-4 h-4 text-[#D4A373]" />
           <div className="flex items-center gap-2 text-[11px]">
@@ -373,8 +373,8 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
         </div>
       </div>
 
-      {/* Top Right: 2D Floor Plan Tracker Mini-Map */}
-      <div className="absolute top-6 sm:top-8 right-6 sm:right-8 z-30 pointer-events-auto">
+      {/* Top Right: 2D Floor Plan Tracker Mini-Map (Hidden on mobile <sm to prevent collision) */}
+      <div className="absolute top-6 sm:top-8 right-6 sm:right-8 z-30 pointer-events-auto hidden sm:block">
         <div className="rounded-sm bg-[#08090B]/90 backdrop-blur-md border border-white/20 p-3 shadow-2xl corner-crosshairs w-44 sm:w-52">
           {/* Header */}
           <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 font-mono-tech text-[11px]">

@@ -80,13 +80,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         data-lenis-prevent="true"
       >
-        {/* Close Button */}
+        {/* Close Button (Min 44x44px touch target) */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 w-8 h-8 rounded-sm bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
         {!isSubmitted ? (

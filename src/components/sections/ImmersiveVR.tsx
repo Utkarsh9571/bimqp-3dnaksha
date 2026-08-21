@@ -28,7 +28,9 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
   const viewportRef = useRef<HTMLDivElement>(null);
   const panoramaRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef<boolean>(false);
+  const isPanLockedRef = useRef<boolean>(false);
   const startXRef = useRef<number>(0);
+  const startYRef = useRef<number>(0);
   const panOffsetRef = useRef<number>(0); // Current pan in pixels (-maxPan to +maxPan)
   const lastXRef = useRef<number>(0);
   const velocityRef = useRef<number>(0);
@@ -121,7 +123,9 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isReduced) return;
     isDraggingRef.current = true;
+    isPanLockedRef.current = false;
     startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
     lastXRef.current = e.clientX;
     velocityRef.current = 0;
     if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
@@ -130,6 +134,27 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current || isReduced) return;
+
+    // Gesture direction threshold check to prevent diagonal vertical scroll interference
+    if (!isPanLockedRef.current) {
+      const totalDeltaX = Math.abs(e.clientX - startXRef.current);
+      const totalDeltaY = Math.abs(e.clientY - startYRef.current);
+
+      // If predominantly vertical swipe, yield to native page scroll
+      if (totalDeltaY > 8 && totalDeltaY > totalDeltaX * 1.1) {
+        isDraggingRef.current = false;
+        return;
+      }
+
+      // If horizontal drag exceeds margin, lock into pan mode
+      if (totalDeltaX > 6 && totalDeltaX >= totalDeltaY) {
+        isPanLockedRef.current = true;
+        lastXRef.current = e.clientX;
+      } else {
+        return;
+      }
+    }
+
     const deltaX = e.clientX - lastXRef.current;
     lastXRef.current = e.clientX;
     velocityRef.current = deltaX * 0.8;
@@ -140,9 +165,11 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
   };
 
   const handlePointerUp = () => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingRef.current && !isPanLockedRef.current) return;
+    const wasPanLocked = isPanLockedRef.current;
     isDraggingRef.current = false;
-    if (!isReduced && Math.abs(velocityRef.current) > 0.5) {
+    isPanLockedRef.current = false;
+    if (!isReduced && wasPanLocked && Math.abs(velocityRef.current) > 0.5) {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = requestAnimationFrame(runMomentumDecay);
     }

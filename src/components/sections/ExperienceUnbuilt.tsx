@@ -76,16 +76,16 @@ export const ExperienceUnbuilt: React.FC = () => {
       {/* Main Sticky Storytelling Container (300vh scroll height for smooth pacing) */}
       <div ref={stickyContainerRef} className="relative h-[280vh]">
         {/* Sticky Viewport Anchor */}
-        <div className="sticky top-0 h-screen w-full flex flex-col justify-center z-20 overflow-hidden">
+        <div className="sticky top-0 h-screen h-[100dvh] w-full flex flex-col justify-center z-20 overflow-hidden py-3 sm:py-0">
           {/* Ambient Background Grid */}
           <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 lg:gap-12 items-center">
               {/* Left Column: Stage Selector & Narrative Story */}
-              <div className="lg:col-span-5 space-y-6">
+              <div className="lg:col-span-5 space-y-3 sm:space-y-6">
                 {/* Visual Stage Navigation Tabs */}
-                <div className="grid grid-cols-3 gap-2 p-1.5 rounded-sm bg-gray-100 border border-gray-200 text-xs font-mono-tech">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 p-1 sm:p-1.5 rounded-sm bg-gray-100 border border-gray-200 text-xs font-mono-tech">
                   {[
                     { stg: 1, label: '01 2D Plan', icon: <Layers className="w-3.5 h-3.5" /> },
                     { stg: 2, label: '02 3D BIM', icon: <Box className="w-3.5 h-3.5" /> },
@@ -95,7 +95,7 @@ export const ExperienceUnbuilt: React.FC = () => {
                     return (
                       <div
                         key={item.stg}
-                        className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xs transition-all duration-300 ${
+                        className={`flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 px-1.5 sm:px-2 rounded-xs transition-all duration-300 ${
                           isActive
                             ? item.stg === 1
                               ? 'bg-white text-gray-900 font-bold border border-gray-300 shadow-xs'
@@ -106,14 +106,14 @@ export const ExperienceUnbuilt: React.FC = () => {
                         }`}
                       >
                         {item.icon}
-                        <span className="truncate">{item.label}</span>
+                        <span className="truncate text-[11px] sm:text-xs">{item.label}</span>
                       </div>
                     );
                   })}
                 </div>
 
                 {/* Dynamic Narrative Card (Light Theme) */}
-                <div className="architectural-panel bg-white/95 p-6 sm:p-8 rounded-lg border border-gray-200 relative overflow-hidden transition-all duration-500 shadow-[0_10px_35px_rgba(0,0,0,0.05)]">
+                <div className="architectural-panel bg-white/95 p-4 sm:p-6 lg:p-8 rounded-lg border border-gray-200 relative overflow-hidden transition-all duration-500 shadow-[0_10px_35px_rgba(0,0,0,0.05)]">
                   {/* Stage 1 Narrative */}
                   <div
                     className={`transition-all duration-500 ${
@@ -122,21 +122,21 @@ export const ExperienceUnbuilt: React.FC = () => {
                         : 'opacity-0 translate-y-4 hidden'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono-tech text-xs text-gray-500 font-bold">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <span className="font-mono-tech text-[10px] sm:text-xs text-gray-500 font-bold">
                         STAGE 01 // FOUNDATION
                       </span>
-                      <span className="w-8 h-8 rounded-sm bg-gray-100 flex items-center justify-center text-gray-700">
-                        <Layers className="w-4 h-4" />
+                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-sm bg-gray-100 flex items-center justify-center text-gray-700">
+                        <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </span>
                     </div>
-                    <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A] mb-2">
+                    <h3 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold text-[#0A0A0A] mb-1.5 sm:mb-2">
                       2D Plans & Blueprints
                     </h3>
-                    <p className="text-sm text-[#4B5563] leading-relaxed mb-5">
+                    <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed mb-3 sm:mb-5">
                       2D drawings establish dimensional boundaries and room layouts, but flat schematics leave spatial volume, ceiling clearances, and natural daylighting to imagination.
                     </p>
-                    <div className="flex items-center gap-2 text-xs font-mono-tech text-gray-700 bg-gray-50 p-2.5 rounded-sm border border-gray-200">
+                    <div className="flex items-center gap-2 text-[11px] sm:text-xs font-mono-tech text-gray-700 bg-gray-50 p-2 sm:p-2.5 rounded-sm border border-gray-200">
                       <CheckCircle2 className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                       <span>Dimensional Grid & Schematic Baseline</span>
                     </div>
@@ -150,21 +150,21 @@ export const ExperienceUnbuilt: React.FC = () => {
                         : 'opacity-0 translate-y-4 hidden'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono-tech text-xs text-[#0284C7] font-bold">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <span className="font-mono-tech text-[10px] sm:text-xs text-[#0284C7] font-bold">
                         STAGE 02 // COORDINATION
                       </span>
-                      <span className="w-8 h-8 rounded-sm bg-blue-50 flex items-center justify-center text-[#0284C7]">
-                        <Box className="w-4 h-4" />
+                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-sm bg-blue-50 flex items-center justify-center text-[#0284C7]">
+                        <Box className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </span>
                     </div>
-                    <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A] mb-2">
+                    <h3 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold text-[#0A0A0A] mb-1.5 sm:mb-2">
                       Coordinated 3D BIM Model
                     </h3>
-                    <p className="text-sm text-[#4B5563] leading-relaxed mb-5">
+                    <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed mb-3 sm:mb-5">
                       Parametric 3D geometry coordinates structural spans, wall assemblies, and MEP pathways into a synchronized digital twin for multidisciplinary review.
                     </p>
-                    <div className="flex items-center gap-2 text-xs font-mono-tech text-[#0284C7] bg-blue-50 p-2.5 rounded-sm border border-blue-200">
+                    <div className="flex items-center gap-2 text-[11px] sm:text-xs font-mono-tech text-[#0284C7] bg-blue-50 p-2 sm:p-2.5 rounded-sm border border-blue-200">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#0284C7] shrink-0" />
                       <span>Structured Geometric Alignment</span>
                     </div>
@@ -178,21 +178,21 @@ export const ExperienceUnbuilt: React.FC = () => {
                         : 'opacity-0 translate-y-4 hidden'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono-tech text-xs text-[#9A6A38] font-bold">
+                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                      <span className="font-mono-tech text-[10px] sm:text-xs text-[#9A6A38] font-bold">
                         STAGE 03 // IMMERSIVE SPACE
                       </span>
-                      <span className="w-8 h-8 rounded-sm bg-amber-50 flex items-center justify-center text-[#9A6A38]">
-                        <Glasses className="w-4 h-4" />
+                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-sm bg-amber-50 flex items-center justify-center text-[#9A6A38]">
+                        <Glasses className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </span>
                     </div>
-                    <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A] mb-2">
+                    <h3 className="font-display text-xl sm:text-2xl lg:text-3xl font-bold text-[#0A0A0A] mb-1.5 sm:mb-2">
                       Immersive Photoreal Space
                     </h3>
-                    <p className="text-sm text-[#4B5563] leading-relaxed mb-5">
+                    <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed mb-3 sm:mb-5">
                       Step inside the space at true 1:1 scale to experience room volumes, ambient daylight, and material textures before committing to physical construction.
                     </p>
-                    <div className="flex items-center gap-2 text-xs font-mono-tech text-[#9A6A38] bg-amber-50 p-2.5 rounded-sm border border-amber-200">
+                    <div className="flex items-center gap-2 text-[11px] sm:text-xs font-mono-tech text-[#9A6A38] bg-amber-50 p-2 sm:p-2.5 rounded-sm border border-amber-200">
                       <CheckCircle2 className="w-3.5 h-3.5 text-[#D97706] shrink-0" />
                       <span>Intuitive Spatial Decision Making</span>
                     </div>
@@ -200,8 +200,8 @@ export const ExperienceUnbuilt: React.FC = () => {
                 </div>
 
                 {/* Continuous Scroll Transformation Progress Meter */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono-tech">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono-tech">
                     <span className="text-gray-600">Scroll to evolve architecture</span>
                     <span className="text-[#9A6A38] font-bold">
                       {Math.round(progress * 100)}% EVOLUTION
