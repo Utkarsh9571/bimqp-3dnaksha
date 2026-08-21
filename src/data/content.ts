@@ -166,7 +166,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18fe0f6?auto=format&fit=crop&w=1200&q=85'
+    image: '/images/construction_management.jpg'
   }
 ];
 
