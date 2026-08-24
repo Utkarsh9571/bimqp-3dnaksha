@@ -10,9 +10,13 @@ import {
   Building2,
   Mail,
   Phone,
-  User
+  User,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
+
+import { submitToGoogleAppsScript } from '../../config/forms';
 
 interface BookingFormWidgetProps {
   onBookingComplete?: (details: {
@@ -54,8 +58,11 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
 
-  // Submission / Success state
+  // Submission / Loading / Error state
   const [isBooked, setIsBooked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
 
   // Validation
   const isStep1Valid =
@@ -123,19 +130,54 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isBookingReady || !selectedDate || !selectedTimeSlot) return;
+    if (!isBookingReady || !selectedDate || !selectedTimeSlot || isSubmitting) return;
 
-    setIsBooked(true);
-    onBookingComplete?.({
-      fullName,
-      workEmail,
-      mobileNumber,
-      projectName,
-      date: selectedDate,
-      timeSlot: selectedTimeSlot
+    setErrorMessage(null);
+    setIsSubmitting(true);
+
+    const formattedDateStr = `${selectedDate.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })} @ ${selectedTimeSlot}`;
+
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || fullName.trim();
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    const formattedPhone = mobileNumber.trim().startsWith('+') ? `'${mobileNumber.trim()}` : mobileNumber.trim();
+
+    const res = await submitToGoogleAppsScript({
+      formType: 'homepage_booking',
+      firstName: firstName,
+      lastName: lastName,
+      name: fullName.trim(),
+      email: workEmail.trim(),
+      phone: formattedPhone,
+      projectName: projectName.trim(),
+      bookingDate: formattedDateStr,
+      projectDetails: `Project: ${projectName.trim()} | Session: ${formattedDateStr}`,
+      website: honeypot
     });
+
+    setIsSubmitting(false);
+
+    if (res.success) {
+      setIsBooked(true);
+      onBookingComplete?.({
+        fullName,
+        workEmail,
+        mobileNumber,
+        projectName,
+        date: selectedDate,
+        timeSlot: selectedTimeSlot
+      });
+    } else {
+      setErrorMessage(res.message || 'Failed to confirm appointment. Please try again.');
+    }
   };
 
   return (
@@ -207,6 +249,25 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       ) : (
         /* 2-Column Booking Form Widget (Light Theme) */
         <form onSubmit={handleSubmit} className="relative z-10 space-y-10">
+          {/* Honeypot field for spam protection */}
+          <input
+            type="text"
+            name="website"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            className="hidden"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+          />
+
+          {errorMessage && (
+            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono-tech rounded-sm flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
             {/* =========================================================
                 LEFT COLUMN: STEP 1 - Your Details
@@ -477,16 +538,25 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
           <div className="pt-4 border-t border-gray-200">
             <button
               type="submit"
-              disabled={!isBookingReady}
+              disabled={!isBookingReady || isSubmitting}
               className={`w-full py-4 px-8 rounded-sm font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-3 ${
-                isBookingReady
+                isBookingReady && !isSubmitting
                   ? 'opacity-100 bg-gradient-to-r from-[#D4A373] via-[#E5A93B] to-[#F4D06F] text-[#08090B] shadow-[0_4px_25px_rgba(212,163,115,0.4)] hover:scale-[1.02] cursor-pointer'
                   : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              <Sparkles className="w-4 h-4" />
-              <span>BOOK CONSULTATION →</span>
-              <ArrowRight className="w-4 h-4" />
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>CONFIRMING APPOINTMENT...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  <span>BOOK CONSULTATION →</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         </form>
