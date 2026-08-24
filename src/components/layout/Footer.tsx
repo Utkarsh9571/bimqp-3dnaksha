@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
               <img
                 src="/logo-side.jpeg"
                 alt="3D Naksha Logo"
-                className="h-11 sm:h-13 w-auto max-w-[260px] object-contain transition-transform group-hover:scale-[1.02] duration-300"
+                className="h-11 sm:h-13 w-auto max-w-[260px] object-contain transition-transform group-hover:scale-[1.02] duration-300 rounded-xl"
               />
             </a>
 

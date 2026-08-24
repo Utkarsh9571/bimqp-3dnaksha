@@ -43,7 +43,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="06"
+          number="10"
           badgeText="AEC Stakeholders"
           badgeVariant="amber"
           title="Built for the AEC"

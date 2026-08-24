@@ -7,6 +7,7 @@ import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScr
 import type { PortfolioItem } from './types';
 
 // Lazy-load below-the-fold sections and heavy interactive widgets
+const AboutSection = lazy(() => import('./components/sections/AboutSection'));
 const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
 const FeatureCardsGrid = lazy(() => import('./components/sections/FeatureCardsGrid'));
 const LifecycleJourney = lazy(() => import('./components/sections/LifecycleJourney'));
@@ -90,7 +91,10 @@ export function App() {
 
         {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
         <Suspense fallback={<SectionFallback />}>
-          {/* Section 2: Experience the Unbuilt */}
+          {/* Section 2: About 3D Naksha */}
+          <AboutSection onOpenConsultation={handleOpenConsultation} />
+
+          {/* Section 2.5: Experience the Unbuilt */}
           <ExperienceUnbuilt />
 
           {/* Section 2.5: 3-Column Core Features Grid */}

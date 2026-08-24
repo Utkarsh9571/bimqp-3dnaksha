@@ -112,7 +112,7 @@ export const FeatureCardsGrid: React.FC = () => {
         {/* Section Heading */}
         <div className="mb-14">
           <SectionHeading
-            number="02"
+            number="06"
             badgeText="Core Visualization Pillars"
             badgeVariant="amber"
             title="Engineered for Spatial"

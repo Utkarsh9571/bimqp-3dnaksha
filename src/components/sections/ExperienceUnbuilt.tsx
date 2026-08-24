@@ -61,11 +61,11 @@ export const ExperienceUnbuilt: React.FC = () => {
   const currentProject = comparisonProjects[activeProjectIndex];
 
   return (
-    <section id="about" className="bg-brand-canvas relative border-t border-gray-200">
+    <section id="experience-unbuilt" className="bg-brand-canvas relative border-t border-gray-200">
       {/* Intro Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-6 relative z-10">
         <SectionHeading
-          number="01"
+          number="05"
           badgeText="Visual Evolution"
           badgeVariant="amber"
           title="Experience the"
@@ -185,7 +185,7 @@ export const ExperienceUnbuilt: React.FC = () => {
         /* --- TABLET / DESKTOP VIEW (>=768px): Full 280vh Sticky Storytelling Container --- */
         <div ref={stickyContainerRef} className="relative h-[280vh]">
           {/* Sticky Viewport Anchor */}
-          <div className="sticky top-0 h-screen h-[100dvh] w-full flex flex-col justify-center z-20 overflow-hidden py-3 sm:py-0">
+          <div className="sticky top-0 h-screen h-[50dvh] w-full flex flex-col justify-center z-20 overflow-hidden py-3 sm:py-0">
             {/* Ambient Background Grid */}
             <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
 

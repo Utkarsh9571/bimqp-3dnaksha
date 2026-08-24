@@ -33,7 +33,7 @@ export const LifecycleJourney: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="03"
+          number="07"
           badgeText="AEC Lifecycle"
           badgeVariant="blue"
           title="The Connected AEC"
