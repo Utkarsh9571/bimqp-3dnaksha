@@ -5,7 +5,7 @@ const path = require('path');
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const artifactDir = 'C:\\Users\\danish\\.gemini\\antigravity-ide\\brain\\e5c61172-ccc5-4493-822b-fd5431c4da27';
 
-function capture(url, outputFile, windowSize = '1440,1080') {
+function capture(url, outputFile, windowSize = '1440,1200') {
   return new Promise((resolve, reject) => {
     const proc = spawn(chromePath, [
       '--headless=new',
@@ -27,10 +27,10 @@ function capture(url, outputFile, windowSize = '1440,1080') {
 }
 
 async function run() {
-  const file = path.join(artifactDir, 'experience_unbuilt_05_verified.png');
+  const file = path.join(artifactDir, 'about_section_final_closing.png');
   try {
-    await capture('http://localhost:5173/#experience-unbuilt', file, '1440,1080');
-    console.log('Successfully captured 05 Visual Evolution screenshot!');
+    await capture('http://localhost:5173/#about', file, '1440,1200');
+    console.log('Successfully captured final About section!');
   } catch (err) {
     console.error('Capture error:', err);
   }
