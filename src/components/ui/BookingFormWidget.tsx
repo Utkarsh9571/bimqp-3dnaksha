@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ChevronLeft,
-  ChevronRight,
-  Clock,
   CheckCircle2,
-  Calendar as CalendarIcon,
-  ArrowRight,
   Sparkles,
   Building2,
   Mail,
   Phone,
   User,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  CalendarCheck
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
-
 import { submitToGoogleAppsScript } from '../../config/forms';
+import { HUBSPOT_MEETINGS_URL } from '../../config/scheduling';
 
 interface BookingFormWidgetProps {
   onBookingComplete?: (details: {
@@ -24,56 +20,37 @@ interface BookingFormWidgetProps {
     workEmail: string;
     mobileNumber: string;
     projectName: string;
-    date: Date;
-    timeSlot: string;
   }) => void;
   className?: string;
 }
-
-const TIME_SLOTS = [
-  '10:00 AM',
-  '11:30 AM',
-  '02:00 PM',
-  '03:30 PM',
-  '05:00 PM',
-  '06:30 PM'
-];
-
-const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   onBookingComplete,
   className = ''
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const step2Ref = useRef<HTMLDivElement>(null);
 
-  // Step 1: User Details
+  // Step 1: User Details State
   const [fullName, setFullName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [projectName, setProjectName] = useState('');
 
-  // Step 2: Date & Time
-  const [currentMonthDate, setCurrentMonthDate] = useState(() => new Date(2026, 7, 1)); // August 2026 baseline
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
-
-  // Submission / Loading / Error state
-  const [isBooked, setIsBooked] = useState(false);
+  // Submission State
+  const [isStep1Submitted, setIsStep1Submitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
 
-  // Validation
+  // Validation for Step 1
   const isStep1Valid =
     fullName.trim().length >= 2 &&
     workEmail.includes('@') &&
     mobileNumber.trim().length >= 7 &&
     projectName.trim().length >= 2;
 
-  const isBookingReady = isStep1Valid && selectedDate !== null && selectedTimeSlot !== null;
-
-  // 4. GSAP ScrollTrigger Entrance Animation (opacity 0->1, scale 0.96->1, ~0.5s ease-out)
+  // Entrance Animation
   useEffect(() => {
     const isReduced = prefersReducedMotion();
     const card = cardRef.current;
@@ -104,45 +81,38 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     };
   }, []);
 
-  // Calendar Calculation Helpers
-  const year = currentMonthDate.getFullYear();
-  const month = currentMonthDate.getMonth();
+  // Embed HubSpot Meetings Script Loader
+  useEffect(() => {
+    const scriptId = 'hs-meetings-embed-script';
 
-  const firstDayIndex = new Date(year, month, 1).getDay();
-  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+    const embedMeetingWidget = () => {
+      const container = document.querySelector('.meetings-iframe-container');
+      if (!container) return;
 
-  const prevMonth = () => {
-    setCurrentMonthDate(new Date(year, month - 1, 1));
-  };
+      // If container exists and does not have an iframe loaded yet
+      if (!container.querySelector('iframe')) {
+        const existingScript = document.getElementById(scriptId);
+        if (existingScript) {
+          existingScript.remove();
+        }
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'text/javascript';
+        script.src = 'https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js';
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    };
 
-  const nextMonth = () => {
-    setCurrentMonthDate(new Date(year, month + 1, 1));
-  };
+    embedMeetingWidget();
+  }, []);
 
-  const monthName = currentMonthDate.toLocaleString('default', { month: 'long' });
-
-  const handleDateSelect = (dayNum: number) => {
-    const newDate = new Date(year, month, dayNum);
-    setSelectedDate(newDate);
-    // Auto-select first slot if none selected yet
-    if (!selectedTimeSlot) {
-      setSelectedTimeSlot(TIME_SLOTS[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isBookingReady || !selectedDate || !selectedTimeSlot || isSubmitting) return;
+    if (!isStep1Valid || isSubmitting) return;
 
     setErrorMessage(null);
     setIsSubmitting(true);
-
-    const formattedDateStr = `${selectedDate.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })} @ ${selectedTimeSlot}`;
 
     const nameParts = fullName.trim().split(' ');
     const firstName = nameParts[0] || fullName.trim();
@@ -158,32 +128,36 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       email: workEmail.trim(),
       phone: formattedPhone,
       projectName: projectName.trim(),
-      bookingDate: formattedDateStr,
-      projectDetails: `Project: ${projectName.trim()} | Session: ${formattedDateStr}`,
+      projectDetails: `Project Lead: ${projectName.trim()} | Submitted via Step 1 Lead Capture`,
       website: honeypot
     });
 
     setIsSubmitting(false);
 
     if (res.success) {
-      setIsBooked(true);
+      setIsStep1Submitted(true);
       onBookingComplete?.({
         fullName,
         workEmail,
         mobileNumber,
-        projectName,
-        date: selectedDate,
-        timeSlot: selectedTimeSlot
+        projectName
       });
+
+      // Smooth scroll to Step 2 on mobile devices
+      if (window.innerWidth < 1024 && step2Ref.current) {
+        step2Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     } else {
-      setErrorMessage(res.message || 'Failed to confirm appointment. Please try again.');
+      setErrorMessage(res.message || 'Failed to save details. Please try again.');
     }
   };
+
+  const isPlaceholderUrl = HUBSPOT_MEETINGS_URL.includes('your-hubspot-handle');
 
   return (
     <div
       ref={cardRef}
-      className={`rounded-2xl bg-white border border-gray-200/90 p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden corner-crosshairs ${className}`}
+      className={`rounded-2xl bg-white border border-gray-200/90 p-5 sm:p-8 md:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden corner-crosshairs ${className}`}
     >
       {/* Blueprint Ambient Grid Accent */}
       <div className="absolute inset-0 bg-blueprint-grid opacity-20 pointer-events-none" />
@@ -192,375 +166,237 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       <div className="absolute -top-32 -right-32 w-80 h-80 bg-gradient-to-bl from-[#D4A373]/15 to-transparent blur-[80px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-[#0284C7]/10 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
-      {isBooked ? (
-        /* Booking Confirmation Success State */
-        <div className="relative z-10 py-12 text-center max-w-xl mx-auto space-y-6 animate-fadeIn">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-300 mx-auto flex items-center justify-center text-[#059669] shadow-sm">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+        {/* =========================================================
+            LEFT COLUMN: STEP 1 - Your Details Form
+           ========================================================= */}
+        <div className="lg:col-span-5 flex flex-col justify-between">
+          <form onSubmit={handleStep1Submit} className="space-y-6">
+            {/* Honeypot field for spam protection */}
+            <input
+              type="text"
+              name="website"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
 
-          <div>
-            <div className="font-mono-tech text-xs text-[#059669] tracking-widest uppercase mb-1 font-bold">
-              CONSULTATION CONFIRMED
-            </div>
-            <h3 className="font-display font-bold text-3xl text-[#0A0A0A] tracking-tight">
-              We&apos;re Ready for Your Project
-            </h3>
-          </div>
-
-          <div className="p-6 rounded-lg bg-gray-50 border border-gray-200 text-left space-y-3 font-mono-tech text-xs">
-            <div className="flex justify-between pb-2 border-b border-gray-200">
-              <span className="text-gray-500">Client:</span>
-              <span className="text-gray-900 font-bold">{fullName}</span>
-            </div>
-            <div className="flex justify-between pb-2 border-b border-gray-200">
-              <span className="text-gray-500">Project:</span>
-              <span className="text-gray-900 font-bold">{projectName}</span>
-            </div>
-            <div className="flex justify-between pb-2 border-b border-gray-200">
-              <span className="text-gray-500">Date & Time:</span>
-              <span className="text-[#9A6A38] font-bold">
-                {selectedDate?.toLocaleDateString('en-US', {
-                  weekday: 'short',
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric'
-                })}{' '}
-                @ {selectedTimeSlot}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Confirmation Sent To:</span>
-              <span className="text-[#0284C7] font-semibold">{workEmail}</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setIsBooked(false);
-              setSelectedDate(null);
-              setSelectedTimeSlot(null);
-            }}
-            className="px-6 py-2.5 rounded-sm bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 font-mono-tech text-xs tracking-wider uppercase transition-all cursor-pointer font-semibold"
-          >
-            Book Another Consultation Session
-          </button>
-        </div>
-      ) : (
-        /* 2-Column Booking Form Widget (Light Theme) */
-        <form onSubmit={handleSubmit} className="relative z-10 space-y-10">
-          {/* Honeypot field for spam protection */}
-          <input
-            type="text"
-            name="website"
-            value={honeypot}
-            onChange={(e) => setHoneypot(e.target.value)}
-            className="hidden"
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-          />
-
-          {errorMessage && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono-tech rounded-sm flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-            {/* =========================================================
-                LEFT COLUMN: STEP 1 - Your Details
-               ========================================================= */}
-            <div className="lg:col-span-5 flex flex-col justify-between">
-              <div>
-                {/* Step Tag */}
-                <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#9A6A38] tracking-[0.2em] uppercase font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9A6A38]" />
-                  <span>STEP 1 OF 2</span>
-                </div>
-
-                <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
-                  Your Details
-                </h3>
-
-                <p className="text-xs text-[#4B5563] font-mono-tech mb-6 leading-relaxed">
-                  Provide your contact details so our visualization team can prepare for your project discussion.
-                </p>
-
-                {/* Input Fields */}
-                <div className="space-y-4">
-                  {/* Full Name */}
-                  <div>
-                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-[#9A6A38]" />
-                      <span>Full Name *</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Ar. Vikram Malhotra"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#9A6A38] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  {/* Work Email */}
-                  <div>
-                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[#0284C7]" />
-                      <span>Work Email *</span>
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="name@firm.com"
-                      value={workEmail}
-                      onChange={(e) => setWorkEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#0284C7] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  {/* Mobile Number */}
-                  <div>
-                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-[#059669]" />
-                      <span>Mobile Number *</span>
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={mobileNumber}
-                      onChange={(e) => setMobileNumber(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#059669] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  {/* Project Name */}
-                  <div>
-                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5 text-[#D97706]" />
-                      <span>Project Name *</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Skyline Residence & BIM Review"
-                      value={projectName}
-                      onChange={(e) => setProjectName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#D97706] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
+            <div>
+              {/* Step Tag */}
+              <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#9A6A38] tracking-[0.2em] uppercase font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9A6A38]" />
+                <span>STEP 1 OF 2</span>
               </div>
 
-              {/* Status Validation Pill */}
-              <div className="pt-4 mt-4 border-t border-gray-200 font-mono-tech text-xs flex items-center gap-2">
+              <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
+                Your Details
+              </h3>
+
+              <p className="text-xs text-[#4B5563] font-mono-tech mb-6 leading-relaxed">
+                Provide your contact details so our visualization team can prepare for your project discussion.
+              </p>
+
+              {errorMessage && (
+                <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono-tech rounded-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {/* Input Fields */}
+              <div className="space-y-4">
+                {/* Full Name */}
+                <div>
+                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[#9A6A38]" />
+                    <span>Full Name *</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ar. Vikram Malhotra"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    disabled={isStep1Submitted}
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#9A6A38] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                  />
+                </div>
+
+                {/* Work Email */}
+                <div>
+                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-[#0284C7]" />
+                    <span>Work Email *</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@firm.com"
+                    value={workEmail}
+                    onChange={(e) => setWorkEmail(e.target.value)}
+                    disabled={isStep1Submitted}
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#0284C7] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                  />
+                </div>
+
+                {/* Mobile Number */}
+                <div>
+                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[#059669]" />
+                    <span>Mobile Number *</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+91 98765 43210"
+                    value={mobileNumber}
+                    onChange={(e) => setMobileNumber(e.target.value)}
+                    disabled={isStep1Submitted}
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#059669] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                  />
+                </div>
+
+                {/* Project Name */}
+                <div>
+                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-[#D97706]" />
+                    <span>Project Name *</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Skyline Residence & BIM Review"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    disabled={isStep1Submitted}
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#D97706] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Step 1 Submit / Status Section */}
+            <div className="pt-4 border-t border-gray-200 space-y-3">
+              {isStep1Submitted ? (
+                <div className="p-3.5 rounded-sm bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-mono-tech text-[#059669]">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-[#059669]" />
+                    <span>Step 1 Lead Saved to Sheet</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsStep1Submitted(false)}
+                    className="text-[11px] underline text-gray-600 hover:text-gray-900 cursor-pointer"
+                  >
+                    Edit Details
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!isStep1Valid || isSubmitting}
+                  className={`w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
+                    isStep1Valid && !isSubmitting
+                      ? 'opacity-100 bg-gradient-to-r from-[#D4A373] via-[#E5A93B] to-[#F4D06F] text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
+                      : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>SAVING DETAILS...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>SAVE DETAILS & PROCEED TO CALENDAR →</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              <div className="font-mono-tech text-[11px] flex items-center gap-2">
                 <span
                   className={`w-2 h-2 rounded-full ${
-                    isStep1Valid ? 'bg-[#059669]' : 'bg-gray-400'
+                    isStep1Submitted
+                      ? 'bg-[#059669]'
+                      : isStep1Valid
+                      ? 'bg-[#9A6A38]'
+                      : 'bg-gray-400'
                   }`}
                 />
-                <span className={isStep1Valid ? 'text-[#059669] font-bold' : 'text-gray-500'}>
-                  {isStep1Valid ? 'Step 1 Completed' : 'Complete all fields to proceed'}
+                <span className={isStep1Submitted ? 'text-[#059669] font-bold' : isStep1Valid ? 'text-[#9A6A38] font-bold' : 'text-gray-500'}>
+                  {isStep1Submitted
+                    ? 'Step 1 Lead Saved — Select time slot on right'
+                    : isStep1Valid
+                    ? 'Ready to save lead details'
+                    : 'Fill all required fields above'}
                 </span>
               </div>
             </div>
+          </form>
+        </div>
 
-            {/* =========================================================
-                RIGHT COLUMN: STEP 2 - Date & Time Calendar
-               ========================================================= */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
-              <div>
-                {/* Step Tag */}
-                <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#0284C7] tracking-[0.2em] uppercase font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]" />
-                  <span>STEP 2 OF 2</span>
-                </div>
+        {/* =========================================================
+            RIGHT COLUMN: STEP 2 - Embedded HubSpot Meetings Widget
+           ========================================================= */}
+        <div ref={step2Ref} className="lg:col-span-7 flex flex-col justify-between">
+          <div>
+            {/* Step Tag */}
+            <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#0284C7] tracking-[0.2em] uppercase font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]" />
+              <span>STEP 2 OF 2</span>
+            </div>
 
-                <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
-                  Select Date & Time
-                </h3>
+            <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
+              Select Date & Time
+            </h3>
 
-                <p className="text-xs text-[#4B5563] font-mono-tech mb-6 leading-relaxed">
-                  Choose your preferred consultation date and live virtual walkthrough session slot.
-                </p>
+            <p className="text-xs text-[#4B5563] font-mono-tech mb-4 leading-relaxed">
+              Choose your preferred consultation date and live virtual walkthrough session slot via HubSpot.
+            </p>
 
-                {/* Sub-grid: Month Calendar (Left) & Time Slots (Right) */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 p-5 rounded-lg bg-[#F9FAFB] border border-gray-200">
-                  {/* Functional Month Calendar */}
-                  <div className="sm:col-span-7">
-                    {/* Calendar Month Navigation Header */}
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-200 font-mono-tech text-xs text-gray-900">
-                      <span className="font-bold text-sm">
-                        {monthName} {year}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={prevMonth}
-                          className="w-[44px] h-[44px] min-w-[44px] min-h-[44px] shrink-0 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
-                          aria-label="Previous Month"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={nextMonth}
-                          className="w-[44px] h-[44px] min-w-[44px] min-h-[44px] shrink-0 rounded-sm border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer shadow-2xs"
-                          aria-label="Next Month"
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Day of Week Headers */}
-                    <div className="grid grid-cols-7 gap-1 text-center font-mono-tech text-[10px] text-gray-500 mb-2 uppercase font-semibold">
-                      {DAYS_OF_WEEK.map((d) => (
-                        <div key={d} className="py-1">
-                          {d}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Day Grid with Min 44px Touch Target Cells */}
-                    <div className="grid grid-cols-7 gap-1 text-center font-mono-tech text-xs">
-                      {/* Empty padding cells for first week offset */}
-                      {Array.from({ length: firstDayIndex }).map((_, idx) => (
-                        <div key={`empty-${idx}`} className="h-[44px] w-full" />
-                      ))}
-
-                      {/* Month Days */}
-                      {Array.from({ length: totalDaysInMonth }).map((_, idx) => {
-                        const dayNum = idx + 1;
-                        const isSelected =
-                          selectedDate?.getDate() === dayNum &&
-                          selectedDate?.getMonth() === month &&
-                          selectedDate?.getFullYear() === year;
-
-                        return (
-                          <div key={`day-${dayNum}`} className="flex items-center justify-center h-[44px] min-h-[44px]">
-                            <button
-                              type="button"
-                              onClick={() => handleDateSelect(dayNum)}
-                              className={`h-9 w-9 sm:h-8 sm:w-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
-                                isSelected
-                                  ? 'bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-bold shadow-md scale-110'
-                                  : 'text-gray-800 hover:bg-gray-200/70 active:scale-95'
-                              }`}
-                            >
-                              {dayNum}
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Time Slots Panel / Placeholder */}
-                  <div className="sm:col-span-5 sm:border-l sm:border-gray-200 sm:pl-5 flex flex-col justify-center">
-                    {selectedDate ? (
-                      /* Revealed Time Slots */
-                      <div className="space-y-3 animate-fadeIn">
-                        <div className="flex items-center justify-between font-mono-tech text-[11px] text-gray-600">
-                          <span className="flex items-center gap-1 font-semibold">
-                            <Clock className="w-3.5 h-3.5 text-[#9A6A38]" />
-                            <span>Available Slots</span>
-                          </span>
-                          <span className="text-[#9A6A38] font-bold">
-                            {selectedDate.toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
-                          {TIME_SLOTS.map((slot) => {
-                            const isSlotActive = selectedTimeSlot === slot;
-                            return (
-                              <button
-                                key={slot}
-                                type="button"
-                                onClick={() => setSelectedTimeSlot(slot)}
-                                className={`min-h-[44px] py-2.5 px-3 rounded-sm text-xs font-mono-tech transition-all text-center cursor-pointer border flex items-center justify-center ${
-                                  isSlotActive
-                                    ? 'bg-blue-50 border-[#0284C7] text-[#0284C7] font-bold shadow-2xs'
-                                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
-                                }`}
-                              >
-                                {slot}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ) : (
-                      /* Placeholder State */
-                      <div className="h-full min-h-[140px] flex flex-col items-center justify-center p-4 text-center border border-dashed border-gray-300 rounded-sm">
-                        <CalendarIcon className="w-6 h-6 text-gray-400 mb-2 animate-pulse" />
-                        <span className="font-mono-tech text-[11px] text-gray-500 tracking-wider uppercase leading-tight font-medium">
-                          SELECT A DATE TO VIEW SLOTS
-                        </span>
-                      </div>
-                    )}
-                  </div>
+            {/* Developer Notice if default placeholder link is active */}
+            {isPlaceholderUrl && (
+              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-mono-tech rounded-sm flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+                <div>
+                  <span className="font-bold">HubSpot Embed Placeholder:</span> Update{' '}
+                  <code className="bg-amber-100 px-1 py-0.5 rounded text-amber-900 font-mono">
+                    src/config/scheduling.ts
+                  </code>{' '}
+                  with your real HubSpot Meetings URL to connect your live booking calendar.
                 </div>
               </div>
+            )}
 
-              {/* Status Date Selection Pill */}
-              <div className="pt-4 mt-4 border-t border-gray-200 font-mono-tech text-xs flex items-center justify-between text-gray-600">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      selectedDate && selectedTimeSlot ? 'bg-[#059669]' : 'bg-gray-400'
-                    }`}
-                  />
-                  <span>
-                    {selectedDate && selectedTimeSlot
-                      ? `Selected: ${selectedDate.toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric'
-                        })} @ ${selectedTimeSlot}`
-                      : 'Pick a date and session slot'}
-                  </span>
-                </div>
-              </div>
+            {/* HubSpot Meetings Official Embed Container */}
+            <div className="rounded-xl border border-gray-200 bg-[#F9FAFB] p-2 sm:p-4 overflow-hidden shadow-2xs">
+              <div
+                className="meetings-iframe-container w-full min-h-[580px] sm:min-h-[620px]"
+                data-src={
+                  HUBSPOT_MEETINGS_URL.includes('embed=true')
+                    ? HUBSPOT_MEETINGS_URL
+                    : HUBSPOT_MEETINGS_URL.includes('?')
+                    ? `${HUBSPOT_MEETINGS_URL}&embed=true`
+                    : `${HUBSPOT_MEETINGS_URL}?embed=true`
+                }
+              />
             </div>
           </div>
 
-          {/* =========================================================
-              3. FULL-WIDTH "BOOK CONSULTATION →" BUTTON
-             ========================================================= */}
-          <div className="pt-4 border-t border-gray-200">
-            <button
-              type="submit"
-              disabled={!isBookingReady || isSubmitting}
-              className={`w-full py-4 px-8 rounded-sm font-display font-bold text-sm sm:text-base tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-3 ${
-                isBookingReady && !isSubmitting
-                  ? 'opacity-100 bg-gradient-to-r from-[#D4A373] via-[#E5A93B] to-[#F4D06F] text-[#08090B] shadow-[0_4px_25px_rgba(212,163,115,0.4)] hover:scale-[1.02] cursor-pointer'
-                  : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>CONFIRMING APPOINTMENT...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  <span>BOOK CONSULTATION →</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+          {/* Status Footer for Step 2 */}
+          <div className="pt-4 mt-4 border-t border-gray-200 font-mono-tech text-xs flex items-center justify-between text-gray-600">
+            <div className="flex items-center gap-2">
+              <CalendarCheck className="w-4 h-4 text-[#0284C7]" />
+              <span>Powered by HubSpot Meetings Scheduler</span>
+            </div>
           </div>
-        </form>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@
  * (Extensions > Apps Script > Deploy > New Deployment > Web App > Anyone access).
  */
 
-export const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQuad_Y_rT4b53fBHhH0C66mmBlwGPy49fGJnUOD9Z0n3OsGJjtZeFQHnI2kQevFRx/exec';
+export const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqCAY9Y1MCcY0t7jJ98-SyIugZ1jJr2wHLQaiL5dmWPVQvkxOkvVbKca-EtLDgeRug/exec';
 
 export interface FormSubmissionPayload {
   formType: 'modal_consultation' | 'homepage_booking';
