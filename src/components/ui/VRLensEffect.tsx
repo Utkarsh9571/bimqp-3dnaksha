@@ -140,7 +140,7 @@ export const VRLensEffect: React.FC<VRLensEffectProps> = ({
           {/* Top Optical Telemetry */}
           <div className="flex items-center justify-center">
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-xs border border-white/10 font-mono-tech text-[9px] sm:text-[10px] text-white/60 tracking-[0.2em] uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-blue-light animate-pulse" />
               <span>{fovLabel}</span>
             </div>
           </div>

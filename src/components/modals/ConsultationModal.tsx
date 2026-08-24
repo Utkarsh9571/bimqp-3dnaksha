@@ -121,17 +121,17 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
             {/* Header */}
             <div className="mb-6 pr-10">
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-mono-tech text-xs text-[#9A6A38] uppercase font-bold tracking-wider">
+                <span className="font-mono-tech text-xs text-accent-bronze uppercase font-bold tracking-wider">
                   Project Inquiry //
                 </span>
                 <Badge variant="amber" size="sm">
                   Direct Review
                 </Badge>
               </div>
-              <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A]">
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-brand-primary">
                 Step Inside Your Project
               </h3>
-              <p className="text-sm text-[#4B5563] mt-1">
+              <p className="text-sm text-brand-muted mt-1">
                 Share your architectural visualization and BIM requirements with our team.
               </p>
             </div>
@@ -170,7 +170,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     placeholder="e.g. Rajesh"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-gray-400 focus:outline-none focus:border-[#9A6A38] transition-colors"
+                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
                 <div>
@@ -183,7 +183,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     placeholder="e.g. Mehta"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-gray-400 focus:outline-none focus:border-[#9A6A38] transition-colors"
+                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   placeholder="e.g. rajesh@designstudio.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-gray-400 focus:outline-none focus:border-[#9A6A38] transition-colors"
+                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                 />
               </div>
 
@@ -212,7 +212,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   <select
                     value={formData.countryCode}
                     onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-[#0A0A0A] focus:outline-none focus:border-[#9A6A38] transition-colors shrink-0"
+                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors shrink-0"
                   >
                     {COUNTRY_CODES.map((c) => (
                       <option key={c.code} value={c.code}>
@@ -226,7 +226,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     placeholder="98765 43210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-gray-400 focus:outline-none focus:border-[#9A6A38] transition-colors"
+                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
               </div>
@@ -241,7 +241,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   placeholder="Share details regarding your building type, timeline, spatial goals, or visualization deliverables."
                   value={formData.projectDetails}
                   onChange={(e) => setFormData({ ...formData, projectDetails: e.target.value })}
-                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] placeholder:text-gray-400 focus:outline-none focus:border-[#9A6A38] transition-colors resize-none"
+                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors resize-none"
                 ></textarea>
               </div>
 
@@ -253,7 +253,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 <select
                   value={formData.referralSource}
                   onChange={(e) => setFormData({ ...formData, referralSource: e.target.value })}
-                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#9A6A38] transition-colors"
+                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors"
                 >
                   <option value="">Select an option...</option>
                   {REFERRAL_OPTIONS.map((opt) => (
@@ -268,7 +268,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-2 py-3.5 px-6 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] hover:from-[#E2B689] hover:to-[#F4D06F] text-[#08090B] font-display font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full mt-2 py-3.5 px-6 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -285,11 +285,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
               <div className="flex items-center justify-center gap-6 pt-2 text-[11px] font-mono-tech text-gray-500">
                 <span className="flex items-center gap-1">
-                  <MessageSquare className="w-3.5 h-3.5 text-[#059669]" />
+                  <MessageSquare className="w-3.5 h-3.5 text-accent-emerald" />
                   Direct Review Pipeline
                 </span>
                 <span className="flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5 text-[#0284C7]" />
+                  <Layers className="w-3.5 h-3.5 text-accent-blue" />
                   BIMQP Ecosystem
                 </span>
               </div>
@@ -298,7 +298,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         ) : (
           /* Confirmation Success State */
           <div className="text-center py-8 px-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-300 flex items-center justify-center mx-auto mb-6 text-[#059669]">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-300 flex items-center justify-center mx-auto mb-6 text-accent-emerald">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
@@ -306,27 +306,27 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               INQUIRY RECEIVED
             </Badge>
 
-            <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A] mb-3">
+            <h3 className="font-display text-2xl sm:text-3xl font-bold text-brand-primary mb-3">
               Project Inquiry Submitted!
             </h3>
 
-            <p className="text-sm text-[#4B5563] max-w-md mx-auto mb-6 leading-relaxed">
-              Thank you, <strong className="text-[#0A0A0A]">{formData.firstName} {formData.lastName}</strong>. Our architectural visualization team will review your requirements and connect with you at <strong className="text-[#0A0A0A]">{formData.email}</strong>.
+            <p className="text-sm text-brand-muted max-w-md mx-auto mb-6 leading-relaxed">
+              Thank you, <strong className="text-brand-primary">{formData.firstName} {formData.lastName}</strong>. Our architectural visualization team will review your requirements and connect with you at <strong className="text-brand-primary">{formData.email}</strong>.
             </p>
 
             <div className="bg-gray-50 border border-gray-200 rounded-sm p-4 text-left max-w-md mx-auto mb-6 text-xs space-y-1.5 font-mono-tech text-gray-600">
               <div className="flex justify-between">
                 <span>Client Name:</span>
-                <span className="text-[#0A0A0A] font-medium">{formData.firstName} {formData.lastName}</span>
+                <span className="text-brand-primary font-medium">{formData.firstName} {formData.lastName}</span>
               </div>
               <div className="flex justify-between">
                 <span>Contact Phone:</span>
-                <span className="text-[#9A6A38] font-bold">{formData.countryCode} {formData.phone}</span>
+                <span className="text-accent-bronze font-bold">{formData.countryCode} {formData.phone}</span>
               </div>
               {formData.referralSource && (
                 <div className="flex justify-between">
                   <span>Source:</span>
-                  <span className="text-[#0284C7] font-medium">{formData.referralSource}</span>
+                  <span className="text-accent-blue font-medium">{formData.referralSource}</span>
                 </div>
               )}
             </div>

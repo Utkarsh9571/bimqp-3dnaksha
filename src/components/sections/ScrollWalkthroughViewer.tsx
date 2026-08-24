@@ -314,12 +314,12 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
         <div className="max-w-xl mx-auto space-y-5">
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-[#38BDF8]">
-              <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-accent-blue-light">
+              <span className="w-2 h-2 rounded-full bg-accent-blue-light animate-pulse" />
               <span>SPATIAL BIM WALKTHROUGH</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-              Sequential <span className="text-[#38BDF8] font-medium">Room Perspectives</span>
+              Sequential <span className="text-accent-blue-light font-medium">Room Perspectives</span>
             </h2>
             <p className="text-white/70 text-xs sm:text-sm">
               Tap room zones below to inspect architectural volume and sightlines.
@@ -335,7 +335,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
 
             {/* Frame Badge Overlay */}
             <div className="absolute top-3 left-3 z-20 pointer-events-none flex items-center gap-2 px-2.5 py-1 rounded-sm bg-black/80 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-blue-light" />
               <span>FRAME {String(currentFrame).padStart(3, '0')} / {String(totalFrames - 1).padStart(3, '0')}</span>
             </div>
           </div>
@@ -356,7 +356,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
                   onClick={() => handleMobileZoneSelect(zone.ratio)}
                   className={`min-h-[44px] py-2 px-1 rounded-xs transition-all flex flex-col items-center justify-center cursor-pointer text-center ${
                     isActive
-                      ? 'bg-[#38BDF8]/20 border border-[#38BDF8] text-[#38BDF8] font-bold shadow-xs'
+                      ? 'bg-accent-blue-light/20 border border-accent-blue-light text-accent-blue-light font-bold shadow-xs'
                       : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
                   }`}
                 >
@@ -394,13 +394,13 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       {/* Preloading Overlay if using external network assets */}
       {!isLoaded && (
         <div className="absolute inset-0 bg-[#08090B] z-40 flex flex-col items-center justify-center p-6 text-center">
-          <div className="w-12 h-12 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-4" />
+          <div className="w-12 h-12 rounded-full border-2 border-accent-blue-light/20 border-t-[#38BDF8] animate-spin mb-4" />
           <div className="font-mono-tech text-xs text-white tracking-widest uppercase mb-2">
             PRELOADING HIGH-RES FRAMES // {loadProgress}%
           </div>
           <div className="w-64 h-1.5 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#38BDF8] via-[#D4A373] to-[#E5A93B] transition-all duration-150"
+              className="h-full bg-gradient-to-r from-accent-blue-light via-accent-bronze-light to-accent-amber-gold transition-all duration-150"
               style={{ width: `${loadProgress}%` }}
             />
           </div>
@@ -414,16 +414,16 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       {/* Top Left: Frame Index Counter */}
       <div className="absolute top-4 sm:top-8 left-4 sm:left-8 z-30 pointer-events-auto">
         <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-3 py-1.5 sm:px-4 sm:py-2.5 shadow-2xl corner-crosshairs flex items-center gap-2 sm:gap-3">
-          <div className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-accent-blue-light animate-pulse" />
           <div className="font-mono-tech text-[11px] sm:text-xs text-white tracking-wider">
             FRAME{' '}
-            <span className="text-[#38BDF8] font-bold">
+            <span className="text-accent-blue-light font-bold">
               {String(currentFrame).padStart(3, '0')}
             </span>{' '}
             / {String(totalFrames - 1).padStart(3, '0')}
           </div>
           <span className="text-white/20">|</span>
-          <div className="font-mono-tech text-[10px] text-[#D4A373]">
+          <div className="font-mono-tech text-[10px] text-accent-bronze-light">
             {Math.round(progressRatio * 100)}% SCRUB
           </div>
         </div>
@@ -432,15 +432,15 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       {/* Top Center: Bearing Compass Widget */}
       <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto hidden md:block">
         <div className="rounded-sm bg-[#08090B]/85 backdrop-blur-md border border-white/15 px-5 py-2 shadow-2xl flex items-center gap-3 font-mono-tech text-xs text-white">
-          <Compass className="w-4 h-4 text-[#D4A373]" />
+          <Compass className="w-4 h-4 text-accent-bronze-light" />
           <div className="flex items-center gap-2 text-[11px]">
             <span className="text-[#8A92A0]">BEARING</span>
             <div className="flex items-center gap-1">
               <Navigation
-                className="w-3.5 h-3.5 text-[#38BDF8] transition-transform duration-75"
+                className="w-3.5 h-3.5 text-accent-blue-light transition-transform duration-75"
                 style={{ transform: `rotate(${compassAngle}deg)` }}
               />
-              <span className="text-[#38BDF8] font-bold">
+              <span className="text-accent-blue-light font-bold">
                 {String((compassAngle + 360) % 360).padStart(3, '0')}°
               </span>
             </div>
@@ -463,10 +463,10 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
           {/* Header */}
           <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10 font-mono-tech text-[11px]">
             <div className="flex items-center gap-1.5 text-white">
-              <Layers className="w-3.5 h-3.5 text-[#38BDF8]" />
+              <Layers className="w-3.5 h-3.5 text-accent-blue-light" />
               <span className="font-bold tracking-wider">FLOORPLAN</span>
             </div>
-            <span className="text-[10px] text-[#10B981] font-semibold">LEVEL 01</span>
+            <span className="text-[10px] text-accent-emerald-light font-semibold">LEVEL 01</span>
           </div>
 
           {/* Mini-map Graphic Canvas */}
@@ -476,7 +476,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
               className="w-full h-full opacity-60"
               viewBox="0 0 100 80"
               fill="none"
-              stroke="#38BDF8"
+              stroke="var(--accent-blue-light)"
               strokeWidth="0.8"
             >
               {/* Outer Walls */}
@@ -488,8 +488,8 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
               <rect x="12" y="15" width="15" height="15" strokeDasharray="1,1" stroke="#D4A373" />
               <rect x="42" y="48" width="16" height="20" strokeDasharray="1,1" stroke="#D4A373" />
               {/* Door openings */}
-              <circle cx="35" cy="22" r="3" stroke="#10B981" strokeDasharray="1,1" />
-              <circle cx="50" cy="40" r="3" stroke="#10B981" strokeDasharray="1,1" />
+              <circle cx="35" cy="22" r="3" stroke="var(--accent-emerald-light)" strokeDasharray="1,1" />
+              <circle cx="50" cy="40" r="3" stroke="var(--accent-emerald-light)" strokeDasharray="1,1" />
             </svg>
 
             {/* Live Observer Position with Dynamic Rotating FOV Vision Cone */}
@@ -517,9 +517,9 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
                     </radialGradient>
                   </defs>
                   <polygon points="50,50 15,5 85,5" fill="url(#fovConeGrad)" />
-                  <line x1="50" y1="50" x2="15" y2="5" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
-                  <line x1="50" y1="50" x2="85" y2="5" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
-                  <path d="M 25,12 A 40,40 0 0,1 75,12" stroke="#38BDF8" strokeWidth="0.6" fill="none" opacity="0.4" />
+                  <line x1="50" y1="50" x2="15" y2="5" stroke="var(--accent-blue-light)" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
+                  <line x1="50" y1="50" x2="85" y2="5" stroke="var(--accent-blue-light)" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.8" />
+                  <path d="M 25,12 A 40,40 0 0,1 75,12" stroke="var(--accent-blue-light)" strokeWidth="0.6" fill="none" opacity="0.4" />
                 </svg>
               </div>
 
@@ -533,8 +533,8 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
 
           {/* Telemetry Footer */}
           <div className="flex items-center justify-between font-mono-tech text-[9px] text-[#8A92A0] mt-2">
-            <div className="flex items-center gap-1 text-[#38BDF8]">
-              <Radio className="w-2.5 h-2.5 text-[#38BDF8] animate-pulse" />
+            <div className="flex items-center gap-1 text-accent-blue-light">
+              <Radio className="w-2.5 h-2.5 text-accent-blue-light animate-pulse" />
               <span>LIVE TRACKING</span>
             </div>
             <span>ZONE A-3</span>
@@ -545,7 +545,7 @@ export const ScrollWalkthroughViewer: React.FC<ScrollWalkthroughViewerProps> = (
       {/* Bottom Center: Scroll Hint Indicator */}
       <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
         <div className="rounded-full bg-[#08090B]/80 backdrop-blur-md border border-white/15 px-5 py-2 shadow-2xl flex items-center gap-2.5 font-mono-tech text-xs text-white">
-          <span className="w-2 h-2 rounded-full bg-[#E5A93B] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-accent-amber-gold animate-pulse" />
           <span className="tracking-widest uppercase text-[11px]">
             SCROLL DOWN TO SCRUB WALKTHROUGH
           </span>

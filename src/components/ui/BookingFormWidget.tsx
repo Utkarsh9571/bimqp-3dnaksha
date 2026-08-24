@@ -163,8 +163,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       <div className="absolute inset-0 bg-blueprint-grid opacity-20 pointer-events-none" />
 
       {/* Decorative Warm Corner Glow */}
-      <div className="absolute -top-32 -right-32 w-80 h-80 bg-gradient-to-bl from-[#D4A373]/15 to-transparent blur-[80px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-[#0284C7]/10 to-transparent blur-[80px] rounded-full pointer-events-none" />
+      <div className="absolute -top-32 -right-32 w-80 h-80 bg-gradient-to-bl from-accent-bronze-light/15 to-transparent blur-[80px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-accent-blue/10 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
         {/* =========================================================
@@ -186,16 +186,16 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
 
             <div>
               {/* Step Tag */}
-              <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#9A6A38] tracking-[0.2em] uppercase font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#9A6A38]" />
+              <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-accent-bronze tracking-[0.2em] uppercase font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-bronze" />
                 <span>STEP 1 OF 2</span>
               </div>
 
-              <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
+              <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-primary tracking-tight mb-2">
                 Your Details
               </h3>
 
-              <p className="text-xs text-[#4B5563] font-mono-tech mb-6 leading-relaxed">
+              <p className="text-xs text-brand-muted font-mono-tech mb-6 leading-relaxed">
                 Provide your contact details so our visualization team can prepare for your project discussion.
               </p>
 
@@ -211,7 +211,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                 {/* Full Name */}
                 <div>
                   <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[#9A6A38]" />
+                    <User className="w-3.5 h-3.5 text-accent-bronze" />
                     <span>Full Name *</span>
                   </label>
                   <input
@@ -221,14 +221,14 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#9A6A38] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
                   />
                 </div>
 
                 {/* Work Email */}
                 <div>
                   <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#0284C7]" />
+                    <Mail className="w-3.5 h-3.5 text-accent-blue" />
                     <span>Work Email *</span>
                   </label>
                   <input
@@ -238,14 +238,14 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     value={workEmail}
                     onChange={(e) => setWorkEmail(e.target.value)}
                     disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#0284C7] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-blue text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
                   />
                 </div>
 
                 {/* Mobile Number */}
                 <div>
                   <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[#059669]" />
+                    <Phone className="w-3.5 h-3.5 text-accent-emerald" />
                     <span>Mobile Number *</span>
                   </label>
                   <input
@@ -255,14 +255,14 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     value={mobileNumber}
                     onChange={(e) => setMobileNumber(e.target.value)}
                     disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#059669] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
                   />
                 </div>
 
                 {/* Project Name */}
                 <div>
                   <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-[#D97706]" />
+                    <Building2 className="w-3.5 h-3.5 text-accent-amber" />
                     <span>Project Name *</span>
                   </label>
                   <input
@@ -272,7 +272,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
                     disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-[#D97706] text-[#0A0A0A] text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-amber text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
                   />
                 </div>
               </div>
@@ -281,9 +281,9 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
             {/* Step 1 Submit / Status Section */}
             <div className="pt-4 border-t border-gray-200 space-y-3">
               {isStep1Submitted ? (
-                <div className="p-3.5 rounded-sm bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-mono-tech text-[#059669]">
+                <div className="p-3.5 rounded-sm bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-mono-tech text-accent-emerald">
                   <div className="flex items-center gap-2 font-semibold">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-[#059669]" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-accent-emerald" />
                     <span>Step 1 Lead Saved to Sheet</span>
                   </div>
                   <button
@@ -300,7 +300,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                   disabled={!isStep1Valid || isSubmitting}
                   className={`w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
                     isStep1Valid && !isSubmitting
-                      ? 'opacity-100 bg-gradient-to-r from-[#D4A373] via-[#E5A93B] to-[#F4D06F] text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
+                      ? 'opacity-100 bg-gradient-to-r from-accent-bronze-light via-accent-amber-gold to-accent-amber-bright text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
                       : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -322,13 +322,13 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                 <span
                   className={`w-2 h-2 rounded-full ${
                     isStep1Submitted
-                      ? 'bg-[#059669]'
+                      ? 'bg-accent-emerald'
                       : isStep1Valid
-                      ? 'bg-[#9A6A38]'
+                      ? 'bg-accent-bronze'
                       : 'bg-gray-400'
                   }`}
                 />
-                <span className={isStep1Submitted ? 'text-[#059669] font-bold' : isStep1Valid ? 'text-[#9A6A38] font-bold' : 'text-gray-500'}>
+                <span className={isStep1Submitted ? 'text-accent-emerald font-bold' : isStep1Valid ? 'text-accent-bronze font-bold' : 'text-gray-500'}>
                   {isStep1Submitted
                     ? 'Step 1 Lead Saved — Select time slot on right'
                     : isStep1Valid
@@ -346,16 +346,16 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
         <div ref={step2Ref} className="lg:col-span-7 flex flex-col justify-between">
           <div>
             {/* Step Tag */}
-            <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-[#0284C7] tracking-[0.2em] uppercase font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7]" />
+            <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-accent-blue tracking-[0.2em] uppercase font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
               <span>STEP 2 OF 2</span>
             </div>
 
-            <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#0A0A0A] tracking-tight mb-2">
+            <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-primary tracking-tight mb-2">
               Select Date & Time
             </h3>
 
-            <p className="text-xs text-[#4B5563] font-mono-tech mb-4 leading-relaxed">
+            <p className="text-xs text-brand-muted font-mono-tech mb-4 leading-relaxed">
               Choose your preferred consultation date and live virtual walkthrough session slot via HubSpot.
             </p>
 
@@ -391,7 +391,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
           {/* Status Footer for Step 2 */}
           <div className="pt-4 mt-4 border-t border-gray-200 font-mono-tech text-xs flex items-center justify-between text-gray-600">
             <div className="flex items-center gap-2">
-              <CalendarCheck className="w-4 h-4 text-[#0284C7]" />
+              <CalendarCheck className="w-4 h-4 text-accent-blue" />
               <span>Powered by HubSpot Meetings Scheduler</span>
             </div>
           </div>

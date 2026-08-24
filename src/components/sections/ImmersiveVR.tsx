@@ -192,7 +192,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
     <section
       ref={sectionRef}
       id="vr-centerpiece"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-b border-gray-200 select-none"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-b border-gray-200 select-none"
     >
       {/* Blueprint grid accent */}
       <div className="absolute inset-0 bg-blueprint-grid opacity-30 pointer-events-none"></div>
@@ -257,15 +257,15 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                     >
                       {/* Pulsing ring */}
                       <span
-                        className={`absolute w-10 h-10 rounded-full opacity-75 ${isActive ? 'animate-ping bg-[#D97706]' : 'bg-[#0284C7]/40'
+                        className={`absolute w-10 h-10 rounded-full opacity-75 ${isActive ? 'animate-ping bg-accent-amber' : 'bg-accent-blue/40'
                           }`}
                       ></span>
 
                       {/* Core Button */}
                       <span
                         className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors ${isActive
-                            ? 'bg-[#D4A373] text-[#08090B] border-white'
-                            : 'bg-black/90 text-[#38BDF8] border-[#38BDF8]'
+                            ? 'bg-accent-bronze-light text-[#08090B] border-white'
+                            : 'bg-black/90 text-accent-blue-light border-accent-blue-light'
                           }`}
                       >
                         {spot.icon}
@@ -281,7 +281,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
               </div>
 
               {/* HUD Badge on Canvas */}
-              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[11px] font-mono-tech text-[#E5A93B] flex items-center gap-2 pointer-events-none z-30">
+              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[11px] font-mono-tech text-accent-amber-gold flex items-center gap-2 pointer-events-none z-30">
                 <Glasses className="w-3.5 h-3.5" />
                 <span>IMMERSIVE SPATIAL WALKTHROUGH</span>
               </div>
@@ -291,7 +291,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                 className={`absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[10px] sm:text-[11px] font-mono-tech text-white/80 flex items-center gap-1.5 pointer-events-none z-30 transition-opacity duration-500 ${hasInteracted ? 'opacity-40 hover:opacity-100' : 'opacity-90 animate-pulse'
                   }`}
               >
-                <MoveHorizontal className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <MoveHorizontal className="w-3.5 h-3.5 text-accent-blue-light" />
                 <span>DRAG TO PAN 360° VIEW</span>
               </div>
 
@@ -299,21 +299,21 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
               <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-sm border border-gray-200 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300 z-30 pointer-events-auto">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#D97706] animate-pulse"></span>
-                    <span className="font-mono-tech text-[10px] text-[#9A6A38] uppercase font-bold tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-accent-amber animate-pulse"></span>
+                    <span className="font-mono-tech text-[10px] text-accent-bronze uppercase font-bold tracking-wider">
                       Point 0{activeHotspot + 1} // {hotspots[activeHotspot].tag}
                     </span>
                   </div>
-                  <h4 className="font-display font-bold text-[#0A0A0A] text-sm sm:text-base mt-0.5">
+                  <h4 className="font-display font-bold text-brand-primary text-sm sm:text-base mt-0.5">
                     {hotspots[activeHotspot].title}
                   </h4>
-                  <p className="text-xs text-[#4B5563] mt-1 max-w-xl">
+                  <p className="text-xs text-brand-muted mt-1 max-w-xl">
                     {hotspots[activeHotspot].description}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-mono-tech text-[#0284C7] font-semibold">
+                  <span className="text-[11px] font-mono-tech text-accent-blue font-semibold">
                     Click markers &amp; drag to explore
                   </span>
                 </div>
@@ -337,25 +337,25 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                 </Badge>
               </div>
 
-              <h3 className="font-display text-xl font-bold text-[#0A0A0A]">
+              <h3 className="font-display text-xl font-bold text-brand-primary">
                 Experience Spaces Before Building
               </h3>
 
-              <p className="text-xs text-[#4B5563] leading-relaxed">
+              <p className="text-xs text-brand-muted leading-relaxed">
                 Walking through a simulated 3D environment helps clients, architects, and builders align on design decisions and evaluate layouts before committing to on-site work.
               </p>
 
               <div className="space-y-2.5 pt-2">
                 <div className="flex items-start gap-2 text-xs text-gray-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0 mt-0.5" />
                   <span>Understand spatial proportions and room scale intuitively</span>
                 </div>
                 <div className="flex items-start gap-2 text-xs text-gray-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-accent-blue shrink-0 mt-0.5" />
                   <span>Review material palettes and lighting options visually</span>
                 </div>
                 <div className="flex items-start gap-2 text-xs text-gray-800">
-                  <CheckCircle2 className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
                   <span>Facilitate clear communication between project stakeholders</span>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
               <div className="pt-4 border-t border-gray-200">
                 <button
                   onClick={onOpenConsultation}
-                  className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] hover:from-[#E2B689] hover:to-[#F4D06F] text-[#08090B] font-display font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Discuss Immersive VR Services</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -384,7 +384,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                     className="flex items-center justify-between p-2.5 rounded-sm bg-gray-50 border border-gray-200 text-xs"
                   >
                     <div>
-                      <div className="text-[#0A0A0A] font-semibold">{d.name}</div>
+                      <div className="text-brand-primary font-semibold">{d.name}</div>
                       <div className="text-[10px] text-gray-500 font-mono-tech">{d.note}</div>
                     </div>
                     <Badge variant="neutral" size="sm" className="text-[10px]">

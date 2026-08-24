@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
   };
 
   return (
-    <footer className="bg-[#F0EFEA] border-t border-gray-300 text-[#4B5563] pt-16 pb-12 relative overflow-hidden">
+    <footer className="bg-brand-subtle border-t border-gray-300 text-brand-muted pt-16 pb-12 relative overflow-hidden">
       {/* Background Architectural Grid Accent */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
 
@@ -31,22 +31,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
               aria-label="3D Naksha Homepage"
             >
               <img
-                src="/logo-up.jpeg"
+                src="/logo-side.jpeg"
                 alt="3D Naksha Logo"
-                className="h-12 sm:h-14 md:h-16 w-auto max-w-[260px] object-contain rounded-lg transition-transform group-hover:scale-[1.03] duration-300 shadow-2xs"
+                className="h-11 sm:h-13 w-auto max-w-[260px] object-contain transition-transform group-hover:scale-[1.02] duration-300"
               />
             </a>
 
-            <p className="text-sm text-[#4B5563] leading-relaxed max-w-sm">
+            <p className="text-sm text-brand-muted leading-relaxed max-w-sm">
               Architectural visualization, 3D BIM modeling, and immersive VR services. Helping stakeholders experience spaces, evaluate designs, and make confident construction decisions before breaking ground.
             </p>
 
             {/* BIMQP Tag */}
             <div className="p-3 rounded-sm bg-white border border-gray-200 shadow-2xs max-w-sm">
               <div className="flex items-center justify-between text-xs font-mono-tech mb-1">
-                <span className="text-[#0A0A0A] font-bold">BIMQP Ecosystem</span>
-                <span className="text-[#059669] flex items-center gap-1 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669]"></span>
+                <span className="text-brand-primary font-bold">BIMQP Ecosystem</span>
+                <span className="text-accent-emerald flex items-center gap-1 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
                   Ecosystem Brand
                 </span>
               </div>
@@ -58,7 +58,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
 
           {/* Quick Nav */}
           <div>
-            <h4 className="font-display text-[#0A0A0A] font-bold text-sm tracking-wider uppercase mb-4">
+            <h4 className="font-display text-brand-primary font-bold text-sm tracking-wider uppercase mb-4">
               Explore
             </h4>
             <ul className="space-y-2 text-xs font-mono-tech">
@@ -83,7 +83,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
                 </a>
               </li>
               <li>
-                <a href="#vr-centerpiece" onClick={(e) => { e.preventDefault(); smoothScrollTo('#vr-centerpiece', { offset: -70 }); }} className="hover:text-[#9A6A38] text-[#9A6A38] font-semibold transition-colors">
+                <a href="#vr-centerpiece" onClick={(e) => { e.preventDefault(); smoothScrollTo('#vr-centerpiece', { offset: -70 }); }} className="hover:text-accent-bronze text-accent-bronze font-semibold transition-colors">
                   Immersive VR Services
                 </a>
               </li>
@@ -102,7 +102,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
 
           {/* Capabilities */}
           <div>
-            <h4 className="font-display text-[#0A0A0A] font-bold text-sm tracking-wider uppercase mb-4">
+            <h4 className="font-display text-brand-primary font-bold text-sm tracking-wider uppercase mb-4">
               Capabilities
             </h4>
             <ul className="space-y-2 text-xs font-mono-tech">
@@ -118,22 +118,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenConsultation }) => {
 
           {/* Contact & Consultation */}
           <div>
-            <h4 className="font-display text-[#0A0A0A] font-bold text-sm tracking-wider uppercase mb-4">
+            <h4 className="font-display text-brand-primary font-bold text-sm tracking-wider uppercase mb-4">
               Inquiry
             </h4>
             <div className="space-y-3 text-xs font-mono-tech">
               <div className="flex items-start gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#9A6A38] shrink-0 mt-0.5" />
-                <span className="text-[#0A0A0A] font-medium">{BRAND_CONFIG.email}</span>
+                <Mail className="w-3.5 h-3.5 text-accent-bronze shrink-0 mt-0.5" />
+                <span className="text-brand-primary font-medium">{BRAND_CONFIG.email}</span>
               </div>
               <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#0284C7] shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 text-accent-blue shrink-0 mt-0.5" />
                 <span className="leading-snug">IT- 9(A), EPIP, IT Park Rd<br/>Sitapura, Jaipur, RJ 302022</span>
               </div>
               <div className="pt-2">
                 <button
                   onClick={onOpenConsultation}
-                  className="w-full py-2.5 px-3 rounded-sm bg-white hover:bg-gray-100 border border-gray-300 text-[#0A0A0A] font-mono-tech text-xs font-semibold tracking-wider text-center transition-all cursor-pointer shadow-2xs"
+                  className="w-full py-2.5 px-3 rounded-sm bg-white hover:bg-gray-100 border border-gray-300 text-brand-primary font-mono-tech text-xs font-semibold tracking-wider text-center transition-all cursor-pointer shadow-2xs"
                 >
                   Discuss Project Scope
                 </button>

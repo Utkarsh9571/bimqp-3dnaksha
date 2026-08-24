@@ -57,7 +57,7 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
             alt={item.title}
             className="w-full h-full object-cover max-h-[60vh] lg:max-h-[85vh]"
           />
-          <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/10 text-xs font-mono-tech text-[#E5A93B] flex items-center gap-2">
+          <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/10 text-xs font-mono-tech text-accent-amber-gold flex items-center gap-2">
             <Maximize2 className="w-3.5 h-3.5" />
             <span>High-Resolution Visualization</span>
           </div>
@@ -75,16 +75,16 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
               </Badge>
             </div>
 
-            <h3 className="font-display text-2xl font-bold text-[#0A0A0A] mb-2 leading-tight">
+            <h3 className="font-display text-2xl font-bold text-brand-primary mb-2 leading-tight">
               {item.title}
             </h3>
 
-            <div className="flex items-center gap-1.5 text-xs text-[#9A6A38] font-mono-tech font-semibold mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-[#D97706]" />
+            <div className="flex items-center gap-1.5 text-xs text-accent-bronze font-mono-tech font-semibold mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-accent-amber" />
               <span>{item.deliverableType}</span>
             </div>
 
-            <p className="text-sm text-[#4B5563] leading-relaxed mb-6">
+            <p className="text-sm text-brand-muted leading-relaxed mb-6">
               {item.description}
             </p>
 
@@ -96,7 +96,7 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
               <ul className="space-y-1.5">
                 {item.features.map((feat, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-xs text-gray-800">
-                    <Check className="w-3.5 h-3.5 text-[#0284C7] shrink-0 mt-0.5" />
+                    <Check className="w-3.5 h-3.5 text-accent-blue shrink-0 mt-0.5" />
                     <span>{feat}</span>
                   </li>
                 ))}
@@ -128,7 +128,7 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
                 onClose();
                 onSelectProjectForQuote(item);
               }}
-              className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase transition-all hover:opacity-90 cursor-pointer text-center shadow-sm"
+              className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase transition-all hover:opacity-90 cursor-pointer text-center shadow-sm"
             >
               Inquire About Similar Visualization
             </button>

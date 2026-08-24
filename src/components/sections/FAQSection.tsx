@@ -31,7 +31,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
     <section
       ref={sectionRef}
       id="faq"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
@@ -65,7 +65,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
               onClick={() => setActiveTab(tab.id)}
               className={`px-3.5 py-1.5 rounded-sm text-xs font-mono-tech transition-all cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-[#D4A373] text-[#08090B] font-bold shadow-xs'
+                  ? 'bg-accent-bronze-light text-[#08090B] font-bold shadow-xs'
                   : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:bg-gray-50'
               }`}
             >
@@ -90,7 +90,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
                 key={faq.id}
                 className={`rounded-md border transition-all duration-300 ${
                   isOpen
-                    ? 'bg-white border-[#9A6A38] shadow-sm'
+                    ? 'bg-white border-accent-bronze shadow-sm'
                     : 'bg-white border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -99,11 +99,11 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
                   className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-display font-semibold text-[#0A0A0A] text-base sm:text-lg leading-snug">
+                  <span className="font-display font-semibold text-brand-primary text-base sm:text-lg leading-snug">
                     {faq.question}
                   </span>
                   <span
-                    className={`w-7 h-7 rounded-xs bg-gray-100 border border-gray-200 flex items-center justify-center text-[#9A6A38] shrink-0 transition-transform duration-300 ${
+                    className={`w-7 h-7 rounded-xs bg-gray-100 border border-gray-200 flex items-center justify-center text-accent-bronze shrink-0 transition-transform duration-300 ${
                       isOpen ? 'rotate-180 bg-amber-50' : ''
                     }`}
                   >
@@ -112,7 +112,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 text-sm text-[#4B5563] leading-relaxed border-t border-gray-100 animate-fadeIn">
+                  <div className="px-5 sm:px-6 pb-6 pt-1 text-sm text-brand-muted leading-relaxed border-t border-gray-100 animate-fadeIn">
                     <p>{faq.answer}</p>
                   </div>
                 )}
@@ -124,7 +124,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
         {/* Bottom Help Contact Strip */}
         <div className="mt-12 text-center p-6 rounded-md bg-gray-100 border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <div className="text-[#0A0A0A] text-sm font-semibold">
+            <div className="text-brand-primary text-sm font-semibold">
               Have a specific question about your upcoming project?
             </div>
             <div className="text-xs text-gray-600">

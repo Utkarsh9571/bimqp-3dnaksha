@@ -133,13 +133,13 @@ export const FullBleedShowcase: React.FC = () => {
         <div className="max-w-xl mx-auto space-y-6">
           {/* Header & Intro */}
           <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-[#38BDF8]">
-              <Glasses className="w-3.5 h-3.5 text-[#38BDF8]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono-tech text-accent-blue-light">
+              <Glasses className="w-3.5 h-3.5 text-accent-blue-light" />
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
               <span>IMMERSIVE VR & 3D BIM TWIN</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-              Explore the <span className="text-[#38BDF8] font-medium">Digital Twin</span>
+              Explore the <span className="text-accent-blue-light font-medium">Digital Twin</span>
             </h2>
             <p className="text-white/70 text-xs sm:text-sm leading-relaxed">
               Step inside unbuilt spaces at true 1:1 scale before breaking ground.
@@ -152,7 +152,7 @@ export const FullBleedShowcase: React.FC = () => {
               <Suspense
                 fallback={
                   <div className="w-full h-full bg-[#08090B] flex flex-col items-center justify-center">
-                    <div className="w-8 h-8 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-3" />
+                    <div className="w-8 h-8 rounded-full border-2 border-accent-blue-light/20 border-t-[#38BDF8] animate-spin mb-3" />
                     <span className="font-mono-tech text-[10px] text-gray-400 tracking-widest uppercase">
                       LOADING 3D ENGINE
                     </span>
@@ -166,11 +166,11 @@ export const FullBleedShowcase: React.FC = () => {
             {/* Mobile Top HUD Telemetry Overlay */}
             <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white">
-                <Box className="w-3 h-3 text-[#38BDF8]" />
+                <Box className="w-3 h-3 text-accent-blue-light" />
                 <span>WEBGL 3D</span>
               </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-[#38BDF8]/30 text-[10px] font-mono-tech text-[#38BDF8]">
-                <Activity className="w-3 h-3 text-[#38BDF8] animate-pulse" />
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-accent-blue-light/30 text-[10px] font-mono-tech text-accent-blue-light">
+                <Activity className="w-3 h-3 text-accent-blue-light animate-pulse" />
                 <span>AZM: {cameraTelemetry.azimuth.toFixed(0)}°</span>
                 <span className="text-white/30">|</span>
                 <span>DST: {cameraTelemetry.distance.toFixed(0)}m</span>
@@ -180,11 +180,11 @@ export const FullBleedShowcase: React.FC = () => {
             {/* Mobile Bottom Badge */}
             <div className="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between pointer-events-none">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-white/80">
-                <Radio className="w-3 h-3 text-[#10B981] animate-pulse" />
+                <Radio className="w-3 h-3 text-accent-emerald-light animate-pulse" />
                 <span>1:1 SCALE EXPLORER</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-[#E5A93B]">
-                <Sparkles className="w-3 h-3 text-[#E5A93B]" />
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono-tech text-accent-amber-gold">
+                <Sparkles className="w-3 h-3 text-accent-amber-gold" />
                 <span>LIVE MODEL</span>
               </div>
             </div>
@@ -209,7 +209,7 @@ export const FullBleedShowcase: React.FC = () => {
             <Suspense
               fallback={
                 <div className="w-full h-full bg-[#08090B] flex flex-col items-center justify-center">
-                  <div className="w-10 h-10 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-3" />
+                  <div className="w-10 h-10 rounded-full border-2 border-accent-blue-light/20 border-t-[#38BDF8] animate-spin mb-3" />
                   <span className="font-mono-tech text-[10px] text-gray-400 tracking-widest uppercase">
                     INITIALIZING 3D ENGINE
                   </span>
@@ -250,7 +250,7 @@ export const FullBleedShowcase: React.FC = () => {
             
             {/* Ambient Headset Title Prompt */}
             <div className="absolute bottom-[-15%] flex flex-col items-center gap-2 font-mono-tech text-center pointer-events-none">
-              <span className="text-[10px] sm:text-xs text-[#38BDF8] tracking-[0.3em] uppercase bg-[#08090B]/80 px-4 py-1.5 rounded-full border border-[#38BDF8]/30 shadow-lg animate-pulse">
+              <span className="text-[10px] sm:text-xs text-accent-blue-light tracking-[0.3em] uppercase bg-[#08090B]/80 px-4 py-1.5 rounded-full border border-accent-blue-light/30 shadow-lg animate-pulse">
                 SCROLL TO DIVE THROUGH LENS
               </span>
             </div>
@@ -275,9 +275,9 @@ export const FullBleedShowcase: React.FC = () => {
             </div>
             
             {/* Telemetry HUD */}
-            <div className="hidden md:flex flex-col items-end gap-1 font-mono-tech text-[10px] text-[#38BDF8] tracking-widest bg-black/50 backdrop-blur-md border border-[#38BDF8]/20 px-3 py-2 rounded-sm">
+            <div className="hidden md:flex flex-col items-end gap-1 font-mono-tech text-[10px] text-accent-blue-light tracking-widest bg-black/50 backdrop-blur-md border border-accent-blue-light/20 px-3 py-2 rounded-sm">
               <div className="flex items-center gap-2">
-                <Activity className="w-3 h-3 text-[#38BDF8]" />
+                <Activity className="w-3 h-3 text-accent-blue-light" />
                 <span>TELEMETRY ACTIVE</span>
               </div>
               <div className="text-white/60 mt-1">AZM: {cameraTelemetry.azimuth.toFixed(1)}°</div>
@@ -287,20 +287,20 @@ export const FullBleedShowcase: React.FC = () => {
           </div>
 
           {/* Bottom Content */}
-          <div className="max-w-xl bg-black/40 backdrop-blur-md border-l-2 border-[#38BDF8] pl-6 py-4 rounded-r-lg shadow-2xl">
+          <div className="max-w-xl bg-black/40 backdrop-blur-md border-l-2 border-accent-blue-light pl-6 py-4 rounded-r-lg shadow-2xl">
             <h2 className="text-3xl md:text-5xl font-light text-white tracking-tight mb-3">
-              Explore the <span className="text-[#38BDF8] font-medium">Digital Twin</span>
+              Explore the <span className="text-accent-blue-light font-medium">Digital Twin</span>
             </h2>
             <p className="text-white/80 text-sm md:text-base max-w-lg mb-5 leading-relaxed font-sans">
               Drag to orbit, scroll to zoom, and pan across the architectural model. Experience true 1:1 scale before a single brick is laid.
             </p>
             <div className="flex items-center gap-4 text-xs font-mono-tech text-white/60 tracking-wider">
               <div className="flex items-center gap-1.5 bg-black/50 px-3 py-1.5 rounded-md border border-white/10">
-                <Box className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <Box className="w-3.5 h-3.5 text-accent-blue-light" />
                 <span>WEBGL 3D</span>
               </div>
               <div className="flex items-center gap-1.5 bg-black/50 px-3 py-1.5 rounded-md border border-white/10">
-                <Sparkles className="w-3.5 h-3.5 text-[#E5A93B]" />
+                <Sparkles className="w-3.5 h-3.5 text-accent-amber-gold" />
                 <span>INTERACTIVE ORBIT</span>
               </div>
             </div>

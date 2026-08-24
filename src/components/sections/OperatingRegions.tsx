@@ -102,7 +102,7 @@ export const OperatingRegions: React.FC = () => {
     <section
       ref={sectionRef}
       id="operating-regions"
-      className="py-16 md:py-20 bg-[#F8F7F5] border-t border-b border-gray-200 relative overflow-hidden"
+      className="py-16 md:py-20 bg-brand-canvas border-t border-b border-gray-200 relative overflow-hidden"
     >
       {/* Background Architectural Grid */}
       <div className="absolute inset-0 bg-grid-dense opacity-40 pointer-events-none" />
@@ -111,11 +111,11 @@ export const OperatingRegions: React.FC = () => {
         {/* Section Top Header Strip */}
         <div className="operating-header flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 pb-6 border-b border-gray-200">
           <div>
-            <div className="flex items-center gap-2 font-mono-tech text-xs text-[#0284C7] font-semibold tracking-widest uppercase mb-2">
+            <div className="flex items-center gap-2 font-mono-tech text-xs text-accent-blue font-semibold tracking-widest uppercase mb-2">
               <MapPin className="w-3.5 h-3.5" />
               <span>REGIONAL PRESENCE & COVERAGE</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-brand-primary">
               Our Headquarters
             </h2>
           </div>
@@ -158,19 +158,19 @@ export const OperatingRegions: React.FC = () => {
                     </div>
 
                     {/* Large City Name */}
-                    <h3 className="font-display font-black text-3xl sm:text-4xl text-[#0A0A0A] tracking-tight mb-3 group-hover:text-[#9A6A38] transition-colors">
+                    <h3 className="font-display font-black text-3xl sm:text-4xl text-brand-primary tracking-tight mb-3 group-hover:text-accent-bronze transition-colors">
                       {region.city}
                     </h3>
 
                     {/* Coverage Scope */}
-                    <p className="text-xs text-[#4B5563] font-mono-tech mb-4 leading-relaxed">
+                    <p className="text-xs text-brand-muted font-mono-tech mb-4 leading-relaxed">
                       {region.coverageDetail}
                     </p>
                   </div>
 
                   {/* Bottom: Coordinates */}
                   <div className="pt-4 border-t border-gray-200 font-mono-tech text-[11px] text-gray-500 flex items-center gap-2">
-                    <Navigation className="w-3 h-3 text-[#0284C7] shrink-0" />
+                    <Navigation className="w-3 h-3 text-accent-blue shrink-0" />
                     <span>{region.coordinates}</span>
                   </div>
                 </div>

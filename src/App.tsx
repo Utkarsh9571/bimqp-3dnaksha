@@ -26,7 +26,7 @@ const LightboxModal = lazy(() => import('./components/modals/LightboxModal'));
 // Lightweight placeholder for smooth suspense hydration
 const SectionFallback = () => (
   <div className="w-full py-16 flex items-center justify-center opacity-30">
-    <div className="w-6 h-6 rounded-full border-2 border-[#0284C7]/20 border-t-[#0284C7] animate-spin" />
+    <div className="w-6 h-6 rounded-full border-2 border-accent-blue/20 border-t-[#0284C7] animate-spin" />
   </div>
 );
 
@@ -70,7 +70,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F7F5] text-[#0A0A0A] selection:bg-[#D4A373]/30 selection:text-[#0A0A0A] flex flex-col">
+    <div className="min-h-screen bg-brand-canvas text-brand-primary selection:bg-accent-bronze-light/30 selection:text-brand-primary flex flex-col">
       {/* Fixed 3px Red-to-Blue-to-Purple Scroll Progress Bar */}
       <ScrollProgressBar height={3} />
 

@@ -40,7 +40,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = React.memo(({
     >
       <div className={`flex items-center gap-3 mb-4 ${align === 'center' ? 'justify-center' : 'justify-start'}`}>
         {number && (
-          <span className="font-mono-tech text-xs tracking-widest text-[#9A6A38] uppercase font-bold">
+          <span className="font-mono-tech text-xs tracking-widest text-accent-bronze uppercase font-bold">
             {number} //
           </span>
         )}
@@ -51,17 +51,17 @@ export const SectionHeading: React.FC<SectionHeadingProps> = React.memo(({
         )}
       </div>
 
-      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#0A0A0A] leading-[1.15]">
+      <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-brand-primary leading-[1.15]">
         {title}{' '}
         {highlightText && (
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9A6A38] via-[#D97706] to-[#B45309]">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-bronze via-accent-amber to-accent-bronze-dark">
             {highlightText}
           </span>
         )}
       </h2>
 
       {subtitle && (
-        <p className="mt-4 text-base md:text-lg text-[#4B5563] leading-relaxed max-w-2xl font-sans">
+        <p className="mt-4 text-base md:text-lg text-brand-muted leading-relaxed max-w-2xl font-sans">
           {subtitle}
         </p>
       )}

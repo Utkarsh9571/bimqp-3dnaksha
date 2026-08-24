@@ -26,7 +26,7 @@ export const LifecycleJourney: React.FC = () => {
     <section
       ref={sectionRef}
       id="mission"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       {/* Subtle grid background */}
       <div className="absolute inset-0 bg-grid-dense opacity-30 pointer-events-none"></div>
@@ -46,7 +46,7 @@ export const LifecycleJourney: React.FC = () => {
         <div className="hidden lg:block relative mb-12 mt-4 px-8">
           <div className="h-1 w-full bg-gray-200 relative rounded-full overflow-hidden">
             <div
-              className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-[#0284C7] via-[#D97706] to-[#B45309] shadow-xs transition-all duration-200"
+              className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-accent-blue via-accent-amber to-accent-bronze-dark shadow-xs transition-all duration-200"
               style={{ width: `${lineProgress}%` }}
             ></div>
           </div>
@@ -60,7 +60,7 @@ export const LifecycleJourney: React.FC = () => {
                   key={idx}
                   className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
                     isDotActive
-                      ? 'bg-[#D97706] border-white scale-125 shadow-sm'
+                      ? 'bg-accent-amber border-white scale-125 shadow-sm'
                       : 'bg-white border-gray-300'
                   }`}
                 ></div>
@@ -79,7 +79,7 @@ export const LifecycleJourney: React.FC = () => {
                 key={phase.phase}
                 className={`architectural-panel bg-white p-6 sm:p-7 rounded-lg relative group flex flex-col justify-between transition-all duration-500 hover-lift ${
                   isCurrentCard
-                    ? 'border-[#9A6A38] shadow-[0_10px_30px_rgba(154,106,56,0.12)]'
+                    ? 'border-accent-bronze shadow-[0_10px_30px_rgba(154,106,56,0.12)]'
                     : 'border-gray-200 shadow-xs'
                 }`}
                 style={{
@@ -115,11 +115,11 @@ export const LifecycleJourney: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="text-xs font-mono-tech uppercase font-bold tracking-widest text-[#9A6A38] mb-1">
+                  <div className="text-xs font-mono-tech uppercase font-bold tracking-widest text-accent-bronze mb-1">
                     PHASE {phase.phase}
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-[#0A0A0A] mb-2 group-hover:text-[#9A6A38] transition-colors">
+                  <h3 className="font-display text-xl font-bold text-brand-primary mb-2 group-hover:text-accent-bronze transition-colors">
                     {phase.title}
                   </h3>
 
@@ -127,7 +127,7 @@ export const LifecycleJourney: React.FC = () => {
                     {phase.subtitle}
                   </h4>
 
-                  <p className="text-xs text-[#4B5563] leading-relaxed mb-6">
+                  <p className="text-xs text-brand-muted leading-relaxed mb-6">
                     {phase.description}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export const LifecycleJourney: React.FC = () => {
           }}
         >
           <div className="space-y-1 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 font-mono-tech text-xs text-[#0284C7] font-semibold">
+            <div className="flex items-center justify-center md:justify-start gap-2 font-mono-tech text-xs text-accent-blue font-semibold">
               <span>BIMQP Ecosystem Pipeline Integration</span>
             </div>
             <p className="text-sm text-gray-900 font-medium">

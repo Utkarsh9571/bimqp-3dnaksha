@@ -79,7 +79,7 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
     <div className={`relative w-full h-full flex items-center justify-center overflow-hidden select-none ${className}`}>
       {/* Ambient Architectural Blueprint Glow behind Wireframe */}
       <div
-        className="absolute w-[80%] h-[75%] rounded-full bg-gradient-to-tr from-[#0284C7]/12 via-[#818CF8]/10 to-[#F59E0B]/10 blur-[130px] pointer-events-none transition-opacity duration-700"
+        className="absolute w-[80%] h-[75%] rounded-full bg-gradient-to-tr from-accent-blue/12 via-[#818CF8]/10 to-accent-amber-light/10 blur-[130px] pointer-events-none transition-opacity duration-700"
         style={{ opacity: 0.4 + progress * 0.6 }}
       />
 
@@ -189,12 +189,12 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
           {/* Ceiling Skylight Wireframe Box */}
           <polygon
             points="500,150 600,130 700,150 600,170"
-            stroke="#0284C7"
+            stroke="var(--accent-blue)"
             strokeWidth="1.8"
             className="draw-path"
           />
-          <line x1="500" y1="150" x2="700" y2="150" stroke="#0284C7" strokeDasharray="2 2" className="draw-path" />
-          <line x1="600" y1="130" x2="600" y2="170" stroke="#0284C7" strokeDasharray="2 2" className="draw-path" />
+          <line x1="500" y1="150" x2="700" y2="150" stroke="var(--accent-blue)" strokeDasharray="2 2" className="draw-path" />
+          <line x1="600" y1="130" x2="600" y2="170" stroke="var(--accent-blue)" strokeDasharray="2 2" className="draw-path" />
         </g>
 
         {/* Phase 3: Mezzanine / 2nd Floor Gallery & Cantilever Balcony */}
@@ -220,7 +220,7 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
           {/* Glass Railing Wireframe on Mezzanine */}
           <polyline
             points="260,420 600,475 850,425"
-            stroke="#0284C7"
+            stroke="var(--accent-blue)"
             strokeWidth="1.5"
             strokeDasharray="4 2"
             className="draw-path"
@@ -256,7 +256,7 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
         {/* Phase 5: Large Curtain Wall Windows & Partition Louvers */}
         <g className="phase-curtain-wall" stroke="#4B5563" strokeWidth="1.2" vectorEffect="non-scaling-stroke">
           {/* Left Wall Window Mullions */}
-          <line x1="200" y1="630" x2="200" y2="280" className="draw-path" stroke="#0284C7" strokeWidth="1.6" />
+          <line x1="200" y1="630" x2="200" y2="280" className="draw-path" stroke="var(--accent-blue)" strokeWidth="1.6" />
           <line x1="260" y1="590" x2="260" y2="310" className="draw-path" />
           <line x1="320" y1="550" x2="320" y2="340" className="draw-path" />
 
@@ -293,21 +293,21 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
           />
 
           {/* Coffee Table Prism */}
-          <polygon points="660,715 720,695 760,715 700,735" stroke="#0284C7" className="draw-path" />
-          <line x1="660" y1="715" x2="660" y2="700" stroke="#0284C7" className="draw-path" />
-          <line x1="720" y1="695" x2="720" y2="680" stroke="#0284C7" className="draw-path" />
-          <line x1="760" y1="715" x2="760" y2="700" stroke="#0284C7" className="draw-path" />
-          <line x1="700" y1="735" x2="700" y2="720" stroke="#0284C7" className="draw-path" />
-          <polygon points="660,700 720,680 760,700 700,720" stroke="#0284C7" className="draw-path" />
+          <polygon points="660,715 720,695 760,715 700,735" stroke="var(--accent-blue)" className="draw-path" />
+          <line x1="660" y1="715" x2="660" y2="700" stroke="var(--accent-blue)" className="draw-path" />
+          <line x1="720" y1="695" x2="720" y2="680" stroke="var(--accent-blue)" className="draw-path" />
+          <line x1="760" y1="715" x2="760" y2="700" stroke="var(--accent-blue)" className="draw-path" />
+          <line x1="700" y1="735" x2="700" y2="720" stroke="var(--accent-blue)" className="draw-path" />
+          <polygon points="660,700 720,680 760,700 700,720" stroke="var(--accent-blue)" className="draw-path" />
         </g>
 
         {/* Phase 7: Technical Dimension Callouts & Coordinate HUD Markers (Hidden on mobile <sm for crisp wireframe clarity) */}
         <g className="phase-annotations font-mono-tech text-[10px] fill-[#4B5563] pointer-events-none hidden sm:inline">
           {/* Target Elevation Marker */}
           <g transform="translate(600, 180)">
-            <circle cx="0" cy="0" r="14" stroke="#0284C7" strokeWidth="1.2" strokeDasharray="3 3" fill="none" />
-            <line x1="-18" y1="0" x2="18" y2="0" stroke="#0284C7" strokeWidth="1.2" />
-            <line x1="0" y1="-18" x2="0" y2="18" stroke="#0284C7" strokeWidth="1.2" />
+            <circle cx="0" cy="0" r="14" stroke="var(--accent-blue)" strokeWidth="1.2" strokeDasharray="3 3" fill="none" />
+            <line x1="-18" y1="0" x2="18" y2="0" stroke="var(--accent-blue)" strokeWidth="1.2" />
+            <line x1="0" y1="-18" x2="0" y2="18" stroke="var(--accent-blue)" strokeWidth="1.2" />
             <text x="24" y="4" fill="#0284C7" fontSize="11" fontWeight="bold" letterSpacing="1">APEX LVL +8.450M</text>
           </g>
 
@@ -346,11 +346,11 @@ export const WireframeBuildingInterior: React.FC<WireframeBuildingInteriorProps>
       {/* Real-time Assembly HUD Progress Overlay Badge */}
       <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-sm bg-white/90 backdrop-blur-md border border-gray-200 shadow-sm font-mono-tech text-[11px] text-gray-700">
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[#0284C7] animate-pulse" />
-          <span className="text-[#0A0A0A] font-bold">BIM STRUCTURE</span>
+          <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
+          <span className="text-brand-primary font-bold">BIM STRUCTURE</span>
         </div>
         <span className="text-gray-300">|</span>
-        <span className="text-[#0284C7] font-bold">{Math.round(progress * 100)}%</span>
+        <span className="text-accent-blue font-bold">{Math.round(progress * 100)}%</span>
         <span>ASSEMBLED</span>
       </div>
     </div>

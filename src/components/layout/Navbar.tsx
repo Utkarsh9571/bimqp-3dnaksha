@@ -164,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
             ? 'bg-white/92 backdrop-blur-md border-b border-gray-200/90 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]'
-            : 'bg-[#F8F7F5]/80 backdrop-blur-sm border-b border-gray-200/60 py-4'
+            : 'bg-brand-canvas/80 backdrop-blur-sm border-b border-gray-200/60 py-4'
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -184,9 +184,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
               aria-label="3D Naksha Homepage"
             >
               <img
-                src="/logo-up.jpeg"
+                src="/logo-side.jpeg"
                 alt="3D Naksha Logo"
-                className="h-11 sm:h-13 md:h-14 lg:h-16 w-auto max-w-[220px] sm:max-w-[270px] md:max-w-[320px] object-contain rounded-lg transition-transform group-hover:scale-[1.03] duration-300 shadow-2xs"
+                className="h-10 sm:h-12 md:h-13 w-auto max-w-[240px] sm:max-w-[280px] object-contain transition-transform group-hover:scale-[1.02] duration-300"
               />
             </a>
           </div>
@@ -210,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                     handleNavClick(link.href, link.id);
                   }}
                   className={`px-4 py-2 text-xs font-mono-tech transition-colors relative z-10 ${isActive
-                      ? 'text-[#0A0A0A] font-bold'
+                      ? 'text-brand-primary font-bold'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70 rounded-sm'
                     }`}
                 >
@@ -235,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={onOpenConsultation}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase hover:from-[#E2B689] hover:to-[#F4D06F] transition-all shadow-sm cursor-pointer group"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase hover:from-[#E2B689] hover:to-accent-amber-bright transition-all shadow-sm cursor-pointer group"
             >
               <span>Discuss Project</span>
               <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -259,8 +259,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
           <div className="flex flex-col gap-2 max-w-md mx-auto">
             <div className="p-3 mb-2 rounded-sm bg-gray-50 border border-gray-200 flex items-center justify-between">
               <span className="font-mono-tech text-xs text-gray-600">Focus</span>
-              <span className="flex items-center gap-1.5 text-xs text-[#059669] font-mono-tech font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#059669] animate-pulse"></span>
+              <span className="flex items-center gap-1.5 text-xs text-accent-emerald font-mono-tech font-medium">
+                <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></span>
                 Architectural Visualization & VR
               </span>
             </div>
@@ -297,7 +297,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                   setIsMobileMenuOpen(false);
                   onOpenConsultation();
                 }}
-                className="w-full py-3.5 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-sm tracking-wider uppercase text-center shadow-md cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-sm tracking-wider uppercase text-center shadow-md cursor-pointer"
               >
                 Discuss Your Project Scope
               </button>

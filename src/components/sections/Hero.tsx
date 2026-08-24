@@ -115,7 +115,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-screen min-h-[100dvh] w-full flex flex-col justify-between overflow-hidden bg-[#F8F7F5] pt-24 pb-8"
+      className="relative min-h-screen min-h-[100dvh] w-full flex flex-col justify-between overflow-hidden bg-brand-canvas pt-24 pb-8"
     >
       {/* Background Architectural Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50 pointer-events-none" />
@@ -142,7 +142,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
             Architectural Visualization & Immersive VR
           </Badge>
           <div className="flex items-center gap-2 font-mono-tech text-xs text-gray-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald animate-pulse" />
             <span>BIMQP Ecosystem</span>
           </div>
         </div>
@@ -151,11 +151,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         <div className="max-w-4xl space-y-6">
           <h1
             ref={headlineRef}
-            className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-[#0A0A0A] leading-[1.04]"
+            className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-brand-primary leading-[1.04]"
           >
             <span className="block">EXPERIENCE</span>
             <span className="block">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] via-[#4F46E5] to-[#DB2777]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-blue via-[#4F46E5] to-[#DB2777]">
                 TOMORROW
               </span>{' '}
               TODAY.
@@ -163,7 +163,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
           </h1>
 
           {/* Subtitle & Value Proposition */}
-          <p className="text-base sm:text-lg md:text-xl text-[#4B5563] font-normal leading-relaxed max-w-2xl hero-stagger-item">
+          <p className="text-base sm:text-lg md:text-xl text-brand-muted font-normal leading-relaxed max-w-2xl hero-stagger-item">
             Step inside unbuilt architecture, interior designs, and 3D BIM models before construction begins. Evaluate spatial design from a true human perspective and make confident, coordinated decisions.
           </p>
 
@@ -171,7 +171,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
           <div className="flex flex-wrap items-center gap-4 pt-2 hero-stagger-item">
             <button
               onClick={onOpenConsultation}
-              className="px-7 py-3.5 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] hover:from-[#E2B689] hover:to-[#F4D06F] text-[#08090B] font-display font-bold text-sm tracking-wider uppercase transition-all shadow-[0_4px_20px_rgba(212,163,115,0.3)] hover:shadow-[0_6px_25px_rgba(212,163,115,0.45)] flex items-center gap-2.5 cursor-pointer group"
+              className="px-7 py-3.5 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-bold text-sm tracking-wider uppercase transition-all shadow-[0_4px_20px_rgba(212,163,115,0.3)] hover:shadow-[0_6px_25px_rgba(212,163,115,0.45)] flex items-center gap-2.5 cursor-pointer group"
             >
               <span>Discuss Your Project</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -179,9 +179,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
 
             <button
               onClick={onExploreVR}
-              className="px-6 py-3.5 rounded-sm bg-white hover:bg-gray-50 text-gray-900 font-mono-tech text-xs font-semibold tracking-wider uppercase border border-gray-300 hover:border-[#0284C7] transition-all flex items-center gap-2.5 cursor-pointer shadow-sm"
+              className="px-6 py-3.5 rounded-sm bg-white hover:bg-gray-50 text-gray-900 font-mono-tech text-xs font-semibold tracking-wider uppercase border border-gray-300 hover:border-accent-blue transition-all flex items-center gap-2.5 cursor-pointer shadow-sm"
             >
-              <Glasses className="w-4 h-4 text-[#0284C7]" />
+              <Glasses className="w-4 h-4 text-accent-blue" />
               <span>Explore Immersive Services</span>
             </button>
           </div>
@@ -189,15 +189,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
           {/* Benefit Pillars */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200 text-xs font-mono-tech text-gray-600 hero-stagger-item">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#059669] shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0" />
               <span>Human-Scale Spatial Review</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#0284C7] shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-accent-blue shrink-0" />
               <span>Coordinated 3D BIM Models</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#D97706] shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-accent-amber shrink-0" />
               <span>Pre-Construction Clarity</span>
             </div>
           </div>
@@ -212,7 +212,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         {/* Tracked Scroll Instruction & Bouncing Chevron */}
         <div className="flex items-center gap-3 font-mono-tech text-xs text-gray-600 tracking-[0.25em] uppercase font-semibold">
           <div className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-xs">
-            <ChevronDown className="w-4 h-4 text-[#0284C7] hero-bounce-chevron" />
+            <ChevronDown className="w-4 h-4 text-accent-blue hero-bounce-chevron" />
           </div>
           <span>KEEP SCROLLING TO ASSEMBLE</span>
         </div>
@@ -221,7 +221,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         <div className="hidden md:flex items-center gap-6 text-xs font-mono-tech text-gray-500">
           {BRAND_CONFIG.metrics.slice(0, 3).map((metric, idx) => (
             <div key={idx} className="flex items-center gap-2">
-              <span className="text-[#0284C7] font-bold">{metric.value}</span>
+              <span className="text-accent-blue font-bold">{metric.value}</span>
               <span>{metric.label}</span>
             </div>
           ))}

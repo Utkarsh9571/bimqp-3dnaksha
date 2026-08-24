@@ -16,9 +16,9 @@ export const Badge: React.FC<BadgeProps> = React.memo(({
   icon
 }) => {
   const variantStyles = {
-    bronze: 'bg-amber-50 text-[#9A6A38] border-amber-200 font-bold',
-    blue: 'bg-blue-50 text-[#0284C7] border-blue-200 font-bold',
-    amber: 'bg-amber-50 text-[#B45309] border-amber-200 font-bold',
+    bronze: 'bg-amber-50 text-accent-bronze border-amber-200 font-bold',
+    blue: 'bg-blue-50 text-accent-blue border-blue-200 font-bold',
+    amber: 'bg-amber-50 text-accent-bronze-dark border-amber-200 font-bold',
     neutral: 'bg-gray-100 text-gray-800 border-gray-200 font-medium',
     outline: 'bg-white text-gray-700 border-gray-300 font-medium'
   };

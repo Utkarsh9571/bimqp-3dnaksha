@@ -103,7 +103,7 @@ export const FeatureCardsGrid: React.FC = () => {
     <section
       ref={sectionRef}
       id="features-grid"
-      className="py-20 md:py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-20 md:py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       {/* Background Architectural Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
@@ -128,9 +128,9 @@ export const FeatureCardsGrid: React.FC = () => {
             // Light-theme accent-specific design tokens
             const themeConfig = {
               blue: {
-                badgeBg: 'bg-blue-50 text-[#0284C7] border-blue-200',
-                iconBg: 'bg-blue-50 text-[#0284C7] border-blue-200 shadow-2xs',
-                dotBg: 'bg-[#0284C7]',
+                badgeBg: 'bg-blue-50 text-accent-blue border-blue-200',
+                iconBg: 'bg-blue-50 text-accent-blue border-blue-200 shadow-2xs',
+                dotBg: 'bg-accent-blue',
                 barGradient: 'linear-gradient(90deg, #0284C7 0%, #2563EB 100%)',
                 barGlow: '0 0 10px rgba(2, 132, 199, 0.4)'
               },
@@ -142,9 +142,9 @@ export const FeatureCardsGrid: React.FC = () => {
                 barGlow: '0 0 10px rgba(225, 29, 72, 0.4)'
               },
               green: {
-                badgeBg: 'bg-emerald-50 text-[#059669] border-emerald-200',
-                iconBg: 'bg-emerald-50 text-[#059669] border-emerald-200 shadow-2xs',
-                dotBg: 'bg-[#059669]',
+                badgeBg: 'bg-emerald-50 text-accent-emerald border-emerald-200',
+                iconBg: 'bg-emerald-50 text-accent-emerald border-emerald-200 shadow-2xs',
+                dotBg: 'bg-accent-emerald',
                 barGradient: 'linear-gradient(90deg, #059669 0%, #10B981 100%)',
                 barGlow: '0 0 10px rgba(5, 150, 105, 0.4)'
               }
@@ -175,12 +175,12 @@ export const FeatureCardsGrid: React.FC = () => {
                   </div>
 
                   {/* Bold Heading */}
-                  <h3 className="font-display font-bold text-xl sm:text-2xl text-[#0A0A0A] tracking-tight mb-3 transition-colors">
+                  <h3 className="font-display font-bold text-xl sm:text-2xl text-brand-primary tracking-tight mb-3 transition-colors">
                     {feature.title}
                   </h3>
 
                   {/* Description Paragraph */}
-                  <p className="text-sm text-[#4B5563] leading-relaxed mb-6">
+                  <p className="text-sm text-brand-muted leading-relaxed mb-6">
                     {feature.description}
                   </p>
                 </div>
@@ -189,7 +189,7 @@ export const FeatureCardsGrid: React.FC = () => {
                 <div>
                   <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-mono-tech text-gray-500 group-hover:text-gray-800 transition-colors">
                     <span>{feature.benefit}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 text-[#9A6A38]" />
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 text-accent-bronze" />
                   </div>
                 </div>
 

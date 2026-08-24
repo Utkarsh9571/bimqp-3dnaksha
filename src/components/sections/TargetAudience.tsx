@@ -39,7 +39,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
     <section
       ref={sectionRef}
       id="clients"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
@@ -69,14 +69,14 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
                 onClick={() => setSelectedId(aud.id)}
                 className={`p-3.5 min-h-[44px] rounded-sm border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 ${
                   isSelected
-                    ? 'bg-white border-[#9A6A38] shadow-md ring-1 ring-[#9A6A38]/40 scale-102'
+                    ? 'bg-white border-accent-bronze shadow-md ring-1 ring-[#9A6A38]/40 scale-102'
                     : 'bg-white/80 border-gray-200 hover:border-gray-300 hover:bg-white'
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-xs flex items-center justify-center border transition-colors ${
                     isSelected
-                      ? 'bg-amber-50 border-[#9A6A38] text-[#9A6A38]'
+                      ? 'bg-amber-50 border-accent-bronze text-accent-bronze'
                       : 'bg-gray-100 border-gray-200 text-gray-600'
                   }`}
                 >
@@ -112,32 +112,32 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
                     </Badge>
                   </div>
 
-                  <h3 className="font-display text-2xl sm:text-3xl font-bold text-[#0A0A0A] leading-tight">
+                  <h3 className="font-display text-2xl sm:text-3xl font-bold text-brand-primary leading-tight">
                     {aud.tagline}
                   </h3>
 
-                  <p className="text-sm text-[#4B5563] leading-relaxed">
+                  <p className="text-sm text-brand-muted leading-relaxed">
                     {aud.description}
                   </p>
 
                   {/* Pain vs Solution Box */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div className="bg-amber-50/60 p-4 rounded-sm border border-amber-200">
-                      <div className="flex items-center gap-2 text-[#B45309] font-mono-tech text-xs uppercase font-bold mb-1.5">
+                      <div className="flex items-center gap-2 text-accent-bronze-dark font-mono-tech text-xs uppercase font-bold mb-1.5">
                         <AlertCircle className="w-3.5 h-3.5" />
                         <span>Common Challenge</span>
                       </div>
-                      <p className="text-xs text-[#4B5563] leading-relaxed">
+                      <p className="text-xs text-brand-muted leading-relaxed">
                         {aud.painPoint}
                       </p>
                     </div>
 
                     <div className="bg-emerald-50/60 p-4 rounded-sm border border-emerald-200">
-                      <div className="flex items-center gap-2 text-[#059669] font-mono-tech text-xs uppercase font-bold mb-1.5">
+                      <div className="flex items-center gap-2 text-accent-emerald font-mono-tech text-xs uppercase font-bold mb-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>3D Naksha Approach</span>
                       </div>
-                      <p className="text-xs text-[#4B5563] leading-relaxed">
+                      <p className="text-xs text-brand-muted leading-relaxed">
                         {aud.solution}
                       </p>
                     </div>
@@ -147,7 +147,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
                 {/* Right deliverables and CTA */}
                 <div className="lg:col-span-5 bg-gray-50 p-6 rounded-md border border-gray-200 space-y-6">
                   <div>
-                    <div className="text-xs font-mono-tech text-[#9A6A38] uppercase font-bold tracking-wider mb-3">
+                    <div className="text-xs font-mono-tech text-accent-bronze uppercase font-bold tracking-wider mb-3">
                       Deliverable Highlights
                     </div>
                     <div className="space-y-2">
@@ -156,7 +156,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
                           key={idx}
                           className="flex items-center gap-2.5 p-2.5 rounded-xs bg-white border border-gray-200 text-xs text-gray-800 shadow-2xs"
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#0284C7] shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-accent-blue shrink-0" />
                           <span>{deliv}</span>
                         </div>
                       ))}
@@ -165,7 +165,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
 
                   <button
                     onClick={() => onOpenConsultation(aud.role)}
-                    className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
+                    className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
                   >
                     <span>Discuss Requirements for {aud.role.split('&')[0]}</span>
                     <ArrowRight className="w-3.5 h-3.5" />

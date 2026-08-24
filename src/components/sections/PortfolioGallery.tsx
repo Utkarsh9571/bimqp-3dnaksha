@@ -32,7 +32,7 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
     <section
       ref={sectionRef}
       id="portfolio"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -55,7 +55,7 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
                 onClick={() => setActiveCategory(cat.id)}
                 className={`h-[44px] min-h-[44px] px-4 rounded-xs text-xs font-mono-tech transition-all cursor-pointer flex items-center justify-center ${
                   activeCategory === cat.id
-                    ? 'bg-[#D4A373] text-[#08090B] font-bold shadow-xs'
+                    ? 'bg-accent-bronze-light text-[#08090B] font-bold shadow-xs'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
@@ -106,7 +106,7 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
                   {/* Bottom Tags on Image */}
                   <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono-tech text-white">
                     <span className="flex items-center gap-1 bg-black/70 backdrop-blur-xs px-2 py-0.5 rounded-xs">
-                      <Sparkles className="w-3.5 h-3.5 text-[#E5A93B]" />
+                      <Sparkles className="w-3.5 h-3.5 text-accent-amber-gold" />
                       {item.deliverableType}
                     </span>
                   </div>
@@ -115,10 +115,10 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
                 {/* Card Meta Content */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[#0A0A0A] group-hover:text-[#9A6A38] transition-colors leading-snug">
+                    <h3 className="font-display text-lg font-bold text-brand-primary group-hover:text-accent-bronze transition-colors leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-[#4B5563] mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-brand-muted mt-1 line-clamp-2 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -127,7 +127,7 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
                     <span className="text-gray-500 truncate max-w-[200px]">
                       {item.capabilities.join(' • ')}
                     </span>
-                    <span className="text-[#9A6A38] font-bold group-hover:translate-x-1 transition-transform">
+                    <span className="text-accent-bronze font-bold group-hover:translate-x-1 transition-transform">
                       Inspect View →
                     </span>
                   </div>

@@ -462,13 +462,13 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-[#08090B]/90 backdrop-blur-md z-40 flex flex-col items-center justify-center p-6 text-center">
-          <div className="w-12 h-12 rounded-full border-2 border-[#38BDF8]/20 border-t-[#38BDF8] animate-spin mb-4" />
+          <div className="w-12 h-12 rounded-full border-2 border-accent-blue-light/20 border-t-[#38BDF8] animate-spin mb-4" />
           <div className="font-mono-tech text-xs text-white tracking-widest uppercase mb-2">
             LOADING 3D BIM MODEL // {loadProgress}%
           </div>
           <div className="w-64 h-1.5 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#38BDF8] via-[#D4A373] to-[#E5A93B] transition-all duration-200"
+              className="h-full bg-gradient-to-r from-accent-blue-light via-accent-bronze-light to-accent-amber-gold transition-all duration-200"
               style={{ width: `${loadProgress}%` }}
             />
           </div>
@@ -481,7 +481,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
       {/* WebGL Unsupported Graceful Fallback */}
       {!isWebGlSupported && (
         <div className="absolute inset-0 bg-[#08090B] z-40 flex flex-col items-center justify-center p-8 text-center">
-          <AlertTriangle className="w-10 h-10 text-[#E5A93B] mb-3" />
+          <AlertTriangle className="w-10 h-10 text-accent-amber-gold mb-3" />
           <h4 className="text-white font-display font-bold text-lg mb-1">
             3D WebGL Acceleration Unavailable
           </h4>
@@ -505,7 +505,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
             onClick={toggleWireframe}
             className={`min-h-[36px] px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-mono-tech font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               isWireframeMode
-                ? 'bg-[#38BDF8] text-[#08090B] shadow-xs'
+                ? 'bg-accent-blue-light text-[#08090B] shadow-xs'
                 : 'text-white/80 hover:text-white'
             }`}
             title="Toggle BIM Wireframe / Structural Layers"
@@ -534,7 +534,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
             isUserInteracting ? 'opacity-20' : 'opacity-80'
           }`}
         >
-          <Box className="w-2.5 h-2.5 text-[#38BDF8] shrink-0 animate-pulse" />
+          <Box className="w-2.5 h-2.5 text-accent-blue-light shrink-0 animate-pulse" />
           <span className="tracking-wider uppercase">
             {isTouchDevice
               ? '2 FINGERS TO ORBIT & ZOOM • 1 FINGER TO SCROLL'

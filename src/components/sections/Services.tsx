@@ -45,7 +45,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
     <section
       ref={sectionRef}
       id="services"
-      className="py-24 bg-[#F8F7F5] relative overflow-hidden border-t border-gray-200"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-gray-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
@@ -71,7 +71,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                   onClick={() => handleSelectService(service.id)}
                   className={`flex-1 flex flex-col justify-center p-3.5 sm:p-4 rounded-md border cursor-pointer relative transition-all duration-300 ${
                     isSelected
-                      ? 'bg-white border-[#9A6A38] shadow-md translate-x-1.5 ring-1 ring-[#9A6A38]/40'
+                      ? 'bg-white border-accent-bronze shadow-md translate-x-1.5 ring-1 ring-[#9A6A38]/40'
                       : 'bg-white/80 border-gray-200 hover:border-gray-300 hover:bg-white'
                   } ${service.isFeatured ? 'ring-1 ring-amber-300' : ''}`}
                   style={{
@@ -89,7 +89,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                       <div
                         className={`w-10 h-10 rounded-sm flex items-center justify-center border transition-all duration-300 ${
                           isSelected
-                            ? 'bg-amber-50 border-[#9A6A38] text-[#9A6A38] scale-105 shadow-2xs'
+                            ? 'bg-amber-50 border-accent-bronze text-accent-bronze scale-105 shadow-2xs'
                             : 'bg-gray-100 border-gray-200 text-gray-600'
                         }`}
                       >
@@ -100,11 +100,11 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                           <span className="font-mono-tech text-xs text-gray-500 font-bold">
                             {service.number} //
                           </span>
-                          <h4 className="font-display font-bold text-[#0A0A0A] text-sm sm:text-base">
+                          <h4 className="font-display font-bold text-brand-primary text-sm sm:text-base">
                             {service.title}
                           </h4>
                         </div>
-                        <p className="text-xs text-[#4B5563] line-clamp-1 mt-0.5">
+                        <p className="text-xs text-brand-muted line-clamp-1 mt-0.5">
                           {service.tagline}
                         </p>
                       </div>
@@ -170,13 +170,13 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                 className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-between animate-fadeIn"
               >
                 <div>
-                  <p className="text-sm text-[#4B5563] leading-relaxed mb-6">
+                  <p className="text-sm text-brand-muted leading-relaxed mb-6">
                     {activeService.description}
                   </p>
 
                   {/* Deliverables Checklist */}
                   <div className="mb-6">
-                    <div className="text-xs font-mono-tech text-[#9A6A38] uppercase font-bold tracking-wider mb-3 flex items-center gap-1.5">
+                    <div className="text-xs font-mono-tech text-accent-bronze uppercase font-bold tracking-wider mb-3 flex items-center gap-1.5">
                       <FileCheck className="w-3.5 h-3.5" />
                       <span>Key Deliverables</span>
                     </div>
@@ -186,7 +186,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                           key={idx}
                           className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-sm border border-gray-200 text-xs text-gray-800"
                         >
-                          <Check className="w-3.5 h-3.5 text-[#0284C7] shrink-0 mt-0.5" />
+                          <Check className="w-3.5 h-3.5 text-accent-blue shrink-0 mt-0.5" />
                           <span>{deliv}</span>
                         </div>
                       ))}
@@ -211,13 +211,13 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                 {/* Action Footer */}
                 <div className="pt-6 border-t border-gray-200 flex flex-wrap items-center justify-between gap-4 mt-6">
                   <div className="text-xs font-mono-tech text-gray-600 flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5 text-[#D97706]" />
+                    <MessageSquare className="w-3.5 h-3.5 text-accent-amber" />
                     <span>Inquire about this service for your project</span>
                   </div>
 
                   <button
                     onClick={() => onOpenConsultation(activeService.title)}
-                    className="px-5 py-2.5 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase flex items-center gap-2 hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
+                    className="px-5 py-2.5 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase flex items-center gap-2 hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
                   >
                     <span>Discuss {activeService.title}</span>
                     <ArrowRight className="w-3.5 h-3.5" />

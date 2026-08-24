@@ -19,19 +19,28 @@
     --text-muted: #4B5563;      /* Mid dark gray body text (passes 5.5:1 AA on white) */
     --text-dim: #6B7280;        /* Subtle dark gray caption text */
     
-    /* Accent Palette - Adjusted for Light Background Contrast */
-    --accent-bronze: #9A6A38;   /* Deep architectural bronze (for text on light: 5.1:1 AA compliant) */
-    --accent-bronze-hover: #7A5328;
-    --accent-amber: #D97706;    /* Amber accent (passes AA on white) */
-    --accent-amber-light: #F59E0B;
-    --accent-blue: #0284C7;     /* High-contrast blue for light backgrounds */
-    --accent-emerald: #059669;  /* High-contrast emerald */
-    --accent-rose: #E11D48;     /* High-contrast rose */
+    /* Accent Palette - Reassigned to Match New Logo (Blue & Deep Navy) */
+    --accent-bronze: #1D4ED8;   /* Primary Brand Blue (sampled from logo VR headset & tagline) */
+    --accent-bronze-hover: #1E40AF; /* Deep Royal Blue hover state */
+    --accent-bronze-light: #3B82F6; /* Electric Blue highlight */
+    --accent-bronze-dark: #1E3A8A;  /* Dark Royal Navy */
+    
+    --accent-amber: #0B1953;    /* Deep Architectural Navy (sampled from logo wordmark) */
+    --accent-amber-light: #1E293B;  /* Slate Navy */
+    --accent-amber-gold: #2563EB;   /* Bright Blue gradient accent */
+    --accent-amber-bright: #60A5FA; /* Light Sky Blue highlight */
+    
+    --accent-blue: #0284C7;     /* High-contrast blueprint blue */
+    --accent-blue-light: #38BDF8;
+    
+    --accent-emerald: #059669;  /* High-contrast emerald (success - untouched) */
+    --accent-emerald-light: #10B981;
+    --accent-rose: #E11D48;     /* High-contrast rose (error - untouched) */
     
     /* Hairlines & Borders */
     --border-subtle: #E5E7EB;   /* 1px light gray architectural lines */
     --border-medium: #D1D5DB;
-    --border-accent: rgba(154, 106, 56, 0.4);
+    --border-accent: rgba(29, 78, 216, 0.35);
   }
 
   html {
@@ -49,15 +58,43 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #F8F7F5;
+    background: var(--bg-primary);
   }
   ::-webkit-scrollbar-thumb {
-    background: #D1D5DB;
+    background: var(--border-medium);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #9A6A38;
+    background: var(--accent-bronze);
   }
+}
+
+@theme {
+  --color-brand-canvas: var(--bg-primary);
+  --color-brand-surface: var(--bg-surface);
+  --color-brand-subtle: var(--bg-subtle);
+  
+  --color-brand-primary: var(--text-primary);
+  --color-brand-secondary: var(--text-secondary);
+  --color-brand-muted: var(--text-muted);
+  --color-brand-dim: var(--text-dim);
+  
+  --color-accent-bronze: var(--accent-bronze);
+  --color-accent-bronze-hover: var(--accent-bronze-hover);
+  --color-accent-bronze-light: var(--accent-bronze-light);
+  --color-accent-bronze-dark: var(--accent-bronze-dark);
+  
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-amber-light: var(--accent-amber-light);
+  --color-accent-amber-gold: var(--accent-amber-gold);
+  --color-accent-amber-bright: var(--accent-amber-bright);
+  
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-light: var(--accent-blue-light);
+  
+  --color-accent-emerald: var(--accent-emerald);
+  --color-accent-emerald-light: var(--accent-emerald-light);
+  --color-accent-rose: var(--accent-rose);
 }
 
 /* Light Architectural grid line background */
@@ -76,11 +113,11 @@
 }
 
 .bg-radial-vignette {
-  background: radial-gradient(circle at 50% 20%, rgba(212, 163, 115, 0.08) 0%, rgba(248, 247, 245, 0.9) 70%, #F8F7F5 100%);
+  background: radial-gradient(circle at 50% 20%, rgba(29, 78, 216, 0.08) 0%, rgba(248, 247, 245, 0.9) 70%, var(--bg-primary) 100%);
 }
 
 .bg-radial-vr {
-  background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.06) 0%, rgba(248, 247, 245, 0.9) 60%, #F8F7F5 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.06) 0%, rgba(248, 247, 245, 0.9) 60%, var(--bg-primary) 100%);
 }
 
 .bg-blueprint-grid {
@@ -92,11 +129,11 @@
 
 /* Hairline technical architectural borders */
 .border-hairline {
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border-subtle);
 }
 
 .border-hairline-accent {
-  border: 1px solid rgba(154, 106, 56, 0.35);
+  border: 1px solid rgba(29, 78, 216, 0.35);
 }
 
 /* Crosshair corners */
@@ -109,32 +146,32 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  border-color: rgba(154, 106, 56, 0.6);
+  border-color: rgba(29, 78, 216, 0.6);
   pointer-events: none;
   transition: all 0.3s ease;
 }
 .corner-crosshairs::before {
   top: -1px;
   left: -1px;
-  border-top: 2px solid rgba(154, 106, 56, 0.8);
-  border-left: 2px solid rgba(154, 106, 56, 0.8);
+  border-top: 2px solid rgba(29, 78, 216, 0.8);
+  border-left: 2px solid rgba(29, 78, 216, 0.8);
 }
 .corner-crosshairs::after {
   bottom: -1px;
   right: -1px;
-  border-bottom: 2px solid rgba(154, 106, 56, 0.8);
-  border-right: 2px solid rgba(154, 106, 56, 0.8);
+  border-bottom: 2px solid rgba(29, 78, 216, 0.8);
+  border-right: 2px solid rgba(29, 78, 216, 0.8);
 }
 
 .corner-crosshairs:hover::before {
   width: 16px;
   height: 16px;
-  border-color: #9A6A38;
+  border-color: var(--accent-bronze);
 }
 .corner-crosshairs:hover::after {
   width: 16px;
   height: 16px;
-  border-color: #9A6A38;
+  border-color: var(--accent-bronze);
 }
 
 /* Typography helper */
@@ -151,20 +188,20 @@
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .architectural-panel:hover {
-  border-color: #D4A373;
+  border-color: var(--accent-bronze-light);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .architectural-panel-glow {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(154, 106, 56, 0.35);
-  box-shadow: 0 10px 40px rgba(154, 106, 56, 0.08);
+  border: 1px solid rgba(29, 78, 216, 0.35);
+  box-shadow: 0 10px 40px rgba(29, 78, 216, 0.08);
 }
 
 /* Subtle architectural hover effect */
