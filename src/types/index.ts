@@ -10,6 +10,59 @@ export interface ServiceItem {
   icon: string;
   badge?: string;
   image: string;
+  slug?: string;
+}
+
+export interface DetailedDeliverable {
+  title: string;
+  description: string;
+  outputFormat?: string;
+}
+
+export interface ServiceBenefit {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+export interface ServiceWorkflowStep {
+  step: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  keyAction: string;
+  deliverable: string;
+}
+
+export interface DetailedServiceData extends ServiceItem {
+  slug: string;
+  categoryTagline?: string;
+  heroHeadline: string;
+  heroDescription: string;
+  heroImage?: string;
+  overview: {
+    definition: string;
+    problemSolved: string;
+    nakshaApproach: string;
+    aecWorkflowValue: string;
+  };
+  benefits: ServiceBenefit[];
+  detailedDeliverables: DetailedDeliverable[];
+  workflow: ServiceWorkflowStep[];
+  visualShowcase: {
+    title: string;
+    subtitle: string;
+    image: string;
+    caption: string;
+    tags: string[];
+  }[];
+  audienceIds: string[];
+  faqs: FAQItem[];
+  relatedServiceIds: string[];
+  seo: {
+    title: string;
+    description: string;
+  };
 }
 
 export interface PortfolioItem {

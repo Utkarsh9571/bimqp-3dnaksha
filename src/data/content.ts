@@ -64,6 +64,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
 export const SERVICES: ServiceItem[] = [
   {
     id: 'home-design',
+    slug: 'home-design',
     number: '01',
     title: 'Home Design',
     tagline: 'Residential architectural planning, elevation visualization, and spatial layouts.',
@@ -85,6 +86,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: 'interior-design',
+    slug: 'interior-design',
     number: '02',
     title: 'Interior Design',
     tagline: 'Interior space planning, lighting studies, and material finish visualization.',
@@ -106,6 +108,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: 'bim-modelling',
+    slug: 'bim-modelling',
     number: '03',
     title: 'BIM Modelling',
     tagline: 'Structured 3D building information models for multidisciplinary coordination.',
@@ -127,6 +130,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: 'immersive-vr',
+    slug: 'immersive-vr',
     number: '04',
     title: 'Immersive VR Services',
     tagline: 'Interactive virtual reality walkthroughs to step inside spaces before building.',
@@ -149,6 +153,7 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     id: 'construction-pm',
+    slug: 'construction-project-management',
     number: '05',
     title: 'Construction Project Management',
     tagline: 'Visualization-assisted planning, sequence modeling, and project coordination.',

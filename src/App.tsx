@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
 import { OperatingRegions } from './components/sections/OperatingRegions';
@@ -6,7 +7,7 @@ import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScrollTo } from './lib/animations';
 import type { PortfolioItem } from './types';
 
-// Lazy-load below-the-fold sections and heavy interactive widgets
+// Lazy-load below-the-fold sections, service detail pages, and heavy interactive widgets
 const AboutSection = lazy(() => import('./components/sections/AboutSection'));
 const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
 const FeatureCardsGrid = lazy(() => import('./components/sections/FeatureCardsGrid'));
@@ -23,6 +24,9 @@ const CallToAction = lazy(() => import('./components/sections/CallToAction'));
 const Footer = lazy(() => import('./components/layout/Footer'));
 const ConsultationModal = lazy(() => import('./components/modals/ConsultationModal'));
 const LightboxModal = lazy(() => import('./components/modals/LightboxModal'));
+
+// Dedicated Service Detail Page component
+const ServiceDetailPage = lazy(() => import('./components/services/ServiceDetailPage'));
 
 // Lightweight placeholder for smooth suspense hydration
 const SectionFallback = () => (
@@ -72,68 +76,88 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-brand-canvas text-brand-primary selection:bg-accent-bronze-light/30 selection:text-brand-primary flex flex-col">
-      {/* Fixed 3px Red-to-Blue-to-Purple Scroll Progress Bar */}
+      {/* Fixed 3px Scroll Progress Bar */}
       <ScrollProgressBar height={3} />
 
       {/* Top Fixed Glass Navigation Bar */}
       <Navbar onOpenConsultation={() => handleOpenConsultation()} />
 
-      {/* Main Content Sections */}
-      <main className="flex-grow">
-        {/* Section 1: Critical Above-The-Fold Hero Section */}
-        <Hero
-          onOpenConsultation={() => handleOpenConsultation()}
-          onExploreVR={handleScrollToVR}
+      <Routes>
+        {/* HOMEPAGE ROUTE */}
+        <Route
+          path="/"
+          element={
+            <main className="flex-grow">
+              {/* Section 1: Critical Above-The-Fold Hero Section */}
+              <Hero
+                onOpenConsultation={() => handleOpenConsultation()}
+                onExploreVR={handleScrollToVR}
+              />
+
+              {/* Section 1.5: Critical Regional Hubs */}
+              <OperatingRegions />
+
+              {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
+              <Suspense fallback={<SectionFallback />}>
+                {/* Section 2: About 3D Naksha */}
+                <AboutSection onOpenConsultation={handleOpenConsultation} />
+
+                {/* Section 2.5: Experience the Unbuilt */}
+                <ExperienceUnbuilt />
+
+                {/* Section 2.5: 3-Column Core Features Grid */}
+                <FeatureCardsGrid />
+
+                {/* Section 3: AEC Lifecycle Journey */}
+                <LifecycleJourney />
+
+                {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer */}
+                <ScrollWalkthroughViewer totalFrames={81} />
+
+                {/* Section 4: 5 Core Services */}
+                <Services onOpenConsultation={handleOpenConsultation} />
+
+                {/* Section 4.5: Pinned Full-Bleed Cinematic Interior Showcase */}
+                <FullBleedShowcase />
+
+                {/* Section 5: Immersive VR Flagship Centerpiece */}
+                <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
+
+                {/* Section 6: Who We Work With (AEC Stakeholders) */}
+                <TargetAudience onOpenConsultation={handleOpenConsultation} />
+
+                {/* Section 7: How It Works (5-Step Collaborative Process) */}
+                <Process onOpenConsultation={() => handleOpenConsultation()} />
+
+                {/* Section 8: Selected Visualizations Showcase */}
+                <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />
+
+                {/* Section 9: Frequently Answered Questions Accordion */}
+                <FAQSection onOpenConsultation={() => handleOpenConsultation()} />
+
+                {/* Section 10: Closing High-Conversion CTA Banner */}
+                <CallToAction onOpenConsultation={() => handleOpenConsultation()} />
+
+                {/* Footer & Ecosystem Endorsements */}
+                <Footer onOpenConsultation={() => handleOpenConsultation()} />
+              </Suspense>
+            </main>
+          }
         />
 
-        {/* Section 1.5: Critical Regional Hubs */}
-        <OperatingRegions />
+        {/* SERVICE DETAIL PAGES ROUTE */}
+        <Route
+          path="/services/:slug"
+          element={
+            <Suspense fallback={<SectionFallback />}>
+              <ServiceDetailPage onOpenConsultation={handleOpenConsultation} />
+            </Suspense>
+          }
+        />
 
-        {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
-        <Suspense fallback={<SectionFallback />}>
-          {/* Section 2: About 3D Naksha */}
-          <AboutSection onOpenConsultation={handleOpenConsultation} />
-
-          {/* Section 2.5: Experience the Unbuilt */}
-          <ExperienceUnbuilt />
-
-          {/* Section 2.5: 3-Column Core Features Grid */}
-          <FeatureCardsGrid />
-
-          {/* Section 3: AEC Lifecycle Journey */}
-          <LifecycleJourney />
-
-          {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer */}
-          <ScrollWalkthroughViewer totalFrames={81} />
-
-          {/* Section 4: 5 Core Services */}
-          <Services onOpenConsultation={handleOpenConsultation} />
-
-          {/* Section 4.5: Pinned Full-Bleed Cinematic Interior Showcase */}
-          <FullBleedShowcase />
-
-          {/* Section 5: Immersive VR Flagship Centerpiece */}
-          <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
-
-          {/* Section 6: Who We Work With (AEC Stakeholders) */}
-          <TargetAudience onOpenConsultation={handleOpenConsultation} />
-
-          {/* Section 7: How It Works (5-Step Collaborative Process) */}
-          <Process onOpenConsultation={() => handleOpenConsultation()} />
-
-          {/* Section 8: Selected Visualizations Showcase */}
-          <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />
-
-          {/* Section 9: Frequently Answered Questions Accordion */}
-          <FAQSection onOpenConsultation={() => handleOpenConsultation()} />
-
-          {/* Section 10: Closing High-Conversion CTA Banner */}
-          <CallToAction onOpenConsultation={() => handleOpenConsultation()} />
-
-          {/* Footer & Ecosystem Endorsements */}
-          <Footer onOpenConsultation={() => handleOpenConsultation()} />
-        </Suspense>
-      </main>
+        {/* FALLBACK REDIRECT ROUTE */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {/* Modals lazy-loaded on demand */}
       <Suspense fallback={null}>
