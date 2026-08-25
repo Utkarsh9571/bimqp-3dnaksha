@@ -7,6 +7,9 @@ import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScrollTo } from './lib/animations';
 import type { PortfolioItem } from './types';
 
+import { JsonLd } from './components/seo/JsonLd';
+import { getHomepageGraph } from './utils/schema';
+
 // Lazy-load below-the-fold sections, service detail pages, and heavy interactive widgets
 const AboutSection = lazy(() => import('./components/sections/AboutSection'));
 const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
@@ -43,6 +46,17 @@ export function App() {
   // Initialize Lenis smooth scroll and wire into GSAP ticker
   useEffect(() => {
     initSmoothScroll();
+
+    // Ensure initial root canonical link is established
+    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    if (window.location.pathname === '/') {
+      canonicalLink.setAttribute('href', 'https://3dnaksha.com/');
+    }
 
     const unsubscribeReduced = onReducedMotionChange((isReduced) => {
       if (isReduced) {
@@ -88,6 +102,8 @@ export function App() {
           path="/"
           element={
             <main className="flex-grow">
+              <JsonLd data={getHomepageGraph()} />
+
               {/* Section 1: Critical Above-The-Fold Hero Section */}
               <Hero
                 onOpenConsultation={() => handleOpenConsultation()}

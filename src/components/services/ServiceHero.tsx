@@ -93,6 +93,9 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ service, onOpenConsult
                   src={service.heroImage || service.image}
                   alt={service.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  fetchPriority="high"
+                  width={1600}
+                  height={900}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#08090B] via-black/20 to-transparent pointer-events-none" />
 

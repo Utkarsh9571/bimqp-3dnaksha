@@ -297,6 +297,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                 src="/logo-side.jpeg"
                 alt="3D Naksha Logo"
                 className="h-10 sm:h-12 md:h-13 w-auto rounded-xl max-w-[240px] sm:max-w-[280px] object-contain transition-transform group-hover:scale-[1.02] duration-300"
+                width={280}
+                height={52}
+                fetchPriority="high"
               />
             </Link>
           </div>

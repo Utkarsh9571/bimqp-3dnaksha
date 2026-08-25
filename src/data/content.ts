@@ -13,7 +13,7 @@ export const BRAND_CONFIG = {
   tagline: 'Step Inside Before You Build',
   heroSubtitle: 'Architectural visualization, 3D BIM modeling, and immersive VR services from the BIMQP ecosystem. Helping stakeholders experience spaces, evaluate designs, and make confident construction decisions.',
   ecosystem: 'A Brand of the BIMQP Ecosystem',
-  email: 'contact@3dnaksha.com',
+  email: 'support@3dnaksha.com',
   metrics: [
     { value: 'Pre-Construction', label: 'Spatial Clarity', detail: 'Experience spaces before physical construction begins' },
     { value: 'True Scale', label: 'Human Perspective', detail: 'Understand spatial proportions, clearance, and flow' },
@@ -171,7 +171,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: '/images/construction_management.jpg'
+    image: '/images/construction_management.webp'
   }
 ];
 

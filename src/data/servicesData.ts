@@ -628,10 +628,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Support construction planning with visual sequence models, milestone coordination, and spatial clarity for on-site decision-makers.',
     heroHeadline: 'VISUAL CONSTRUCTION SEQUENCE PLANNING & MILESTONE COORDINATION',
     heroDescription: 'Empower project management teams and contractors with visual sequence models, milestone coordination assets, and pre-construction spatial clarity.',
-    heroImage: '/images/construction_management.jpg',
+    heroImage: '/images/construction_management.webp',
     badge: 'Project Planning',
     icon: 'HardHat',
-    image: '/images/construction_management.jpg',
+    image: '/images/construction_management.webp',
     deliverables: [
       'Visual Construction Sequence Phasing',
       'Site Milestone Coordination Visuals',
@@ -739,7 +739,7 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
       {
         title: 'Visual Construction Phasing Sequence',
         subtitle: 'Pre-Construction Superstructure Logistics',
-        image: '/images/construction_management.jpg',
+        image: '/images/construction_management.webp',
         caption: 'Phased 3D visualization illustrating structural milestone progression from foundation concrete pour to roof enclosure.',
         tags: ['Phasing Sequence', 'Milestone Review', 'Pre-Construction']
       },

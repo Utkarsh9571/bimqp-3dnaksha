@@ -13,6 +13,9 @@ import { ServiceRelated } from './ServiceRelated';
 import { ServiceCTA } from './ServiceCTA';
 import Footer from '../layout/Footer';
 
+import { JsonLd } from '../seo/JsonLd';
+import { getServicePageGraph } from '../../utils/schema';
+
 interface ServiceDetailPageProps {
   onOpenConsultation: (serviceName?: string) => void;
 }
@@ -21,7 +24,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ onOpenCons
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? getServiceBySlug(slug) : undefined;
 
-  // Scroll to top on route mount/slug change & set document title / meta description
+  // Scroll to top on route mount/slug change & set document title, meta description, canonical link
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
 
@@ -35,10 +38,23 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ onOpenCons
         document.head.appendChild(metaDesc);
       }
       metaDesc.setAttribute('content', service.seo.description);
+
+      // Self-referencing canonical link for this service page
+      let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      if (!canonicalLink) {
+        canonicalLink = document.createElement('link');
+        canonicalLink.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonicalLink);
+      }
+      canonicalLink.setAttribute('href', `https://3dnaksha.com/services/${service.slug}`);
     }
 
     return () => {
       document.title = '3D Naksha - Step Inside Before You Build';
+      const canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+      if (canonicalLink) {
+        canonicalLink.setAttribute('href', 'https://3dnaksha.com/');
+      }
     };
   }, [slug, service]);
 
@@ -62,6 +78,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ onOpenCons
 
   return (
     <div className="min-h-screen bg-brand-canvas text-brand-primary flex flex-col selection:bg-accent-bronze-light/30">
+      <JsonLd data={getServicePageGraph(service)} />
       <main className="flex-grow">
         {/* 01 // HERO */}
         <ServiceHero service={service} onOpenConsultation={onOpenConsultation} />

@@ -36,6 +36,9 @@ export const ServiceVisualShowcase: React.FC<ServiceVisualShowcaseProps> = ({ se
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                  width={1200}
+                  height={800}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 

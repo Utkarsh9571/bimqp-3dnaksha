@@ -242,10 +242,13 @@ export const FullBleedShowcase: React.FC = () => {
           <div className="relative flex flex-col items-center justify-center">
             <img
               ref={headsetImgRef}
-              src="/assets/images/vr-headset-mask.jpg"
+              src="/assets/images/vr-headset-mask.webp"
               alt="Virtual Reality Headset Lens Transition"
               className="w-[85vw] max-w-[720px] sm:max-w-[840px] object-contain select-none will-change-transform"
               style={{ transformStyle: 'preserve-3d' }}
+              loading="lazy"
+              width={840}
+              height={420}
             />
             
             {/* Ambient Headset Title Prompt */}
