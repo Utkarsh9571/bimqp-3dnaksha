@@ -32,17 +32,19 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/90 backdrop-blur-lg animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/75 backdrop-blur-md animate-fadeIn"
       onClick={onClose}
+      data-lenis-prevent="true"
     >
       <div
-        className="relative w-full max-w-5xl bg-[#0E1013] border border-white/20 rounded-lg overflow-hidden shadow-2xl flex flex-col lg:flex-row max-h-[90vh]"
+        className="relative w-full max-w-5xl bg-white border border-gray-300 rounded-lg overflow-hidden shadow-2xl flex flex-col lg:flex-row max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
+        data-lenis-prevent="true"
       >
-        {/* Close Button */}
+        {/* Close Button (Min 44x44px touch target) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 rounded-sm bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 w-11 h-11 min-w-[44px] min-h-[44px] rounded-sm bg-black/60 hover:bg-black/90 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           aria-label="Close lightbox"
         >
           <X className="w-5 h-5" />
@@ -55,43 +57,46 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
             alt={item.title}
             className="w-full h-full object-cover max-h-[60vh] lg:max-h-[85vh]"
           />
-          <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/10 text-xs font-mono-tech text-[#D4A373] flex items-center gap-2">
+          <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/10 text-xs font-mono-tech text-accent-amber-gold flex items-center gap-2">
             <Maximize2 className="w-3.5 h-3.5" />
             <span>High-Resolution Visualization</span>
           </div>
         </div>
 
-        {/* Info & Metadata Panel */}
-        <div className="lg:w-2/5 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto bg-[#0E1013] border-t lg:border-t-0 lg:border-l border-white/10">
+        {/* Info & Metadata Panel (Light Theme) */}
+        <div 
+          className="lg:w-2/5 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto bg-white border-t lg:border-t-0 lg:border-l border-gray-200"
+          data-lenis-prevent="true"
+        >
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Badge variant="bronze" size="sm">
+              <Badge variant="amber" size="sm">
                 {item.categoryLabel}
               </Badge>
             </div>
 
-            <h3 className="font-display text-2xl font-bold text-white mb-2 leading-tight">
+            <h3 className="font-display text-2xl font-bold text-brand-primary mb-2 leading-tight">
               {item.title}
             </h3>
 
-            <div className="flex items-center gap-1.5 text-xs text-[#8A92A0] font-mono-tech mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4A373]" />
+            <div className="flex items-center gap-1.5 text-xs text-accent-bronze font-mono-tech font-semibold mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-accent-amber" />
               <span>{item.deliverableType}</span>
             </div>
 
-            <p className="text-sm text-[#8A92A0] leading-relaxed mb-6">
+            <p className="text-sm text-brand-muted leading-relaxed mb-6">
               {item.description}
             </p>
 
             {/* Architectural Highlights */}
             <div className="mb-5">
-              <div className="text-xs font-mono-tech text-[#8A92A0] uppercase mb-2">
+              <div className="text-xs font-mono-tech text-gray-700 uppercase font-semibold mb-2">
                 Visualization Focus
               </div>
               <ul className="space-y-1.5">
                 {item.features.map((feat, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-[#F3F4F6]">
-                    <Check className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2 text-xs text-gray-800">
+                    <Check className="w-3.5 h-3.5 text-accent-blue shrink-0 mt-0.5" />
                     <span>{feat}</span>
                   </li>
                 ))}
@@ -100,14 +105,14 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
 
             {/* Capabilities */}
             <div className="mb-6">
-              <div className="text-xs font-mono-tech text-[#8A92A0] uppercase mb-2">
+              <div className="text-xs font-mono-tech text-gray-700 uppercase font-semibold mb-2">
                 Applied Capabilities
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {item.capabilities.map((cap, idx) => (
                   <span
                     key={idx}
-                    className="text-[11px] font-mono-tech px-2 py-0.5 bg-white/5 border border-white/10 rounded-xs text-[#8A92A0]"
+                    className="text-[11px] font-mono-tech px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-xs text-gray-700 font-medium"
                   >
                     {cap}
                   </span>
@@ -123,7 +128,7 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
                 onClose();
                 onSelectProjectForQuote(item);
               }}
-              className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase transition-all hover:opacity-90 cursor-pointer text-center"
+              className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase transition-all hover:opacity-90 cursor-pointer text-center shadow-sm"
             >
               Inquire About Similar Visualization
             </button>
@@ -133,3 +138,5 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
     </div>
   );
 };
+
+export default LightboxModal;

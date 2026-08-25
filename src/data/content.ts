@@ -30,7 +30,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
     description: 'Translate architectural concepts, floor layouts, and functional requirements into clear visual arrangements.',
     icon: 'PenTool',
     valueAdd: 'Establishes clear spatial intent between designers and clients.',
-    accentColor: '#D4A373'
+    accentColor: 'var(--accent-bronze-light)'
   },
   {
     phase: '02',
@@ -39,7 +39,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
     description: 'Develop structured 3D BIM models that bring architectural, structural, and spatial elements into unified coordination.',
     icon: 'Box',
     valueAdd: 'Enables multidisciplinary spatial review before site execution.',
-    accentColor: '#38BDF8'
+    accentColor: 'var(--accent-blue-light)'
   },
   {
     phase: '03',
@@ -48,7 +48,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
     description: 'Step into the unbuilt environment to evaluate scale, lighting conditions, textures, and sightlines at human scale.',
     icon: 'Glasses',
     valueAdd: 'Brings intuitive spatial comprehension and stakeholder alignment.',
-    accentColor: '#E5A93B'
+    accentColor: 'var(--accent-amber-gold)'
   },
   {
     phase: '04',
@@ -57,7 +57,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
     description: 'Empower project teams with visual clarity and coordinated models for well-informed pre-construction execution.',
     icon: 'HardHat',
     valueAdd: 'Reduces uncertainty and supports smoother on-site communication.',
-    accentColor: '#10B981'
+    accentColor: 'var(--accent-emerald-light)'
   }
 ];
 
@@ -166,7 +166,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb18fe0f6?auto=format&fit=crop&w=1200&q=85'
+    image: '/images/construction_management.jpg'
   }
 ];
 

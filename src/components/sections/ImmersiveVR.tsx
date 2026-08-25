@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { Badge } from '../ui/Badge';
 import {
@@ -8,22 +8,41 @@ import {
   Sparkles,
   CheckCircle2,
   ArrowRight,
-  Compass
+  Compass,
+  MoveHorizontal
 } from 'lucide-react';
+import { useInView } from '../../hooks/useInView';
+import { prefersReducedMotion } from '../../lib/animations';
 
 interface ImmersiveVRProps {
   onOpenConsultation: () => void;
 }
 
 export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { threshold: 0.1, triggerOnce: true });
   const [activeHotspot, setActiveHotspot] = useState<number>(0);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+
+  // Panorama direct DOM references for 60fps drag-to-pan
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const panoramaRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef<boolean>(false);
+  const isPanLockedRef = useRef<boolean>(false);
+  const startXRef = useRef<number>(0);
+  const startYRef = useRef<number>(0);
+  const panOffsetRef = useRef<number>(0); // Current pan in pixels (-maxPan to +maxPan)
+  const lastXRef = useRef<number>(0);
+  const velocityRef = useRef<number>(0);
+  const rafIdRef = useRef<number | null>(null);
+  const isReduced = prefersReducedMotion();
 
   const hotspots = [
     {
       id: 0,
       title: 'Human-Scale Spatial View',
       tag: 'Scale & Proportion',
-      x: '30%',
+      x: 28, // base percentage along wide panorama
       y: '45%',
       icon: <Eye className="w-4 h-4" />,
       description: 'Experience rooms at natural eye level to evaluate door positions, ceiling heights, and corridor clearances before construction begins.'
@@ -32,8 +51,8 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
       id: 1,
       title: 'Lighting & Daylight Exploration',
       tag: 'Lighting Simulation',
-      x: '75%',
-      y: '25%',
+      x: 78,
+      y: '28%',
       icon: <Sun className="w-4 h-4" />,
       description: 'Observe simulated daylight transitions to understand natural light exposure across different living, working, and outdoor zones.'
     },
@@ -41,7 +60,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
       id: 2,
       title: 'Material & Finish Visualization',
       tag: 'Material Finishes',
-      x: '48%',
+      x: 48,
       y: '70%',
       icon: <Sparkles className="w-4 h-4" />,
       description: 'Compare material options, stone textures, wood grains, and architectural finishes in realistic ambient lighting conditions.'
@@ -50,8 +69,8 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
       id: 3,
       title: 'Sightline & Volume Review',
       tag: 'Spatial Connection',
-      x: '65%',
-      y: '55%',
+      x: 64,
+      y: '54%',
       icon: <Compass className="w-4 h-4" />,
       description: 'Evaluate double-height volumes, mezzanine sightlines, and room-to-room visual connections from multiple viewing angles.'
     }
@@ -78,17 +97,109 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
     }
   ];
 
+  // Apply smooth pan transform directly to DOM
+  const updatePanTransform = useCallback(() => {
+    if (!panoramaRef.current || !viewportRef.current) return;
+    const maxPan = (panoramaRef.current.clientWidth - viewportRef.current.clientWidth) / 2;
+    // Clamp pan offset
+    if (panOffsetRef.current < -maxPan) panOffsetRef.current = -maxPan;
+    if (panOffsetRef.current > maxPan) panOffsetRef.current = maxPan;
+
+    panoramaRef.current.style.transform = `translate3d(${panOffsetRef.current}px, 0, 0)`;
+  }, []);
+
+  // Momentum decay loop after release
+  const runMomentumDecay = useCallback(() => {
+    if (Math.abs(velocityRef.current) < 0.2) {
+      velocityRef.current = 0;
+      return;
+    }
+    panOffsetRef.current += velocityRef.current;
+    velocityRef.current *= 0.92; // Friction damping
+    updatePanTransform();
+    rafIdRef.current = requestAnimationFrame(runMomentumDecay);
+  }, [updatePanTransform]);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isReduced) return;
+    isDraggingRef.current = true;
+    isPanLockedRef.current = false;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+    lastXRef.current = e.clientX;
+    velocityRef.current = 0;
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    if (!hasInteracted) setHasInteracted(true);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current || isReduced) return;
+
+    // Gesture direction threshold check to prevent diagonal vertical scroll interference
+    if (!isPanLockedRef.current) {
+      const totalDeltaX = Math.abs(e.clientX - startXRef.current);
+      const totalDeltaY = Math.abs(e.clientY - startYRef.current);
+
+      // If predominantly vertical swipe, yield to native page scroll
+      if (totalDeltaY > 8 && totalDeltaY > totalDeltaX * 1.1) {
+        isDraggingRef.current = false;
+        return;
+      }
+
+      // If horizontal drag exceeds margin, lock into pan mode
+      if (totalDeltaX > 6 && totalDeltaX >= totalDeltaY) {
+        isPanLockedRef.current = true;
+        lastXRef.current = e.clientX;
+      } else {
+        return;
+      }
+    }
+
+    const deltaX = e.clientX - lastXRef.current;
+    lastXRef.current = e.clientX;
+    velocityRef.current = deltaX * 0.8;
+    panOffsetRef.current += deltaX;
+
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = requestAnimationFrame(updatePanTransform);
+  };
+
+  const handlePointerUp = () => {
+    if (!isDraggingRef.current && !isPanLockedRef.current) return;
+    const wasPanLocked = isPanLockedRef.current;
+    isDraggingRef.current = false;
+    isPanLockedRef.current = false;
+    if (!isReduced && wasPanLocked && Math.abs(velocityRef.current) > 0.5) {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = requestAnimationFrame(runMomentumDecay);
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalPointerUp = () => {
+      if (isDraggingRef.current) handlePointerUp();
+    };
+    window.addEventListener('pointerup', handleGlobalPointerUp);
+    window.addEventListener('pointercancel', handleGlobalPointerUp);
+    return () => {
+      window.removeEventListener('pointerup', handleGlobalPointerUp);
+      window.removeEventListener('pointercancel', handleGlobalPointerUp);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
+  }, [handlePointerUp]);
+
   return (
     <section
+      ref={sectionRef}
       id="vr-centerpiece"
-      className="py-24 bg-[#0B0D11] relative overflow-hidden border-t border-b border-[#D4A373]/25 bg-radial-vr"
+      className="py-24 bg-brand-canvas relative overflow-hidden border-t border-b border-gray-200 select-none"
     >
       {/* Blueprint grid accent */}
-      <div className="absolute inset-0 bg-blueprint-grid opacity-20 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-blueprint-grid opacity-30 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="04"
+          number="09"
           badgeText="Flagship VR Services"
           badgeVariant="amber"
           title="Don't imagine the space."
@@ -98,124 +209,161 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
         />
 
         {/* Main Interactive VR Stage */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16">
-          {/* Interactive Spatial Hotspot Canvas */}
-          <div className="lg:col-span-8 relative">
-            <div className="relative rounded-lg overflow-hidden border border-[#D4A373]/40 bg-[#0E1013] shadow-2xl corner-crosshairs group aspect-[16/10] sm:aspect-[16/9]">
-              <img
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85"
-                alt="Immersive Spatial Walkthrough View"
-                className="w-full h-full object-cover brightness-90 contrast-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-16">
+          {/* Interactive Spatial Hotspot Canvas with Drag-to-Pan */}
+          <div
+            className="lg:col-span-8 relative h-full flex flex-col min-h-[480px] lg:min-h-0 transition-all duration-700"
+            style={{
+              opacity: isInView ? 1 : 0,
+              transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 24px, 0)',
+              transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
+            }}
+          >
+            <div
+              ref={viewportRef}
+              className="relative w-full h-full min-h-[440px] rounded-lg overflow-hidden border border-gray-200 bg-gray-900 shadow-xl corner-crosshairs group cursor-grab active:cursor-grabbing touch-pan-y"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+            >
+              {/* Wide Panorama Container (Wider than viewport for natural 360° pan) */}
+              <div
+                ref={panoramaRef}
+                className="absolute inset-0 w-[140%] sm:w-[150%] -left-[20%] sm:-left-[25%] h-full will-change-transform"
+                style={{ transform: 'translate3d(0, 0, 0)' }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85"
+                  alt="Immersive Spatial Walkthrough 360 View"
+                  className="w-full h-full object-cover brightness-95 contrast-105 pointer-events-none"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"></div>
 
-              {/* HUD Badge */}
-              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[11px] font-mono-tech text-[#E5A93B] flex items-center gap-2">
+                {/* Interactive Hotspot Buttons on Wide Panorama */}
+                {hotspots.map((spot) => {
+                  const isActive = activeHotspot === spot.id;
+                  return (
+                    <button
+                      key={spot.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveHotspot(spot.id);
+                      }}
+                      style={{ top: spot.y, left: `${spot.x}%` }}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 group/spot flex items-center justify-center transition-all cursor-pointer ${isActive ? 'scale-125' : 'scale-100 hover:scale-115'
+                        }`}
+                      aria-label={spot.title}
+                    >
+                      {/* Pulsing ring */}
+                      <span
+                        className={`absolute w-10 h-10 rounded-full opacity-75 ${isActive ? 'animate-ping bg-accent-amber' : 'bg-accent-blue/40'
+                          }`}
+                      ></span>
+
+                      {/* Core Button */}
+                      <span
+                        className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors ${isActive
+                            ? 'bg-accent-bronze-light text-[#08090B] border-white'
+                            : 'bg-black/90 text-accent-blue-light border-accent-blue-light'
+                          }`}
+                      >
+                        {spot.icon}
+                      </span>
+
+                      {/* Tooltip on Hover */}
+                      <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 text-white text-[11px] font-mono-tech px-2.5 py-1 rounded-sm border border-white/20 opacity-0 group-hover/spot:opacity-100 pointer-events-none transition-opacity">
+                        {spot.tag}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* HUD Badge on Canvas */}
+              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[11px] font-mono-tech text-accent-amber-gold flex items-center gap-2 pointer-events-none z-30">
                 <Glasses className="w-3.5 h-3.5" />
                 <span>IMMERSIVE SPATIAL WALKTHROUGH</span>
               </div>
 
-              {/* Interactive Hotspot Buttons on Canvas */}
-              {hotspots.map((spot) => {
-                const isActive = activeHotspot === spot.id;
-                return (
-                  <button
-                    key={spot.id}
-                    onClick={() => setActiveHotspot(spot.id)}
-                    style={{ top: spot.y, left: spot.x }}
-                    className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 group/spot flex items-center justify-center transition-all cursor-pointer ${
-                      isActive ? 'scale-125' : 'scale-100 hover:scale-115'
-                    }`}
-                    aria-label={spot.title}
-                  >
-                    {/* Pulsing ring */}
-                    <span
-                      className={`absolute w-10 h-10 rounded-full animate-ping opacity-75 ${
-                        isActive ? 'bg-[#E5A93B]' : 'bg-[#38BDF8]'
-                      }`}
-                    ></span>
-                    
-                    {/* Core Button */}
-                    <span
-                      className={`relative w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors ${
-                        isActive
-                          ? 'bg-[#E5A93B] text-[#08090B] border-white'
-                          : 'bg-[#0E1013] text-[#38BDF8] border-[#38BDF8]'
-                      }`}
-                    >
-                      {spot.icon}
-                    </span>
+              {/* Drag to Look Around Hint */}
+              <div
+                className={`absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/15 text-[10px] sm:text-[11px] font-mono-tech text-white/80 flex items-center gap-1.5 pointer-events-none z-30 transition-opacity duration-500 ${hasInteracted ? 'opacity-40 hover:opacity-100' : 'opacity-90 animate-pulse'
+                  }`}
+              >
+                <MoveHorizontal className="w-3.5 h-3.5 text-accent-blue-light" />
+                <span>DRAG TO PAN 360° VIEW</span>
+              </div>
 
-                    {/* Tooltip on Hover */}
-                    <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 text-white text-[11px] font-mono-tech px-2.5 py-1 rounded-sm border border-white/20 opacity-0 group-hover/spot:opacity-100 pointer-events-none transition-opacity">
-                      {spot.tag}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {/* Active Hotspot Summary Drawer */}
-              <div className="absolute bottom-4 left-4 right-4 bg-[#08090B]/95 backdrop-blur-md p-4 rounded-sm border border-[#D4A373]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fadeIn">
+              {/* Active Hotspot Summary Drawer (Light Theme Card) */}
+              <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-sm border border-gray-200 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300 z-30 pointer-events-auto">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#E5A93B] animate-pulse"></span>
-                    <span className="font-mono-tech text-[10px] text-[#D4A373] uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-accent-amber animate-pulse"></span>
+                    <span className="font-mono-tech text-[10px] text-accent-bronze uppercase font-bold tracking-wider">
                       Point 0{activeHotspot + 1} // {hotspots[activeHotspot].tag}
                     </span>
                   </div>
-                  <h4 className="font-display font-bold text-white text-sm sm:text-base mt-0.5">
+                  <h4 className="font-display font-bold text-brand-primary text-sm sm:text-base mt-0.5">
                     {hotspots[activeHotspot].title}
                   </h4>
-                  <p className="text-xs text-[#8A92A0] mt-1 max-w-xl">
+                  <p className="text-xs text-brand-muted mt-1 max-w-xl">
                     {hotspots[activeHotspot].description}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-mono-tech text-[#38BDF8]">
-                    Click markers to explore
+                  <span className="text-[11px] font-mono-tech text-accent-blue font-semibold">
+                    Click markers &amp; drag to explore
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Benefits & Viewing Formats */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="architectural-panel-glow p-6 rounded-lg border-[#D4A373]/40 space-y-4">
+          {/* Right Column: Benefits & Viewing Formats (Light Theme) */}
+          <div
+            className="lg:col-span-4 space-y-6 transition-all duration-700"
+            style={{
+              opacity: isInView ? 1 : 0,
+              transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 24px, 0)',
+              transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s'
+            }}
+          >
+            <div className="architectural-panel-glow bg-white p-6 rounded-lg border border-gray-200/90 shadow-lg space-y-4">
               <div className="flex items-center gap-2">
                 <Badge variant="amber" size="sm">
                   Spatial Understanding
                 </Badge>
               </div>
 
-              <h3 className="font-display text-xl font-bold text-white">
+              <h3 className="font-display text-xl font-bold text-brand-primary">
                 Experience Spaces Before Building
               </h3>
 
-              <p className="text-xs text-[#8A92A0] leading-relaxed">
+              <p className="text-xs text-brand-muted leading-relaxed">
                 Walking through a simulated 3D environment helps clients, architects, and builders align on design decisions and evaluate layouts before committing to on-site work.
               </p>
 
               <div className="space-y-2.5 pt-2">
-                <div className="flex items-start gap-2 text-xs text-[#F3F4F6]">
-                  <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs text-gray-800">
+                  <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0 mt-0.5" />
                   <span>Understand spatial proportions and room scale intuitively</span>
                 </div>
-                <div className="flex items-start gap-2 text-xs text-[#F3F4F6]">
-                  <CheckCircle2 className="w-4 h-4 text-[#38BDF8] shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs text-gray-800">
+                  <CheckCircle2 className="w-4 h-4 text-accent-blue shrink-0 mt-0.5" />
                   <span>Review material palettes and lighting options visually</span>
                 </div>
-                <div className="flex items-start gap-2 text-xs text-[#F3F4F6]">
-                  <CheckCircle2 className="w-4 h-4 text-[#D4A373] shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs text-gray-800">
+                  <CheckCircle2 className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
                   <span>Facilitate clear communication between project stakeholders</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/10">
+              <div className="pt-4 border-t border-gray-200">
                 <button
                   onClick={onOpenConsultation}
-                  className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-[#D4A373] to-[#E5A93B] hover:from-[#E2B689] hover:to-[#F4D06F] text-[#08090B] font-display font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Discuss Immersive VR Services</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -224,8 +372,8 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
             </div>
 
             {/* Viewing Formats */}
-            <div className="bg-[#0E1013] p-5 rounded-lg border border-white/10 space-y-3">
-              <div className="text-xs font-mono-tech text-[#8A92A0] uppercase tracking-wider">
+            <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-xs space-y-3">
+              <div className="text-xs font-mono-tech text-gray-700 uppercase font-bold tracking-wider">
                 Flexible Viewing Formats
               </div>
 
@@ -233,11 +381,11 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
                 {devices.map((d, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-sm bg-[#14171D] border border-white/5 text-xs"
+                    className="flex items-center justify-between p-2.5 rounded-sm bg-gray-50 border border-gray-200 text-xs"
                   >
                     <div>
-                      <div className="text-white font-medium">{d.name}</div>
-                      <div className="text-[10px] text-[#8A92A0] font-mono-tech">{d.note}</div>
+                      <div className="text-brand-primary font-semibold">{d.name}</div>
+                      <div className="text-[10px] text-gray-500 font-mono-tech">{d.note}</div>
                     </div>
                     <Badge variant="neutral" size="sm" className="text-[10px]">
                       {d.badge}
@@ -252,3 +400,5 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
     </section>
   );
 };
+
+export default ImmersiveVR;

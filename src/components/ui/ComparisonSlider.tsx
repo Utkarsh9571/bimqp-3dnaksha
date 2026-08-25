@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Layers, Sparkles, Sliders, Eye } from 'lucide-react';
+import { prefersReducedMotion } from '../../lib/animations';
 
 interface ComparisonSliderProps {
   blueprintImage: string;
@@ -21,7 +22,12 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [activePreset, setActivePreset] = useState<'split' | 'blueprint' | 'render'>('split');
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const renderLayerRef = useRef<HTMLDivElement>(null);
+  const blueprintLayerRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
+  const isReduced = prefersReducedMotion();
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -36,7 +42,12 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!isDragging) return;
-    handleMove(e.touches[0].clientX);
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+    if (e.touches && e.touches.length > 0) {
+      handleMove(e.touches[0].clientX);
+    }
   }, [isDragging, handleMove]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -48,18 +59,51 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
     setIsDragging(false);
   }, []);
 
+  // RAF-throttled direct DOM mutation for depth parallax (Bypassed on touch/mobile)
+  const handlePointerMoveParallax = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isReduced || !containerRef.current || typeof window === 'undefined') return;
+    if (!window.matchMedia('(hover: hover)').matches) return; // Ignore on touch screens
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to +0.5
+    const ny = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to +0.5
+
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = requestAnimationFrame(() => {
+      if (renderLayerRef.current) {
+        renderLayerRef.current.style.transform = `scale(1.05) translate3d(${nx * -10}px, ${ny * -7}px, 0)`;
+      }
+      if (blueprintLayerRef.current) {
+        blueprintLayerRef.current.style.transform = `scale(1.05) translate3d(${nx * -18}px, ${ny * -13}px, 0)`;
+      }
+    });
+  };
+
+  const handlePointerLeave = () => {
+    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    if (renderLayerRef.current) {
+      renderLayerRef.current.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+    }
+    if (blueprintLayerRef.current) {
+      blueprintLayerRef.current.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+    }
+  };
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('touchend', handleMouseUp);
+      window.addEventListener('touchcancel', handleMouseUp);
     }
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleMouseUp);
+      window.removeEventListener('touchcancel', handleMouseUp);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove]);
 
@@ -73,64 +117,77 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
   return (
     <div className="w-full">
       {/* Top Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-white/10">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-gray-200">
         <div>
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#D4A373] animate-pulse"></span>
-            <h4 className="font-display font-semibold text-white text-base md:text-lg">
+            <span className="inline-block w-2 h-2 rounded-full bg-accent-amber animate-pulse"></span>
+            <h4 className="font-display font-bold text-brand-primary text-base md:text-lg">
               {projectTitle}
             </h4>
           </div>
-          <p className="font-mono-tech text-xs text-[#8A92A0] mt-0.5">{projectMeta}</p>
+          <p className="font-mono-tech text-xs text-brand-muted mt-0.5">{projectMeta}</p>
         </div>
 
-        {/* View Toggle Tabs */}
-        <div className="flex items-center gap-1 bg-[#14171D] p-1 rounded-sm border border-white/10 text-xs font-mono-tech">
+        {/* View Toggle Tabs (Min 44px touch targets) */}
+        <div className="flex items-center gap-1.5 bg-gray-100 p-1.5 rounded-sm border border-gray-200 text-xs font-mono-tech">
           <button
             onClick={() => setPreset('blueprint')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'blueprint'
-                ? 'bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-blue-50 text-accent-blue font-bold border border-blue-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-4 h-4" />
             <span>2D Plan</span>
           </button>
           <button
             onClick={() => setPreset('split')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'split'
-                ? 'bg-[#D4A373]/20 text-[#D4A373] border border-[#D4A373]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-amber-50 text-accent-bronze font-bold border border-amber-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5" />
+            <Sliders className="w-4 h-4" />
             <span>Interactive Split</span>
           </button>
           <button
             onClick={() => setPreset('render')}
-            className={`px-3 py-1.5 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`min-h-[44px] px-3.5 py-2 rounded-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               activePreset === 'render'
-                ? 'bg-[#E5A93B]/20 text-[#E5A93B] border border-[#E5A93B]/40 shadow-sm'
-                : 'text-[#8A92A0] hover:text-white'
+                ? 'bg-amber-50 text-accent-bronze-dark font-bold border border-amber-200 shadow-2xs'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-4 h-4" />
             <span>3D Render</span>
           </button>
         </div>
       </div>
 
-      {/* Main Slider Canvas */}
+      {/* Main Slider Canvas with 3D Depth Perspective */}
       <div
         ref={containerRef}
-        className="relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-white/15 bg-[#0E1013] select-none cursor-ew-resize corner-crosshairs group shadow-2xl"
+        className={`relative w-full aspect-[16/10] md:aspect-[16/9] overflow-hidden rounded-md border border-gray-200 bg-white select-none cursor-ew-resize corner-crosshairs group shadow-xl transition-shadow duration-300 hover:shadow-2xl touch-pan-y ${
+          isDragging ? 'touch-none' : ''
+        }`}
         onMouseDown={() => setIsDragging(true)}
         onTouchStart={() => setIsDragging(true)}
+        onPointerMove={handlePointerMoveParallax}
+        onPointerLeave={handlePointerLeave}
+        style={{
+          perspective: '1200px'
+        }}
       >
         {/* Render Layer (Right Side / Background) */}
-        <div className="absolute inset-0 w-full h-full">
+        <div
+          ref={renderLayerRef}
+          className="absolute inset-0 w-full h-full overflow-hidden transition-transform duration-100 ease-out will-change-transform"
+          style={{
+            transform: 'scale(1.05) translate3d(0, 0, 0)'
+          }}
+        >
           <img
             src={renderImage}
             alt="3D Architectural Visualization Render"
@@ -138,8 +195,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             loading="lazy"
           />
           {/* Label Badge */}
-          <div className="absolute bottom-4 right-4 z-10 bg-[#08090B]/85 backdrop-blur-md px-3 py-1.5 rounded-sm border border-[#D4A373]/30 text-xs font-mono-tech text-[#D4A373] flex items-center gap-2 pointer-events-none">
-            <Sparkles className="w-3.5 h-3.5 text-[#E5A93B]" />
+          <div className="absolute bottom-4 right-4 z-10 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/20 text-xs font-mono-tech text-accent-amber-gold flex items-center gap-2 pointer-events-none">
+            <Sparkles className="w-3.5 h-3.5 text-accent-amber-gold" />
             <span>{renderLabel}</span>
           </div>
         </div>
@@ -150,9 +207,11 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
           style={{ width: `${sliderPosition}%` }}
         >
           <div
-            className="relative h-full"
+            ref={blueprintLayerRef}
+            className="relative h-full transition-transform duration-100 ease-out will-change-transform"
             style={{
-              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%'
+              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+              transform: 'scale(1.05) translate3d(0, 0, 0)'
             }}
           >
             {/* Blueprint image with stylized plan overlay */}
@@ -169,7 +228,7 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
             </div>
 
             {/* Blueprint Label Badge */}
-            <div className="absolute bottom-4 left-4 z-10 bg-[#08090B]/85 backdrop-blur-md px-3 py-1.5 rounded-sm border border-[#38BDF8]/30 text-xs font-mono-tech text-[#38BDF8] flex items-center gap-2 pointer-events-none">
+            <div className="absolute bottom-4 left-4 z-10 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/20 text-xs font-mono-tech text-accent-blue-light flex items-center gap-2 pointer-events-none">
               <Layers className="w-3.5 h-3.5" />
               <span>{blueprintLabel}</span>
             </div>
@@ -178,29 +237,31 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
 
         {/* Draggable Divider Line */}
         <div
-          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-[#38BDF8] via-white to-[#D4A373] shadow-[0_0_12px_rgba(212,163,115,0.8)]"
+          className="absolute top-0 bottom-0 z-20 w-0.5 bg-gradient-to-b from-accent-blue via-white to-accent-amber shadow-sm pointer-events-none"
           style={{ left: `${sliderPosition}%` }}
         >
-          {/* Circular Handle */}
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-[#0E1013] border-2 border-[#D4A373] shadow-lg flex items-center justify-center text-[#D4A373] group-hover:scale-110 transition-transform">
+          {/* Circular Handle (Min 44x44px touch target) */}
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white border-2 border-accent-bronze shadow-md flex items-center justify-center text-accent-bronze group-hover:scale-110 transition-transform pointer-events-auto cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-0.5">
-              <span className="w-1 h-3 bg-[#38BDF8] rounded-full"></span>
-              <span className="w-1 h-3 bg-[#D4A373] rounded-full"></span>
+              <span className="w-1 h-3.5 bg-accent-blue rounded-full"></span>
+              <span className="w-1 h-3.5 bg-accent-amber rounded-full"></span>
             </div>
           </div>
 
           {/* Top Indicator */}
-          <div className="absolute top-2 -translate-x-1/2 bg-[#08090B]/90 text-[10px] font-mono-tech px-2 py-0.5 rounded-xs border border-white/20 text-white whitespace-nowrap">
+          <div className="absolute top-2 -translate-x-1/2 bg-black/90 text-[10px] font-mono-tech px-2 py-0.5 rounded-xs border border-white/20 text-white whitespace-nowrap">
             {Math.round(sliderPosition)}% SPLIT
           </div>
         </div>
 
         {/* Drag Hint Overlay for new visitors */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-mono-tech text-[#8A92A0] border border-white/10 opacity-70 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
-          <Eye className="w-3 h-3 text-[#D4A373]" />
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-mono-tech text-gray-700 border border-gray-300 shadow-xs opacity-80 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
+          <Eye className="w-3 h-3 text-accent-amber" />
           <span>Drag slider left / right to compare</span>
         </div>
       </div>
     </div>
   );
 };
+
+export default ComparisonSlider;
