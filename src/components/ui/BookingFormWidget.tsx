@@ -11,7 +11,7 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
-import { submitToGoogleAppsScript } from '../../config/forms';
+import { submitToHubSpot } from '../../config/forms';
 import { HUBSPOT_MEETINGS_URL } from '../../config/scheduling';
 
 interface BookingFormWidgetProps {
@@ -118,9 +118,9 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     const firstName = nameParts[0] || fullName.trim();
     const lastName = nameParts.slice(1).join(' ') || '';
 
-    const formattedPhone = mobileNumber.trim().startsWith('+') ? `'${mobileNumber.trim()}` : mobileNumber.trim();
+    const formattedPhone = mobileNumber.trim();
 
-    const res = await submitToGoogleAppsScript({
+    const res = await submitToHubSpot({
       formType: 'homepage_booking',
       firstName: firstName,
       lastName: lastName,
@@ -284,7 +284,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                 <div className="p-3.5 rounded-sm bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-mono-tech text-accent-emerald">
                   <div className="flex items-center gap-2 font-semibold">
                     <CheckCircle2 className="w-4 h-4 shrink-0 text-accent-emerald" />
-                    <span>Step 1 Lead Saved to Sheet</span>
+                    <span>Step 1 Lead Details Saved</span>
                   </div>
                   <button
                     type="button"

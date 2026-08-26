@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, ArrowRight, MessageSquare, Layers, Loader2, AlertCircle } from 'lucide-react';
 import { Badge } from '../ui/Badge';
-import { submitToGoogleAppsScript } from '../../config/forms';
+import { submitToHubSpot } from '../../config/forms';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -15,6 +15,7 @@ const COUNTRY_CODES = [
   { code: '+44', country: 'UK (+44)' },
   { code: '+971', country: 'UAE (+971)' },
   { code: '+61', country: 'AU (+61)' },
+  { code: '+60', country: 'MY (+60)' },
   { code: '+49', country: 'DE (+49)' },
   { code: '+33', country: 'FR (+33)' },
   { code: '+65', country: 'SG (+65)' },
@@ -55,10 +56,9 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    const rawPhone = `${formData.countryCode} ${formData.phone.trim()}`;
-    const fullPhone = rawPhone.startsWith('+') ? `'${rawPhone}` : rawPhone;
+    const fullPhone = `${formData.countryCode} ${formData.phone.trim()}`;
 
-    const res = await submitToGoogleAppsScript({
+    const res = await submitToHubSpot({
       formType: 'modal_consultation',
       firstName: formData.firstName.trim(),
       lastName: formData.lastName.trim(),
