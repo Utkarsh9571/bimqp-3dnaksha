@@ -36,7 +36,7 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenConsultation }
           </p>
         </div>
 
-        {/* 2-Column Booking Form Widget (Step 1 Details + Step 2 Calendar) */}
+        {/* Project Consultation Form Widget */}
         <BookingFormWidget
           onBookingComplete={(details) => {
             console.log('Consultation Booked:', details);

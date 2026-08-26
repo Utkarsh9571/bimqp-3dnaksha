@@ -107,9 +107,12 @@ function startServer() {
   });
 }
 
-// Fix relative asset URLs in generated HTML so they resolve correctly at any route depth
+// Fix relative asset URLs and strip local dev server host references in generated HTML
 function normalizeAssetPaths(html) {
   return html
+    .replace(new RegExp(`http://localhost:${PORT}/assets/`, 'g'), '/assets/')
+    .replace(new RegExp(`http://localhost:${PORT}/`, 'g'), '/')
+    .replace(new RegExp(`http://localhost:${PORT}`, 'g'), '')
     .replace(/src="\.\/assets\//g, 'src="/assets/')
     .replace(/href="\.\/assets\//g, 'href="/assets/')
     .replace(/href="\.\/favicon\.jpeg"/g, 'href="/favicon.jpeg"');
@@ -218,6 +221,11 @@ async function runPrerender() {
     const fileHtml = fs.readFileSync(route.filePath, 'utf-8');
 
     const failures = [];
+
+    // 0. Check for leftover localhost URLs
+    if (fileHtml.includes(`localhost:${PORT}`) || fileHtml.includes('http://localhost') || fileHtml.includes('https://localhost')) {
+      failures.push(`Raw HTML contains hardcoded localhost URL reference!`);
+    }
 
     // 1. Title Check
     const titleMatch = fileHtml.match(/<title[^>]*>(.*?)<\/title>/i);

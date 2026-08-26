@@ -8,15 +8,16 @@ import {
   User,
   Loader2,
   AlertCircle,
-  CalendarCheck
+  HelpCircle
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
 import { submitToHubSpot } from '../../config/forms';
-import { HUBSPOT_MEETINGS_URL } from '../../config/scheduling';
 
 interface BookingFormWidgetProps {
   onBookingComplete?: (details: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    fullName?: string;
     workEmail: string;
     mobileNumber: string;
     projectName: string;
@@ -24,31 +25,42 @@ interface BookingFormWidgetProps {
   className?: string;
 }
 
+const REFERRAL_OPTIONS = [
+  'Google Search',
+  'Referral / Recommendation',
+  'Social Media (Instagram, LinkedIn, etc.)',
+  'Industry Event / Publication',
+  'Other'
+];
+
 export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   onBookingComplete,
   className = ''
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const step2Ref = useRef<HTMLDivElement>(null);
 
-  // Step 1: User Details State
-  const [fullName, setFullName] = useState('');
+  // Form Field State
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [projectName, setProjectName] = useState('');
-
-  // Submission State
-  const [isStep1Submitted, setIsStep1Submitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [referralSource, setReferralSource] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
-  // Validation for Step 1
-  const isStep1Valid =
-    fullName.trim().length >= 2 &&
+  // Submission State
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Validation
+  const isFormValid =
+    firstName.trim().length >= 1 &&
+    lastName.trim().length >= 1 &&
     workEmail.includes('@') &&
     mobileNumber.trim().length >= 7 &&
-    projectName.trim().length >= 2;
+    projectName.trim().length >= 2 &&
+    referralSource.trim().length > 0;
 
   // Entrance Animation
   useEffect(() => {
@@ -81,83 +93,63 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     };
   }, []);
 
-  // Embed HubSpot Meetings Script Loader
-  useEffect(() => {
-    const scriptId = 'hs-meetings-embed-script';
-
-    const embedMeetingWidget = () => {
-      const container = document.querySelector('.meetings-iframe-container');
-      if (!container) return;
-
-      // If container exists and does not have an iframe loaded yet
-      if (!container.querySelector('iframe')) {
-        const existingScript = document.getElementById(scriptId);
-        if (existingScript) {
-          existingScript.remove();
-        }
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.type = 'text/javascript';
-        script.src = 'https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js';
-        script.async = true;
-        document.body.appendChild(script);
-      }
-    };
-
-    embedMeetingWidget();
-  }, []);
-
-  const handleStep1Submit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isStep1Valid || isSubmitting) return;
+    if (!isFormValid || isSubmitting) return;
 
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    const nameParts = fullName.trim().split(' ');
-    const firstName = nameParts[0] || fullName.trim();
-    const lastName = nameParts.slice(1).join(' ') || '';
-
-    const formattedPhone = mobileNumber.trim();
+    const cleanFirstName = firstName.trim();
+    const cleanLastName = lastName.trim();
 
     const res = await submitToHubSpot({
       formType: 'homepage_booking',
-      firstName: firstName,
-      lastName: lastName,
-      name: fullName.trim(),
+      firstName: cleanFirstName,
+      lastName: cleanLastName,
+      name: `${cleanFirstName} ${cleanLastName}`,
       email: workEmail.trim(),
-      phone: formattedPhone,
+      phone: mobileNumber.trim(),
       projectName: projectName.trim(),
-      projectDetails: `Project Lead: ${projectName.trim()} | Submitted via Step 1 Lead Capture`,
+      projectDetails: `Project Lead: ${projectName.trim()} | Submitted via Homepage Consultation Form`,
+      referralSource: referralSource,
+      howHeard: referralSource,
       website: honeypot
     });
 
     setIsSubmitting(false);
 
     if (res.success) {
-      setIsStep1Submitted(true);
+      setIsSubmitted(true);
       onBookingComplete?.({
-        fullName,
+        firstName: cleanFirstName,
+        lastName: cleanLastName,
+        fullName: `${cleanFirstName} ${cleanLastName}`,
         workEmail,
         mobileNumber,
         projectName
       });
-
-      // Smooth scroll to Step 2 on mobile devices
-      if (window.innerWidth < 1024 && step2Ref.current) {
-        step2Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
     } else {
-      setErrorMessage(res.message || 'Failed to save details. Please try again.');
+      setErrorMessage(res.message || 'Failed to submit inquiry. Please try again.');
     }
   };
 
-  const isPlaceholderUrl = HUBSPOT_MEETINGS_URL.includes('your-hubspot-handle');
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setErrorMessage(null);
+    setFirstName('');
+    setLastName('');
+    setWorkEmail('');
+    setMobileNumber('');
+    setProjectName('');
+    setReferralSource('');
+    setHoneypot('');
+  };
 
   return (
     <div
       ref={cardRef}
-      className={`rounded-2xl bg-white border border-gray-200/90 p-5 sm:p-8 md:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden corner-crosshairs ${className}`}
+      className={`max-w-3xl mx-auto rounded-2xl bg-white border border-gray-200/90 p-6 sm:p-8 md:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden corner-crosshairs ${className}`}
     >
       {/* Blueprint Ambient Grid Accent */}
       <div className="absolute inset-0 bg-blueprint-grid opacity-20 pointer-events-none" />
@@ -166,12 +158,34 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       <div className="absolute -top-32 -right-32 w-80 h-80 bg-gradient-to-bl from-accent-bronze-light/15 to-transparent blur-[80px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-gradient-to-tr from-accent-blue/10 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-        {/* =========================================================
-            LEFT COLUMN: STEP 1 - Your Details Form
-           ========================================================= */}
-        <div className="lg:col-span-5 flex flex-col justify-between">
-          <form onSubmit={handleStep1Submit} className="space-y-6">
+      <div className="relative z-10">
+        {isSubmitted ? (
+          <div className="py-8 px-4 text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-accent-emerald shadow-xs">
+              <CheckCircle2 className="w-7 h-7" />
+            </div>
+
+            <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-primary tracking-tight">
+              Inquiry Submitted Successfully
+            </h3>
+
+            <p className="text-xs sm:text-sm text-brand-muted font-mono-tech max-w-lg mx-auto leading-relaxed">
+              Thank you, <strong className="text-brand-primary font-semibold">{firstName} {lastName}</strong>! Your project details have been received. We've sent a confirmation email to{' '}
+              <strong className="text-brand-primary font-semibold">{workEmail}</strong>. You can use the scheduling link in that email to book a consultation with our team.
+            </p>
+
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="px-6 py-2.5 rounded-sm bg-gray-100 hover:bg-gray-200 border border-gray-300 text-brand-primary text-xs font-mono-tech font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Submit Another Project Inquiry
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Honeypot field for spam protection */}
             <input
               type="text"
@@ -185,10 +199,10 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
             />
 
             <div>
-              {/* Step Tag */}
+              {/* Tag */}
               <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-accent-bronze tracking-[0.2em] uppercase font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-bronze" />
-                <span>STEP 1 OF 2</span>
+                <span>PROJECT CONSULTATION</span>
               </div>
 
               <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-primary tracking-tight mb-2">
@@ -206,57 +220,76 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                 </div>
               )}
 
-              {/* Input Fields */}
+              {/* Input Fields Grid */}
               <div className="space-y-4">
-                {/* Full Name */}
-                <div>
-                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-accent-bronze" />
-                    <span>Full Name *</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Ar. Vikram Malhotra"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
-                  />
+                {/* First Name & Last Name Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* First Name */}
+                  <div>
+                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5 text-accent-bronze" />
+                      <span>First Name *</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Vikram"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  {/* Last Name */}
+                  <div>
+                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5 text-accent-bronze" />
+                      <span>Last Name *</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Malhotra"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
 
-                {/* Work Email */}
-                <div>
-                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-accent-blue" />
-                    <span>Work Email *</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@firm.com"
-                    value={workEmail}
-                    onChange={(e) => setWorkEmail(e.target.value)}
-                    disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-blue text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
-                  />
-                </div>
+                {/* Email & Phone Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Work Email */}
+                  <div>
+                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-accent-blue" />
+                      <span>Work Email *</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="name@firm.com"
+                      value={workEmail}
+                      onChange={(e) => setWorkEmail(e.target.value)}
+                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-blue text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                    />
+                  </div>
 
-                {/* Mobile Number */}
-                <div>
-                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-accent-emerald" />
-                    <span>Mobile Number *</span>
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+91 98765 43210"
-                    value={mobileNumber}
-                    onChange={(e) => setMobileNumber(e.target.value)}
-                    disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
-                  />
+                  {/* Mobile Number */}
+                  <div>
+                    <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-accent-emerald" />
+                      <span>Mobile Number *</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+91 98765 43210"
+                      value={mobileNumber}
+                      onChange={(e) => setMobileNumber(e.target.value)}
+                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
 
                 {/* Project Name */}
@@ -271,131 +304,72 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     placeholder="e.g. Skyline Residence & BIM Review"
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
-                    disabled={isStep1Submitted}
-                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-amber text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors disabled:opacity-70 disabled:bg-gray-100"
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-amber text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
                   />
+                </div>
+
+                {/* How Did You Hear About Us? */}
+                <div>
+                  <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-accent-purple" />
+                    <span>How did you hear about us? *</span>
+                  </label>
+                  <select
+                    required
+                    value={referralSource}
+                    onChange={(e) => setReferralSource(e.target.value)}
+                    className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans focus:outline-none transition-colors cursor-pointer"
+                  >
+                    <option value="">Select option...</option>
+                    {REFERRAL_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
 
-            {/* Step 1 Submit / Status Section */}
+            {/* Form Submit Button */}
             <div className="pt-4 border-t border-gray-200 space-y-3">
-              {isStep1Submitted ? (
-                <div className="p-3.5 rounded-sm bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-mono-tech text-accent-emerald">
-                  <div className="flex items-center gap-2 font-semibold">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-accent-emerald" />
-                    <span>Step 1 Lead Details Saved</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsStep1Submitted(false)}
-                    className="text-[11px] underline text-gray-600 hover:text-gray-900 cursor-pointer"
-                  >
-                    Edit Details
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={!isStep1Valid || isSubmitting}
-                  className={`w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
-                    isStep1Valid && !isSubmitting
-                      ? 'opacity-100 bg-gradient-to-r from-accent-bronze-light via-accent-amber-gold to-accent-amber-bright text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
-                      : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>SAVING DETAILS...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>SAVE DETAILS & PROCEED TO CALENDAR →</span>
-                    </>
-                  )}
-                </button>
-              )}
+              <button
+                type="submit"
+                disabled={!isFormValid || isSubmitting}
+                className={`w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
+                  isFormValid && !isSubmitting
+                    ? 'opacity-100 bg-gradient-to-r from-accent-bronze-light via-accent-amber-gold to-accent-amber-bright text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
+                    : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>SUBMITTING INQUIRY...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>SUBMIT PROJECT DETAILS →</span>
+                  </>
+                )}
+              </button>
 
-              <div className="font-mono-tech text-[11px] flex items-center gap-2">
+              <div className="font-mono-tech text-[11px] flex items-center justify-center gap-2 text-gray-500">
                 <span
                   className={`w-2 h-2 rounded-full ${
-                    isStep1Submitted
-                      ? 'bg-accent-emerald'
-                      : isStep1Valid
-                      ? 'bg-accent-bronze'
-                      : 'bg-gray-400'
+                    isFormValid ? 'bg-accent-emerald' : 'bg-gray-400'
                   }`}
                 />
-                <span className={isStep1Submitted ? 'text-accent-emerald font-bold' : isStep1Valid ? 'text-accent-bronze font-bold' : 'text-gray-500'}>
-                  {isStep1Submitted
-                    ? 'Step 1 Lead Saved — Select time slot on right'
-                    : isStep1Valid
-                    ? 'Ready to save lead details'
+                <span>
+                  {isFormValid
+                    ? 'Ready to submit inquiry'
                     : 'Fill all required fields above'}
                 </span>
               </div>
             </div>
           </form>
-        </div>
-
-        {/* =========================================================
-            RIGHT COLUMN: STEP 2 - Embedded HubSpot Meetings Widget
-           ========================================================= */}
-        <div ref={step2Ref} className="lg:col-span-7 flex flex-col justify-between">
-          <div>
-            {/* Step Tag */}
-            <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-accent-blue tracking-[0.2em] uppercase font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-blue" />
-              <span>STEP 2 OF 2</span>
-            </div>
-
-            <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-primary tracking-tight mb-2">
-              Select Date & Time
-            </h3>
-
-            <p className="text-xs text-brand-muted font-mono-tech mb-4 leading-relaxed">
-              Choose your preferred consultation date and live virtual walkthrough session slot via HubSpot.
-            </p>
-
-            {/* Developer Notice if default placeholder link is active */}
-            {isPlaceholderUrl && (
-              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-mono-tech rounded-sm flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
-                <div>
-                  <span className="font-bold">HubSpot Embed Placeholder:</span> Update{' '}
-                  <code className="bg-amber-100 px-1 py-0.5 rounded text-amber-900 font-mono">
-                    src/config/scheduling.ts
-                  </code>{' '}
-                  with your real HubSpot Meetings URL to connect your live booking calendar.
-                </div>
-              </div>
-            )}
-
-            {/* HubSpot Meetings Official Embed Container */}
-            <div className="rounded-xl border border-gray-200 bg-[#F9FAFB] p-2 sm:p-4 overflow-hidden shadow-2xs">
-              <div
-                className="meetings-iframe-container w-full min-h-[580px] sm:min-h-[620px]"
-                data-src={
-                  HUBSPOT_MEETINGS_URL.includes('embed=true')
-                    ? HUBSPOT_MEETINGS_URL
-                    : HUBSPOT_MEETINGS_URL.includes('?')
-                    ? `${HUBSPOT_MEETINGS_URL}&embed=true`
-                    : `${HUBSPOT_MEETINGS_URL}?embed=true`
-                }
-              />
-            </div>
-          </div>
-
-          {/* Status Footer for Step 2 */}
-          <div className="pt-4 mt-4 border-t border-gray-200 font-mono-tech text-xs flex items-center justify-between text-gray-600">
-            <div className="flex items-center gap-2">
-              <CalendarCheck className="w-4 h-4 text-accent-blue" />
-              <span>Powered by HubSpot Meetings Scheduler</span>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
