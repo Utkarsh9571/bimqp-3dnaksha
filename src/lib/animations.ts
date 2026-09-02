@@ -71,12 +71,6 @@ export const initSmoothScroll = (
     return lenisInstance;
   }
 
-  // On mobile touch devices, use native momentum scrolling to eliminate main-thread touch interception overhead
-  const isTouch = 'ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.innerWidth < 768;
-  if (isTouch) {
-    return null;
-  }
-
   const {
     duration = 1.2,
     easing = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -116,7 +110,53 @@ export const initSmoothScroll = (
   // 3. Disable GSAP's lag smoothing to avoid jumps during momentum scrolling
   gsap.ticker.lagSmoothing(0);
 
+  // 4. Attach global smooth scroll link handler for in-page anchors
+  bindGlobalAnchorScroll();
+
   return lenis;
+};
+
+/**
+ * Global listener for smooth scrolling on all internal hash anchor (#id) clicks.
+ */
+let anchorListenerAttached = false;
+let removeAnchorListener: (() => void) | null = null;
+
+export const bindGlobalAnchorScroll = (): (() => void) => {
+  if (typeof window === 'undefined' || anchorListenerAttached) {
+    return removeAnchorListener || (() => {});
+  }
+
+  const handleGlobalAnchorClick = (e: MouseEvent) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    const target = e.target as HTMLElement | null;
+    const anchor = target?.closest('a');
+    if (!anchor) return;
+
+    const href = anchor.getAttribute('href');
+    if (!href || !href.startsWith('#') || href === '#') return;
+
+    const targetEl = document.querySelector(href);
+    if (targetEl) {
+      e.preventDefault();
+      smoothScrollTo(href, { offset: -70 });
+      if (window.history.pushState) {
+        window.history.pushState(null, '', href);
+      }
+    }
+  };
+
+  document.addEventListener('click', handleGlobalAnchorClick);
+  anchorListenerAttached = true;
+
+  removeAnchorListener = () => {
+    document.removeEventListener('click', handleGlobalAnchorClick);
+    anchorListenerAttached = false;
+    removeAnchorListener = null;
+  };
+
+  return removeAnchorListener;
 };
 
 /**

@@ -128,10 +128,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
         <div className="space-y-8">
           <SectionHeading
             number="01"
-            badgeText="ABOUT 3D NAKSHA"
+            badgeText=""
             badgeVariant="amber"
-            title="Step Inside"
-            highlightText="Before You Build."
+            title="About"
+            highlightText="Us"
             subtitle="India’s premier destination for advanced Building Information Modeling (BIM), intelligent construction management, and immersive VR spatial reviews."
             align="left"
           />

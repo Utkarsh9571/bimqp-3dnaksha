@@ -33,6 +33,31 @@ const REFERRAL_OPTIONS = [
   'Other'
 ];
 
+const COUNTRY_CODES = [
+  { code: '+91', country: 'IN (+91)' },
+  { code: '+1', country: 'US/CA (+1)' },
+  { code: '+44', country: 'UK (+44)' },
+  { code: '+971', country: 'UAE (+971)' },
+  { code: '+61', country: 'AU (+61)' },
+  { code: '+60', country: 'MY (+60)' },
+  { code: '+49', country: 'DE (+49)' },
+  { code: '+33', country: 'FR (+33)' },
+  { code: '+65', country: 'SG (+65)' },
+  { code: '+86', country: 'CN (+86)' }
+];
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const sanitizeName = (val: string): string => {
+  // Strip all numeric digits (0-9)
+  return val.replace(/[0-9]/g, '');
+};
+
+const sanitizePhone = (val: string): string => {
+  // Remove all non-digits (spaces, letters, symbols) and cap at 10 digits
+  return val.replace(/\D/g, '').slice(0, 10);
+};
+
 export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   onBookingComplete,
   className = ''
@@ -43,6 +68,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
+  const [countryCode, setCountryCode] = useState('+91');
   const [mobileNumber, setMobileNumber] = useState('');
   const [projectName, setProjectName] = useState('');
   const [referralSource, setReferralSource] = useState('');
@@ -57,8 +83,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   const isFormValid =
     firstName.trim().length >= 1 &&
     lastName.trim().length >= 1 &&
-    workEmail.includes('@') &&
-    mobileNumber.trim().length >= 7 &&
+    EMAIL_REGEX.test(workEmail.trim()) &&
+    mobileNumber.trim().length === 10 &&
     projectName.trim().length >= 2 &&
     referralSource.trim().length > 0;
 
@@ -95,21 +121,42 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid || isSubmitting) return;
-
     setErrorMessage(null);
-    setIsSubmitting(true);
 
     const cleanFirstName = firstName.trim();
     const cleanLastName = lastName.trim();
+    const cleanEmail = workEmail.trim();
+    const cleanPhone = mobileNumber.trim();
+
+    if (!cleanFirstName || !cleanLastName) {
+      setErrorMessage('Please enter your first and last name.');
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      setErrorMessage('Please enter a valid work email address (e.g. name@firm.com).');
+      return;
+    }
+
+    if (cleanPhone.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    const fullPhone = `${countryCode} ${cleanPhone}`;
 
     const res = await submitToHubSpot({
       formType: 'homepage_booking',
       firstName: cleanFirstName,
       lastName: cleanLastName,
       name: `${cleanFirstName} ${cleanLastName}`,
-      email: workEmail.trim(),
-      phone: mobileNumber.trim(),
+      email: cleanEmail,
+      phone: fullPhone,
+      countryCode: countryCode,
       projectName: projectName.trim(),
       projectDetails: `Project Lead: ${projectName.trim()} | Submitted via Homepage Consultation Form`,
       referralSource: referralSource,
@@ -125,8 +172,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
         firstName: cleanFirstName,
         lastName: cleanLastName,
         fullName: `${cleanFirstName} ${cleanLastName}`,
-        workEmail,
-        mobileNumber,
+        workEmail: cleanEmail,
+        mobileNumber: fullPhone,
         projectName
       });
     } else {
@@ -140,6 +187,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     setFirstName('');
     setLastName('');
     setWorkEmail('');
+    setCountryCode('+91');
     setMobileNumber('');
     setProjectName('');
     setReferralSource('');
@@ -235,7 +283,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                       required
                       placeholder="e.g. Vikram"
                       value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      onChange={(e) => setFirstName(sanitizeName(e.target.value))}
                       className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
                     />
                   </div>
@@ -251,7 +299,7 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                       required
                       placeholder="e.g. Malhotra"
                       value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      onChange={(e) => setLastName(sanitizeName(e.target.value))}
                       className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-bronze text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
                     />
                   </div>
@@ -275,20 +323,35 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                     />
                   </div>
 
-                  {/* Mobile Number */}
+                  {/* Mobile Number with Country Code Dropdown */}
                   <div>
                     <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
                       <Phone className="w-3.5 h-3.5 text-accent-emerald" />
-                      <span>Mobile Number *</span>
+                      <span>Mobile Number * <span className="text-gray-400 font-normal lowercase">(10 digits)</span></span>
                     </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={mobileNumber}
-                      onChange={(e) => setMobileNumber(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
-                    />
+                    <div className="flex gap-2">
+                      <select
+                        value={countryCode}
+                        onChange={(e) => setCountryCode(e.target.value)}
+                        className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-3 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-emerald transition-colors shrink-0 cursor-pointer"
+                      >
+                        {COUNTRY_CODES.map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.country}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="tel"
+                        required
+                        maxLength={10}
+                        inputMode="numeric"
+                        placeholder="9876543210"
+                        value={mobileNumber}
+                        onChange={(e) => setMobileNumber(sanitizePhone(e.target.value))}
+                        className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                      />
+                    </div>
                   </div>
                 </div>
 

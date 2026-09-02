@@ -4,6 +4,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
 import { OperatingRegions } from './components/sections/OperatingRegions';
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
+import { ScrollToTop } from './components/ui/ScrollToTop';
 import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScrollTo } from './lib/animations';
 import type { PortfolioItem } from './types';
 
@@ -56,6 +57,14 @@ export function App() {
     }
     if (window.location.pathname === '/') {
       canonicalLink.setAttribute('href', 'https://3dnaksha.com/');
+    }
+
+    // Handle initial hash scrolling on page load
+    if (window.location.hash) {
+      const hash = window.location.hash;
+      setTimeout(() => {
+        smoothScrollTo(hash, { offset: -70 });
+      }, 300);
     }
 
     const unsubscribeReduced = onReducedMotionChange((isReduced) => {
@@ -193,6 +202,9 @@ export function App() {
           />
         )}
       </Suspense>
+
+      {/* Floating Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 }

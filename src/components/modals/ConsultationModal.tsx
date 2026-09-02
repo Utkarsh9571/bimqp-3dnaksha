@@ -30,6 +30,18 @@ const REFERRAL_OPTIONS = [
   'Other'
 ];
 
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const sanitizeName = (val: string): string => {
+  // Strip all numeric digits (0-9)
+  return val.replace(/[0-9]/g, '');
+};
+
+const sanitizePhone = (val: string): string => {
+  // Remove all non-digits (spaces, letters, symbols) and cap at 10 digits
+  return val.replace(/\D/g, '').slice(0, 10);
+};
+
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   isOpen,
   onClose
@@ -54,16 +66,37 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    const cleanFirstName = formData.firstName.trim();
+    const cleanLastName = formData.lastName.trim();
+    const cleanEmail = formData.email.trim();
+    const cleanPhone = formData.phone.trim();
+
+    if (!cleanFirstName || !cleanLastName) {
+      setErrorMessage('Please enter your first and last name.');
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address (e.g. name@domain.com).');
+      return;
+    }
+
+    if (cleanPhone.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit phone number.');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const fullPhone = `${formData.countryCode} ${formData.phone.trim()}`;
+    const fullPhone = `${formData.countryCode} ${cleanPhone}`;
 
     const res = await submitToHubSpot({
       formType: 'modal_consultation',
-      firstName: formData.firstName.trim(),
-      lastName: formData.lastName.trim(),
-      name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
-      email: formData.email.trim(),
+      firstName: cleanFirstName,
+      lastName: cleanLastName,
+      name: `${cleanFirstName} ${cleanLastName}`,
+      email: cleanEmail,
       phone: fullPhone,
       countryCode: formData.countryCode,
       projectDetails: formData.projectDetails.trim(),
@@ -169,7 +202,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     required
                     placeholder="e.g. Rajesh"
                     value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, firstName: sanitizeName(e.target.value) })}
                     className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
@@ -182,7 +215,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     required
                     placeholder="e.g. Mehta"
                     value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, lastName: sanitizeName(e.target.value) })}
                     className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
@@ -206,13 +239,13 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               {/* Phone Number with Country Code Selector */}
               <div>
                 <label className="block text-xs font-mono-tech text-gray-700 font-semibold mb-1.5 uppercase">
-                  Phone Number *
+                  Phone Number * <span className="text-gray-400 font-normal lowercase">(10 digits)</span>
                 </label>
                 <div className="flex gap-2">
                   <select
                     value={formData.countryCode}
                     onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors shrink-0"
+                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors shrink-0 cursor-pointer"
                   >
                     {COUNTRY_CODES.map((c) => (
                       <option key={c.code} value={c.code}>
@@ -223,9 +256,11 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   <input
                     type="tel"
                     required
-                    placeholder="98765 43210"
+                    maxLength={10}
+                    inputMode="numeric"
+                    placeholder="9876543210"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, phone: sanitizePhone(e.target.value) })}
                     className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
