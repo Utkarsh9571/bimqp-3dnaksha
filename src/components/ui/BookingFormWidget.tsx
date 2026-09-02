@@ -319,8 +319,18 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                       placeholder="name@firm.com"
                       value={workEmail}
                       onChange={(e) => setWorkEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-blue text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                      className={`w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors ${
+                        workEmail && !EMAIL_REGEX.test(workEmail.trim())
+                          ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                          : 'border-gray-300 focus:border-accent-blue'
+                      }`}
                     />
+                    {workEmail && !EMAIL_REGEX.test(workEmail.trim()) && (
+                      <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>Invalid email format (e.g. name@firm.com)</span>
+                      </p>
+                    )}
                   </div>
 
                   {/* Mobile Number with Country Code Dropdown */}
@@ -349,9 +359,19 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                         placeholder="9876543210"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(sanitizePhone(e.target.value))}
-                        className="w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border border-gray-300 focus:border-accent-emerald text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors"
+                        className={`w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors ${
+                          mobileNumber && mobileNumber.length < 10
+                            ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                            : 'border-gray-300 focus:border-accent-emerald'
+                        }`}
                       />
                     </div>
+                    {mobileNumber && mobileNumber.length < 10 && (
+                      <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>Requires 10 digits ({10 - mobileNumber.length} more needed)</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -398,12 +418,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
             <div className="pt-4 border-t border-gray-200 space-y-3">
               <button
                 type="submit"
-                disabled={!isFormValid || isSubmitting}
-                className={`w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
-                  isFormValid && !isSubmitting
-                    ? 'opacity-100 bg-gradient-to-r from-accent-bronze-light via-accent-amber-gold to-accent-amber-bright text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer'
-                    : 'opacity-40 bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                disabled={isSubmitting}
+                className="w-full py-3.5 px-6 rounded-sm font-display font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-accent-bronze-light via-accent-amber-gold to-accent-amber-bright text-[#08090B] shadow-[0_4px_20px_rgba(212,163,115,0.35)] hover:scale-[1.01] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -421,13 +437,13 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
               <div className="font-mono-tech text-[11px] flex items-center justify-center gap-2 text-gray-500">
                 <span
                   className={`w-2 h-2 rounded-full ${
-                    isFormValid ? 'bg-accent-emerald' : 'bg-gray-400'
+                    isFormValid ? 'bg-accent-emerald' : 'bg-amber-500'
                   }`}
                 />
                 <span>
                   {isFormValid
                     ? 'Ready to submit inquiry'
-                    : 'Fill all required fields above'}
+                    : 'Fill required fields to complete inquiry'}
                 </span>
               </div>
             </div>

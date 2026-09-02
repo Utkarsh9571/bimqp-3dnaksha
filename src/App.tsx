@@ -5,6 +5,7 @@ import { Hero } from './components/sections/Hero';
 import { OperatingRegions } from './components/sections/OperatingRegions';
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { ScrollToTop } from './components/ui/ScrollToTop';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
 import { initSmoothScroll, destroySmoothScroll, onReducedMotionChange, smoothScrollTo } from './lib/animations';
 import type { PortfolioItem } from './types';
 
@@ -203,8 +204,9 @@ export function App() {
         )}
       </Suspense>
 
-      {/* Floating Scroll to Top Button */}
+      {/* Floating Action Controls: WhatsApp & Scroll to Top */}
       <ScrollToTop />
+      <WhatsAppButton phoneNumber="918233520124" />
     </div>
   );
 }

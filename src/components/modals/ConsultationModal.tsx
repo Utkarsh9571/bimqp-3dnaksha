@@ -232,8 +232,18 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   placeholder="e.g. rajesh@designstudio.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
+                  className={`w-full bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
+                    formData.email && !EMAIL_REGEX.test(formData.email.trim())
+                      ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                      : 'border-gray-300 focus:border-accent-bronze'
+                  }`}
                 />
+                {formData.email && !EMAIL_REGEX.test(formData.email.trim()) && (
+                  <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>Invalid email format (e.g. name@domain.com)</span>
+                  </p>
+                )}
               </div>
 
               {/* Phone Number with Country Code Selector */}
@@ -261,9 +271,19 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     placeholder="9876543210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: sanitizePhone(e.target.value) })}
-                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
+                    className={`w-full bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
+                      formData.phone && formData.phone.length < 10
+                        ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                        : 'border-gray-300 focus:border-accent-bronze'
+                    }`}
                   />
                 </div>
+                {formData.phone && formData.phone.length < 10 && (
+                  <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>Requires 10 digits ({10 - formData.phone.length} more needed)</span>
+                  </p>
+                )}
               </div>
 
               {/* Tell us about your project and goals (textarea, optional) */}
