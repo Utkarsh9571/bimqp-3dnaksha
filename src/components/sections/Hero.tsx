@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ChevronDown, ArrowRight, Glasses, CheckCircle2 } from 'lucide-react';
-import { WireframeBuildingInterior as _WireframeBuildingInterior } from '../ui/WireframeBuildingInterior';
 import { Badge } from '../ui/Badge';
 import { BRAND_CONFIG } from '../../data/content';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
@@ -15,26 +14,18 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
   const containerRef = useRef<HTMLElement>(null);
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-
   const isTabletOrDesktop = useIsTabletOrDesktop();
-  const [assemblyProgress, setAssemblyProgress] = useState<number>(() => (isTabletOrDesktop ? 0 : 1));
 
-  // GSAP ScrollTrigger Pinning and Scrub Timeline (Active on >=768px, skipped on mobile)
+  // GSAP ScrollTrigger Entrance Animation
   useEffect(() => {
     const isReduced = prefersReducedMotion();
     const container = containerRef.current;
-    const content = contentWrapperRef.current;
     if (!container) return;
 
-    // On mobile (<768px) or reduced-motion, wireframe is fully visible without pinned scroll trapping
     if (!isTabletOrDesktop || isReduced) {
-      setAssemblyProgress(1);
       return;
     }
 
-    // --- Tablet / Desktop (>=768px) Full Animated Pinned Experience ---
-    // 1. Entrance animation on page load for the headline and hero elements
     const entranceCtx = gsap.context(() => {
       gsap.from(headlineRef.current, {
         y: 20,
@@ -49,7 +40,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         ease: 'power3.out'
       });
 
-      // Subtle bouncing loop for the scroll down indicator
       gsap.to('.hero-bounce-chevron', {
         y: 6,
         repeat: -1,
@@ -59,55 +49,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
       });
     }, container);
 
-    // 2. Scroll-driven Pinning & Wireframe Assembly Timeline
-    let pinTimeline: gsap.core.Timeline | null = null;
-    const animFrame = requestAnimationFrame(() => {
-      pinTimeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: '+=100%', // Pin for exactly 1 viewport height of scroll distance
-          pin: true,
-          scrub: 0.6,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            setAssemblyProgress(self.progress);
-          }
-        }
-      });
-
-      if (content && pinTimeline) {
-        pinTimeline
-          .to(
-            content,
-            {
-              opacity: 0,
-              y: -45,
-              scale: 0.96,
-              ease: 'power2.in',
-              duration: 0.35
-            },
-            0.65
-          )
-          .to(
-            scrollIndicatorRef.current,
-            {
-              opacity: 0,
-              y: 20,
-              duration: 0.2
-            },
-            0.5
-          );
-      }
-    });
-
     return () => {
-      cancelAnimationFrame(animFrame);
       entranceCtx.revert();
-      if (pinTimeline) {
-        pinTimeline.scrollTrigger?.kill();
-        pinTimeline.kill();
-      }
     };
   }, [isTabletOrDesktop]);
 
@@ -119,16 +62,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
     >
       {/* Background Architectural Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50 pointer-events-none" />
-
-      {/* 3D Wireframe Interior Illustration (Hidden, preserved in codebase) */}
-      {/* 
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-        <WireframeBuildingInterior
-          progress={assemblyProgress}
-          className="w-full h-full opacity-90"
-        />
-      </div>
-      */}
 
       {/* Radial Vignette Mask for crystal legibility */}
       <div className="absolute inset-0 bg-radial-vignette opacity-70 pointer-events-none z-1" />
@@ -149,7 +82,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
           </div>
         </div>
 
-        {/* Primary Headline: "EXPERIENCE TOMORROW TODAY." */}
+        {/* Primary Headline */}
         <div className="max-w-4xl space-y-6">
           <h1
             ref={headlineRef}
@@ -206,27 +139,16 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
         </div>
       </div>
 
-      {/* Bottom Pinned Scroll Assembly CTA Indicator */}
-      <div
-        ref={scrollIndicatorRef}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200"
-      >
-        {/* Tracked Scroll Instruction & Bouncing Chevron */}
+      {/* Bottom Scroll Indicator */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200">
         <div className="flex items-center gap-3 font-mono-tech text-xs text-gray-600 tracking-[0.25em] uppercase font-semibold">
           <div className="w-8 h-8 rounded-full border border-gray-300 bg-white flex items-center justify-center shadow-xs">
             <ChevronDown className="w-4 h-4 text-accent-blue hero-bounce-chevron" />
           </div>
-          <span>KEEP SCROLLING TO ASSEMBLE</span>
+          <span>EXPLORE OUR SERVICES</span>
         </div>
-
-        {/* Dynamic Architectural Metrics Strip */}
-        <div className="hidden md:flex items-center gap-6 text-xs font-mono-tech text-gray-500">
-          {BRAND_CONFIG.metrics.slice(0, 3).map((metric, idx) => (
-            <div key={idx} className="flex items-center gap-2">
-              <span className="text-accent-blue font-bold">{metric.value}</span>
-              <span>{metric.label}</span>
-            </div>
-          ))}
+        <div className="font-mono-tech text-xs text-gray-500">
+          <span>{BRAND_CONFIG.ecosystem}</span>
         </div>
       </div>
     </section>
