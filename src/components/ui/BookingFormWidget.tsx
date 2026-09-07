@@ -8,10 +8,24 @@ import {
   User,
   Loader2,
   AlertCircle,
-  HelpCircle
+  HelpCircle,
+  ChevronDown
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
 import { submitToHubSpot } from '../../config/forms';
+import { COUNTRY_CODES } from '../../data/countryCodes';
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const sanitizeName = (val: string): string => {
+  // Strip all numeric digits (0-9)
+  return val.replace(/[0-9]/g, '');
+};
+
+const sanitizePhone = (val: string): string => {
+  // Remove all non-digits (spaces, letters, symbols) and cap at 15 digits (ITU international max)
+  return val.replace(/\D/g, '').slice(0, 15);
+};
 
 interface BookingFormWidgetProps {
   onBookingComplete?: (details: {
@@ -32,31 +46,6 @@ const REFERRAL_OPTIONS = [
   'Industry Event / Publication',
   'Other'
 ];
-
-const COUNTRY_CODES = [
-  { code: '+91', country: 'IN (+91)' },
-  { code: '+1', country: 'US/CA (+1)' },
-  { code: '+44', country: 'UK (+44)' },
-  { code: '+971', country: 'UAE (+971)' },
-  { code: '+61', country: 'AU (+61)' },
-  { code: '+60', country: 'MY (+60)' },
-  { code: '+49', country: 'DE (+49)' },
-  { code: '+33', country: 'FR (+33)' },
-  { code: '+65', country: 'SG (+65)' },
-  { code: '+86', country: 'CN (+86)' }
-];
-
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-const sanitizeName = (val: string): string => {
-  // Strip all numeric digits (0-9)
-  return val.replace(/[0-9]/g, '');
-};
-
-const sanitizePhone = (val: string): string => {
-  // Remove all non-digits (spaces, letters, symbols) and cap at 10 digits
-  return val.replace(/\D/g, '').slice(0, 10);
-};
 
 export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
   onBookingComplete,
@@ -84,7 +73,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
     firstName.trim().length >= 1 &&
     lastName.trim().length >= 1 &&
     EMAIL_REGEX.test(workEmail.trim()) &&
-    mobileNumber.trim().length === 10 &&
+    mobileNumber.trim().length >= 7 &&
+    mobileNumber.trim().length <= 15 &&
     projectName.trim().length >= 2 &&
     referralSource.trim().length > 0;
 
@@ -138,8 +128,8 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
       return;
     }
 
-    if (cleanPhone.length !== 10) {
-      setErrorMessage('Please enter a valid 10-digit mobile number.');
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      setErrorMessage('Please enter a valid mobile number (7–15 digits).');
       return;
     }
 
@@ -337,39 +327,42 @@ export const BookingFormWidget: React.FC<BookingFormWidgetProps> = ({
                   <div>
                     <label className="block font-mono-tech text-xs text-gray-700 font-semibold mb-1.5 flex items-center gap-1.5">
                       <Phone className="w-3.5 h-3.5 text-accent-emerald" />
-                      <span>Mobile Number * <span className="text-gray-400 font-normal lowercase">(10 digits)</span></span>
+                      <span>Mobile Number * <span className="text-gray-400 font-normal lowercase">(7–15 digits)</span></span>
                     </label>
                     <div className="flex gap-2">
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-3 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-emerald transition-colors shrink-0 cursor-pointer"
-                      >
-                        {COUNTRY_CODES.map((c) => (
-                          <option key={c.code} value={c.code}>
-                            {c.country}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="relative flex items-center shrink-0 w-[125px] sm:w-[135px]">
+                        <select
+                          value={countryCode}
+                          onChange={(e) => setCountryCode(e.target.value)}
+                          className="appearance-none bg-[#F9FAFB] border border-gray-300 rounded-sm pl-2.5 pr-6 py-3 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-emerald transition-colors cursor-pointer w-full h-full text-ellipsis overflow-hidden whitespace-nowrap"
+                        >
+                          {COUNTRY_CODES.map((c, i) => (
+                            <option key={`${c.code}-${i}`} value={c.code}>
+                              {c.name} ({c.code})
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="w-3.5 h-3.5 text-gray-500 absolute right-2 pointer-events-none" />
+                      </div>
                       <input
                         type="tel"
                         required
-                        maxLength={10}
+                        maxLength={15}
                         inputMode="numeric"
-                        placeholder="9876543210"
+                        placeholder="e.g. 9876543210"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(sanitizePhone(e.target.value))}
-                        className={`w-full px-4 py-3 rounded-sm bg-[#F9FAFB] border text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors ${
-                          mobileNumber && mobileNumber.length < 10
+                        className={`flex-1 min-w-0 px-4 py-3 rounded-sm bg-[#F9FAFB] border text-brand-primary text-sm font-sans placeholder-gray-400 focus:outline-none transition-colors ${
+                          mobileNumber && mobileNumber.length < 7
                             ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
                             : 'border-gray-300 focus:border-accent-emerald'
                         }`}
                       />
                     </div>
-                    {mobileNumber && mobileNumber.length < 10 && (
+                    {mobileNumber && mobileNumber.length < 7 && (
                       <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
                         <AlertCircle className="w-3 h-3 shrink-0" />
-                        <span>Requires 10 digits ({10 - mobileNumber.length} more needed)</span>
+                        <span>Requires at least 7 digits</span>
                       </p>
                     )}
                   </div>

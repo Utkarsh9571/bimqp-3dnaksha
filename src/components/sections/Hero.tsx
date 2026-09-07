@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ChevronDown, ArrowRight, Glasses, CheckCircle2 } from 'lucide-react';
-import { WireframeBuildingInterior } from '../ui/WireframeBuildingInterior';
+import { WireframeBuildingInterior as _WireframeBuildingInterior } from '../ui/WireframeBuildingInterior';
 import { Badge } from '../ui/Badge';
 import { BRAND_CONFIG } from '../../data/content';
 import { gsap, prefersReducedMotion } from '../../lib/animations';
@@ -120,13 +120,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreVR }) =
       {/* Background Architectural Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-50 pointer-events-none" />
 
-      {/* 3D Wireframe Interior Illustration (Assembly driven by Scroll Progress) */}
+      {/* 3D Wireframe Interior Illustration (Hidden, preserved in codebase) */}
+      {/* 
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <WireframeBuildingInterior
           progress={assemblyProgress}
           className="w-full h-full opacity-90"
         />
       </div>
+      */}
 
       {/* Radial Vignette Mask for crystal legibility */}
       <div className="absolute inset-0 bg-radial-vignette opacity-70 pointer-events-none z-1" />

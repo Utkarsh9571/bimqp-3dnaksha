@@ -1,26 +1,8 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ArrowRight, MessageSquare, Layers, Loader2, AlertCircle } from 'lucide-react';
+import { X, CheckCircle2, ArrowRight, MessageSquare, Layers, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { submitToHubSpot } from '../../config/forms';
-
-interface ConsultationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  defaultService?: string;
-}
-
-const COUNTRY_CODES = [
-  { code: '+91', country: 'IN (+91)' },
-  { code: '+1', country: 'US/CA (+1)' },
-  { code: '+44', country: 'UK (+44)' },
-  { code: '+971', country: 'UAE (+971)' },
-  { code: '+61', country: 'AU (+61)' },
-  { code: '+60', country: 'MY (+60)' },
-  { code: '+49', country: 'DE (+49)' },
-  { code: '+33', country: 'FR (+33)' },
-  { code: '+65', country: 'SG (+65)' },
-  { code: '+86', country: 'CN (+86)' }
-];
+import { COUNTRY_CODES } from '../../data/countryCodes';
 
 const REFERRAL_OPTIONS = [
   'Google Search',
@@ -38,9 +20,15 @@ const sanitizeName = (val: string): string => {
 };
 
 const sanitizePhone = (val: string): string => {
-  // Remove all non-digits (spaces, letters, symbols) and cap at 10 digits
-  return val.replace(/\D/g, '').slice(0, 10);
+  // Remove all non-digits (spaces, letters, symbols) and cap at 15 digits (ITU international max)
+  return val.replace(/\D/g, '').slice(0, 15);
 };
+
+interface ConsultationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  defaultService?: string;
+}
 
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   isOpen,
@@ -82,8 +70,8 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       return;
     }
 
-    if (cleanPhone.length !== 10) {
-      setErrorMessage('Please enter a valid 10-digit phone number.');
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      setErrorMessage('Please enter a valid phone number (7–15 digits).');
       return;
     }
 
@@ -249,39 +237,42 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               {/* Phone Number with Country Code Selector */}
               <div>
                 <label className="block text-xs font-mono-tech text-gray-700 font-semibold mb-1.5 uppercase">
-                  Phone Number * <span className="text-gray-400 font-normal lowercase">(10 digits)</span>
+                  Phone Number * <span className="text-gray-400 font-normal lowercase">(7–15 digits)</span>
                 </label>
                 <div className="flex gap-2">
-                  <select
-                    value={formData.countryCode}
-                    onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors shrink-0 cursor-pointer"
-                  >
-                    {COUNTRY_CODES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.country}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative flex items-center shrink-0 w-[125px] sm:w-[135px]">
+                    <select
+                      value={formData.countryCode}
+                      onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                      className="appearance-none bg-[#F9FAFB] border border-gray-300 rounded-sm pl-2.5 pr-6 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors cursor-pointer w-full h-full text-ellipsis overflow-hidden whitespace-nowrap"
+                    >
+                      {COUNTRY_CODES.map((c, i) => (
+                        <option key={`${c.code}-${i}`} value={c.code}>
+                          {c.name} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-500 absolute right-2 pointer-events-none" />
+                  </div>
                   <input
                     type="tel"
                     required
-                    maxLength={10}
+                    maxLength={15}
                     inputMode="numeric"
-                    placeholder="9876543210"
+                    placeholder="e.g. 9876543210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: sanitizePhone(e.target.value) })}
-                    className={`w-full bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
-                      formData.phone && formData.phone.length < 10
+                    className={`flex-1 min-w-0 bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
+                      formData.phone && formData.phone.length < 7
                         ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
                         : 'border-gray-300 focus:border-accent-bronze'
                     }`}
                   />
                 </div>
-                {formData.phone && formData.phone.length < 10 && (
+                {formData.phone && formData.phone.length < 7 && (
                   <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3 shrink-0" />
-                    <span>Requires 10 digits ({10 - formData.phone.length} more needed)</span>
+                    <span>Requires at least 7 digits</span>
                   </p>
                 )}
               </div>

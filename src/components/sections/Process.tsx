@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { PROCESS_STEPS } from '../../data/content';
 import { Badge } from '../ui/Badge';
-import { Check, Sparkles, MessageSquare } from 'lucide-react';
+import { Check, Sparkles, MessageSquare, ArrowUpRight } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 import { useScrollProgress } from '../../hooks/useScrollProgress';
 
@@ -30,7 +30,7 @@ export const Process: React.FC<ProcessProps> = ({ onOpenConsultation }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="11"
+          number="08"
           badgeText="Execution Protocol"
           badgeVariant="amber"
           title="From Concept to"
@@ -154,11 +154,12 @@ export const Process: React.FC<ProcessProps> = ({ onOpenConsultation }) => {
           </div>
 
           <button
-            onClick={onOpenConsultation}
-            className="px-5 py-2.5 rounded-sm bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 font-mono-tech text-xs font-semibold tracking-wider uppercase whitespace-nowrap cursor-pointer transition-colors shadow-2xs"
-          >
-            Discuss Your Project
-          </button>
+              onClick={onOpenConsultation}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase hover:from-[#E2B689] hover:to-accent-amber-bright transition-all shadow-sm cursor-pointer group"
+            >
+              <span>Discuss Project</span>
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
         </div>
       </div>
     </section>

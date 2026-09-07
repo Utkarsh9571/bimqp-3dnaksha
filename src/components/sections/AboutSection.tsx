@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import {
-  Glasses,
-  Home,
-  Palette,
-  Layers,
-  Building2,
+  Glasses as _Glasses,
+  Home as _Home,
+  Palette as _Palette,
+  Layers as _Layers,
+  Building2 as _Building2,
   CheckCircle2,
   Sparkles,
   ArrowRight,
@@ -47,13 +47,14 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
     return () => ctx.revert();
   }, []);
 
+  /*
   const disciplines = [
     {
       num: '01',
       title: 'Immersive VR Services',
       subtitle: 'The Core of Our Innovation',
       desc: 'High-accuracy, walk-through digital environments that let you experience spatial scale, depth, and aesthetics in real-time before construction.',
-      icon: Glasses,
+      icon: _Glasses,
       badge: 'Flagship Immersive'
     },
     {
@@ -61,7 +62,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
       title: 'Home Design',
       subtitle: 'Next-Gen Architectural Planning',
       desc: 'Next-generation architectural planning that optimizes spatial flow, structural integrity, and natural lighting for modern residences.',
-      icon: Home,
+      icon: _Home,
       badge: 'Architectural'
     },
     {
@@ -69,7 +70,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
       title: 'Interior Design',
       subtitle: 'Interactive Virtual Interiors',
       desc: 'Curated, interactive virtual interiors where finishes, materials, textures, and lighting can be previewed and perfected dynamically.',
-      icon: Palette,
+      icon: _Palette,
       badge: 'Spatial Ambiance'
     },
     {
@@ -77,7 +78,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
       title: 'BIM Modelling',
       subtitle: 'High-Precision 3D BIM Engineering',
       desc: 'High-precision Building Information Modelling that allows engineers and developers to detect structural clashes and streamline procurement.',
-      icon: Layers,
+      icon: _Layers,
       badge: '3D Coordination'
     },
     {
@@ -85,10 +86,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
       title: 'Construction Project Management',
       subtitle: 'Data-Driven Field Alignment',
       desc: 'Data-driven oversight aligning on-site execution perfectly with the approved virtual model, eliminating costly re-work and field delays.',
-      icon: Building2,
+      icon: _Building2,
       badge: 'Field Precision'
     }
   ];
+  */
 
   const valuePillars = [
     {
@@ -132,7 +134,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
             badgeVariant="amber"
             title="About"
             highlightText="Us"
-            subtitle="India’s premier destination for advanced Building Information Modeling (BIM), intelligent construction management, and immersive VR spatial reviews."
+            //subtitle="India’s premier destination for advanced Building Information Modeling (BIM), intelligent construction management, and immersive VR spatial reviews."
             align="left"
           />
 
@@ -167,51 +169,44 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
               </div>
             </div>
 
-            {/* RIGHT CARD: Pioneering Digital Construction Information Card */}
-            <div className="lg:col-span-5 architectural-panel p-6 sm:p-8 rounded-xl border border-gray-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.05)] relative overflow-hidden corner-crosshairs flex flex-col justify-between space-y-6">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-                  <span className="font-mono-tech text-xs text-accent-bronze font-bold tracking-widest uppercase">
-                    Pioneering Digital Construction
+            {/* RIGHT CARD: VR Experience Visual Showcase Panel */}
+            <div className="lg:col-span-5 architectural-panel p-3 sm:p-4 rounded-xl border border-gray-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.05)] relative overflow-hidden corner-crosshairs flex flex-col justify-between min-h-[360px] sm:min-h-[420px] group">
+              <div className="relative w-full h-full min-h-[320px] rounded-lg overflow-hidden flex flex-col justify-between p-5 text-white">
+                {/* Background VR Image with Overlay */}
+                <img
+                  src="/assets/images/about-vr-showcase.jpg"
+                  alt="1:1 Human-Scale Architectural VR Walkthrough Experience"
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/30"></div>
+
+                {/* Top Badge Overlay */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="font-mono-tech text-[11px] text-amber-300 font-bold tracking-widest uppercase bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-sm border border-amber-300/30">
+                    1:1 Human-Scale VR Walkthrough
                   </span>
                   <Badge variant="blue" size="sm">First in India</Badge>
                 </div>
 
-                <div className="space-y-4 font-mono-tech text-xs">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-accent-emerald shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-brand-primary block font-bold">Virtual Reality Model Reviews</strong>
-                      <span className="text-gray-600">First in India to offer 1:1 human-scale VR walkthroughs.</span>
-                    </div>
+                {/* Bottom Content & Action Overlay */}
+                <div className="relative z-10 space-y-4 mt-auto pt-12">
+                  <div className="space-y-1.5">
+                    <h4 className="font-display font-bold text-lg text-white leading-snug drop-shadow-xs">
+                      Experience Unbuilt Spaces in Virtual Reality
+                    </h4>
+                    <p className="font-mono-tech text-xs text-gray-200 leading-relaxed max-w-md drop-shadow-xs">
+                      Walk inside your architectural designs at true 1:1 scale before construction begins.
+                    </p>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-accent-blue shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-brand-primary block font-bold">3D BIM & Clash Detection</strong>
-                      <span className="text-gray-600">High-precision engineering models preventing field errors.</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-4 h-4 text-accent-amber shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-brand-primary block font-bold">Global Engineering Standards</strong>
-                      <span className="text-gray-600">Singapore BIMQP standards applied to every scale of project.</span>
-                    </div>
-                  </div>
+                  <button
+                    onClick={() => onOpenConsultation?.('About 3D Naksha VR Experience')}
+                    className="w-full py-3 px-4 rounded-sm bg-accent-bronze hover:bg-accent-bronze-hover text-white font-display font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg backdrop-blur-xs border border-white/20"
+                  >
+                    <span>Discuss Your Project Vision</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-              </div>
-
-              <div className="pt-2 mt-auto">
-                <button
-                  onClick={() => onOpenConsultation?.('About 3D Naksha Inquiry')}
-                  className="w-full py-3 px-4 rounded-sm bg-accent-bronze hover:bg-accent-bronze-hover text-white font-display font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-                >
-                  <span>Discuss Your Project Vision</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
               </div>
             </div>
           </div>
@@ -299,8 +294,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
         </div>
 
         {/* =========================================================
-            03 // WHAT WE DO (5 Core Disciplines)
+            03 // WHAT WE DO (5 Core Disciplines) (Hidden from UI view)
            ========================================================= */}
+        {/*
         <div className="space-y-12">
           <SectionHeading
             number="03"
@@ -350,6 +346,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
             })}
           </div>
         </div>
+        */}
 
         {/* =========================================================
             04 // WHY 3D NAKSHA (3 Value Pillars)
@@ -359,7 +356,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
             <div>
               <div className="flex items-center gap-2 mb-2 font-mono-tech text-xs text-accent-amber tracking-[0.2em] uppercase font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-amber" />
-                <span>04 // WHY 3D NAKSHA</span>
+                <span>03 // WHY 3D NAKSHA</span>
               </div>
               <h3 className="font-display font-bold text-3xl sm:text-4xl text-brand-primary tracking-tight">
                 Why Choose Us.

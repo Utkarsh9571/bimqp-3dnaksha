@@ -11,10 +11,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Tailored residential design solutions ranging from concept floor layouts and elevation studies to functional spatial planning for private residences.',
     heroHeadline: 'RESIDENTIAL ARCHITECTURE & SPATIAL PLANNING',
     heroDescription: 'Transform conceptual floor plans and architectural ideas into spatially balanced residential designs. Evaluate massing, light orientation, and room flow before laying the first stone.',
-    heroImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+    heroImage: '/assets/images/service-home-design-vr.jpg',
     badge: 'Core Service',
     icon: 'Home',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85',
+    image: '/assets/images/service-home-design-vr.jpg',
     deliverables: [
       'Architectural Floor Plan Visualizations',
       'Exterior 3D Elevation Studies',
@@ -120,18 +120,18 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     ],
     visualShowcase: [
       {
-        title: 'Contemporary Cantilever Residence',
-        subtitle: 'Schematic Massing & Exterior Study',
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Exterior 3D elevation study exploring cantilevered upper levels, natural stone cladding, and floor-to-ceiling glazing.',
-        tags: ['Residential', 'Elevation Study', '3D Exterior']
+        title: 'Interactive 1:1 Human-Scale VR Villa Review',
+        subtitle: 'Virtual Reality Spatial & Massing Walkthrough',
+        image: '/assets/images/service-home-design-vr.jpg',
+        caption: 'Client stepping inside a 1:1 human-scale VR villa model to evaluate living area volume and architectural elevation balance.',
+        tags: ['VR Residential', '1:1 Scale Review', 'Spatial Walkthrough']
       },
       {
-        title: 'Courtyard Residence Layout',
-        subtitle: 'Indoor-Outdoor Spatial Connectivity',
-        image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Spatial flow visualization centering living areas around an open central courtyard for microclimate ventilation.',
-        tags: ['Spatial Flow', 'Courtyard Plan', 'Daylight Review']
+        title: 'Virtual Reality Architectural Blueprint Exploration',
+        subtitle: 'Holographic Floor Plan Inspection',
+        image: '/assets/images/about-vr-showcase.jpg',
+        caption: 'Spatial flow visualization centering living areas around floating 3D architectural VR floor plan layers.',
+        tags: ['VR Spatial Flow', 'Holographic Layout', 'Pre-Build Review']
       }
     ],
     audienceIds: ['property-owners', 'architects', 'developers'],
@@ -165,10 +165,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Visualize interior living spaces, kitchen layouts, commercial interiors, and bespoke joinery with realistic lighting, textures, and material palettes.',
     heroHeadline: 'INTERIOR SPACE PLANNING & MATERIAL FINISH VISUALIZATION',
     heroDescription: 'Bridge the gap between interior design concepts and reality. Evaluate custom joinery, surface textures, ambient lighting, and furniture arrangements in realistic 3D environments.',
-    heroImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85',
+    heroImage: '/assets/images/service-interior-design-vr.jpg',
     badge: 'Interior Focus',
     icon: 'Armchair',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85',
+    image: '/assets/images/service-interior-design-vr.jpg',
     deliverables: [
       'High-Resolution Interior Visualizations',
       'Material, Texture & Finish Studies',
@@ -274,18 +274,18 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     ],
     visualShowcase: [
       {
-        title: 'Double-Height Penthouse Living Space',
-        subtitle: 'Lighting & Material Finish Study',
-        image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Interior spatial visualization exploring double-height glazing, integrated warm cove lighting, and marble wall feature paneling.',
-        tags: ['Living Space', 'Joinery', 'Material Finish']
+        title: 'Virtual Reality Kitchen & Living Customization',
+        subtitle: 'Real-time VR Material & Lighting Palette Control',
+        image: '/assets/images/service-interior-design-vr.jpg',
+        caption: 'Designer testing wood veneers, stone countertops, and fixture lighting dynamically inside a VR headset.',
+        tags: ['VR Interior', 'Material Swatch VR', 'Real-time Lighting']
       },
       {
-        title: 'Commercial Concourse & Atrium',
-        subtitle: 'Public Realm Interior Flow',
-        image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Commercial interior concourse study illustrating circulation paths, acoustic ceiling fins, and recessed accent lighting.',
-        tags: ['Commercial', 'Circulation', 'Acoustic Panel']
+        title: 'Immersive Spatial Interior Walkthrough',
+        subtitle: '1:1 Scale Furniture & Circulation Review',
+        image: '/assets/images/vr-headset-mask.jpg',
+        caption: 'Clients exploring custom interior millwork, ceiling treatments, and open-plan circulation in virtual reality.',
+        tags: ['1:1 Interior VR', 'Circulation Check', 'Custom Joinery']
       }
     ],
     audienceIds: ['interior-designers', 'architects', 'property-owners'],
@@ -319,10 +319,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Generate parametric 3D BIM models that represent architectural and structural elements for spatial coordination and design review.',
     heroHeadline: 'PARAMETRIC 3D BIM MODELING & SPATIAL COORDINATION',
     heroDescription: 'Transform 2D design drawings into structured, parametric 3D Building Information Models. Coordinate architectural, structural, and spatial geometry early in the design cycle.',
-    heroImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=85',
+    heroImage: '/assets/images/service-bim-modelling-vr.jpg',
     badge: 'BIM Coordination',
     icon: 'Layers',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
+    image: '/assets/images/service-bim-modelling-vr.jpg',
     deliverables: [
       'Coordinated 3D BIM Models',
       'Spatial Interference & Coordination Review',
@@ -428,18 +428,18 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     ],
     visualShowcase: [
       {
-        title: 'Structural & Architectural Cutaway Study',
-        subtitle: 'Volumetric Sectional Coordination',
-        image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Parametric 3D BIM cutaway view detailing spatial interaction between concrete floor plates, structural columns, and exterior envelope.',
-        tags: ['BIM', '3D Section', 'Spatial Audit']
+        title: 'Virtual Reality 3D BIM Structural Inspection',
+        subtitle: 'Immersive Parametric Clash Detection & Review',
+        image: '/assets/images/service-bim-modelling-vr.jpg',
+        caption: 'Engineers walking through glowing 3D BIM structural framing and MEP overlays inside a VR spatial room.',
+        tags: ['VR BIM', '3D Section VR', 'Spatial Audit']
       },
       {
-        title: 'Topographical Masterplan Model',
-        subtitle: 'Site & Infrastructure Geometry Integration',
-        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=85',
-        caption: '3D BIM terrain masterplan model coordinating building massing footprints with existing ground topography.',
-        tags: ['Masterplan', 'Site Model', 'BIM Geometry']
+        title: 'Virtual Reality Multi-Layer Architectural Coordination',
+        subtitle: 'Integrated Building Geometry Review',
+        image: '/assets/images/about-vr-showcase.jpg',
+        caption: 'Holographic 3D BIM terrain masterplan model coordinating building massing footprints inside VR headset environment.',
+        tags: ['VR Masterplan', 'Spatial Model', 'BIM Geometry']
       }
     ],
     audienceIds: ['architects', 'contractors', 'consultants', 'developers'],
@@ -473,10 +473,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Our flagship visualization experience: interactive spatial walkthroughs enabling clients and teams to explore unbuilt spaces at true human scale.',
     heroHeadline: 'STEP INSIDE THE UNBUILT SPACE AT TRUE HUMAN SCALE',
     heroDescription: 'Experience unbuilt architectural spaces in real-time 3D interactive environments. Walk through floor plans, evaluate ceiling heights, test lighting moods, and gain intuitive spatial clarity before construction.',
-    heroImage: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1600&q=85',
+    heroImage: '/assets/images/service-immersive-vr.jpg',
     badge: 'FLAGSHIP EXPERIENCE',
     icon: 'Glasses',
-    image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1200&q=85',
+    image: '/assets/images/service-immersive-vr.jpg',
     isFeatured: true,
     deliverables: [
       'Interactive 3D Virtual Walkthroughs',
@@ -583,18 +583,18 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     ],
     visualShowcase: [
       {
-        title: 'Human-Scale VR Living Space Walkthrough',
-        subtitle: 'Real-Time Interactive Environment',
-        image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Interactive real-time VR environment enabling stakeholders to step inside a contemporary living pavilion at true 1:1 scale.',
+        title: 'Human-Scale VR Villa Review Group Walkthrough',
+        subtitle: 'Multi-User Interactive 1:1 Scale Environment',
+        image: '/assets/images/service-immersive-vr.jpg',
+        caption: 'Group of architects and clients wearing VR headsets standing inside a 1:1 scale villa model reviewing spatial volume.',
         tags: ['VR Walkthrough', 'Interactive 3D', '1:1 Scale']
       },
       {
-        title: 'Commercial Retail Spatial Exploration',
-        subtitle: 'Multi-Room Sequence Review',
-        image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Real-time walkthrough simulating customer journey paths, entrance vestibules, and commercial concourse daylighting.',
-        tags: ['Commercial VR', 'Retail Layout', 'Real-time Render']
+        title: 'Commercial Spatial VR Exploration',
+        subtitle: 'Multi-Room Sequence VR Review',
+        image: '/assets/images/service-home-design-vr.jpg',
+        caption: 'Real-time VR walkthrough simulating customer journey paths, room vestibules, and spatial lighting.',
+        tags: ['Commercial VR', 'Retail VR Layout', 'Real-time Render']
       }
     ],
     audienceIds: ['architects', 'developers', 'property-owners', 'interior-designers'],
@@ -628,10 +628,10 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     description: 'Support construction planning with visual sequence models, milestone coordination, and spatial clarity for on-site decision-makers.',
     heroHeadline: 'VISUAL CONSTRUCTION SEQUENCE PLANNING & MILESTONE COORDINATION',
     heroDescription: 'Empower project management teams and contractors with visual sequence models, milestone coordination assets, and pre-construction spatial clarity.',
-    heroImage: '/images/construction_management.webp',
+    heroImage: '/assets/images/service-construction-pm-vr.jpg',
     badge: 'Project Planning',
     icon: 'HardHat',
-    image: '/images/construction_management.webp',
+    image: '/assets/images/service-construction-pm-vr.jpg',
     deliverables: [
       'Visual Construction Sequence Phasing',
       'Site Milestone Coordination Visuals',
@@ -737,18 +737,18 @@ export const DETAILED_SERVICES: DetailedServiceData[] = [
     ],
     visualShowcase: [
       {
-        title: 'Visual Construction Phasing Sequence',
-        subtitle: 'Pre-Construction Superstructure Logistics',
-        image: '/images/construction_management.webp',
-        caption: 'Phased 3D visualization illustrating structural milestone progression from foundation concrete pour to roof enclosure.',
-        tags: ['Phasing Sequence', 'Milestone Review', 'Pre-Construction']
+        title: 'Virtual Reality On-Site Construction Phasing Review',
+        subtitle: '4D Interactive VR Timeline & Overlays',
+        image: '/assets/images/service-construction-pm-vr.jpg',
+        caption: 'Site manager wearing a hardhat and VR headset inspecting 4D project timelines and BIM overlays directly on the construction floor.',
+        tags: ['VR Construction', '4D Phasing', 'Site VR Review']
       },
       {
-        title: 'Commercial Facade Assembly Coordination',
-        subtitle: 'Enclosure Milestone Study',
-        image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
-        caption: 'Visual milestone coordination diagram depicting glass curtain wall panel installation sequence across building levels.',
-        tags: ['Facade Phasing', 'Contractor Review', 'Milestone Target']
+        title: 'Virtual Reality Structural Coordination Briefing',
+        subtitle: 'Pre-Construction VR Enclosure Study',
+        image: '/assets/images/service-bim-modelling-vr.jpg',
+        caption: 'Engineers coordinating structural assembly logic and site logistics in virtual reality prior to ground mobilization.',
+        tags: ['VR Logistics', 'Pre-Con VR', 'Milestone Review']
       }
     ],
     audienceIds: ['contractors', 'project-teams', 'developers', 'consultants'],

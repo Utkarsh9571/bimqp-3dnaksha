@@ -35,7 +35,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="13"
+          number=""
           badgeText="Information & Clarifications"
           badgeVariant="amber"
           title="Frequently Answered"

@@ -2,7 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/sections/Hero';
-import { OperatingRegions } from './components/sections/OperatingRegions';
+//import { OperatingRegions } from './components/sections/OperatingRegions';
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { ScrollToTop } from './components/ui/ScrollToTop';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
@@ -14,16 +14,16 @@ import { getHomepageGraph } from './utils/schema';
 
 // Lazy-load below-the-fold sections, service detail pages, and heavy interactive widgets
 const AboutSection = lazy(() => import('./components/sections/AboutSection'));
-const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
-const FeatureCardsGrid = lazy(() => import('./components/sections/FeatureCardsGrid'));
+//const ExperienceUnbuilt = lazy(() => import('./components/sections/ExperienceUnbuilt'));
+//const FeatureCardsGrid = lazy(() => import('./components/sections/FeatureCardsGrid'));
 const LifecycleJourney = lazy(() => import('./components/sections/LifecycleJourney'));
-const ScrollWalkthroughViewer = lazy(() => import('./components/sections/ScrollWalkthroughViewer'));
+//const ScrollWalkthroughViewer = lazy(() => import('./components/sections/ScrollWalkthroughViewer'));
 const Services = lazy(() => import('./components/sections/Services'));
 const FullBleedShowcase = lazy(() => import('./components/sections/FullBleedShowcase'));
 const ImmersiveVR = lazy(() => import('./components/sections/ImmersiveVR'));
 const TargetAudience = lazy(() => import('./components/sections/TargetAudience'));
 const Process = lazy(() => import('./components/sections/Process'));
-const PortfolioGallery = lazy(() => import('./components/sections/PortfolioGallery'));
+//const PortfolioGallery = lazy(() => import('./components/sections/PortfolioGallery'));
 const FAQSection = lazy(() => import('./components/sections/FAQSection'));
 const CallToAction = lazy(() => import('./components/sections/CallToAction'));
 const Footer = lazy(() => import('./components/layout/Footer'));
@@ -120,31 +120,28 @@ export function App() {
                 onExploreVR={handleScrollToVR}
               />
 
-              {/* Section 1.5: Critical Regional Hubs */}
-              <OperatingRegions />
-
               {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
               <Suspense fallback={<SectionFallback />}>
+                {/* Section 1.5: Pinned Full-Bleed Cinematic Interior Showcase */}
+                <FullBleedShowcase />
+
                 {/* Section 2: About 3D Naksha */}
                 <AboutSection onOpenConsultation={handleOpenConsultation} />
 
-                {/* Section 2.5: Experience the Unbuilt */}
-                <ExperienceUnbuilt />
+                {/* Section 2.5: Experience the Unbuilt 
+                <ExperienceUnbuilt />*/}
 
-                {/* Section 2.5: 3-Column Core Features Grid */}
-                <FeatureCardsGrid />
+                {/* Section 2.5: 3-Column Core Features Grid 
+                <FeatureCardsGrid />*/}
 
                 {/* Section 3: AEC Lifecycle Journey */}
                 <LifecycleJourney />
 
-                {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer */}
-                <ScrollWalkthroughViewer totalFrames={81} />
+                {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer 
+                <ScrollWalkthroughViewer totalFrames={81} />*/}
 
                 {/* Section 4: 5 Core Services */}
                 <Services onOpenConsultation={handleOpenConsultation} />
-
-                {/* Section 4.5: Pinned Full-Bleed Cinematic Interior Showcase */}
-                <FullBleedShowcase />
 
                 {/* Section 5: Immersive VR Flagship Centerpiece */}
                 <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
@@ -155,8 +152,8 @@ export function App() {
                 {/* Section 7: How It Works (5-Step Collaborative Process) */}
                 <Process onOpenConsultation={() => handleOpenConsultation()} />
 
-                {/* Section 8: Selected Visualizations Showcase */}
-                <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />
+                {/* Section 8: Selected Visualizations Showcase 
+                <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />*/}
 
                 {/* Section 9: Frequently Answered Questions Accordion */}
                 <FAQSection onOpenConsultation={() => handleOpenConsultation()} />

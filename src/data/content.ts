@@ -82,7 +82,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Home',
     badge: 'Core Service',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-home-design-vr.jpg'
   },
   {
     id: 'interior-design',
@@ -104,7 +104,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Armchair',
     badge: 'Interior Focus',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-interior-design-vr.jpg'
   },
   {
     id: 'bim-modelling',
@@ -126,7 +126,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Layers',
     badge: 'BIM Coordination',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-bim-modelling-vr.jpg'
   },
   {
     id: 'immersive-vr',
@@ -149,7 +149,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Glasses',
     badge: 'FLAGSHIP EXPERIENCE',
-    image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-immersive-vr.jpg'
   },
   {
     id: 'construction-pm',
@@ -171,7 +171,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: '/images/construction_management.webp'
+    image: '/assets/images/service-construction-pm-vr.jpg'
   }
 ];
 

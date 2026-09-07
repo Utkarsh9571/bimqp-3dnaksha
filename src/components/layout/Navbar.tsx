@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Our Services', href: '#services', id: 'services', hasDropdown: true },
   { label: 'Our Clients', href: '#clients', id: 'clients' },
   { label: 'Our Mission', href: '#mission', id: 'mission' },
+  { label: 'FAQ', href: '#faq', id: 'faq' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {

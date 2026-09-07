@@ -43,7 +43,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="10"
+          number="07"
           badgeText="AEC Stakeholders"
           badgeVariant="amber"
           title="Built for the AEC"
@@ -165,10 +165,10 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
 
                   <button
                     onClick={() => onOpenConsultation(aud.role)}
-                    className="w-full py-3 px-4 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:opacity-95 transition-opacity cursor-pointer shadow-sm"
+                    className="hidden sm:flex items-center justify-center gap-2 w-full px-4 py-2 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase hover:from-[#E2B689] hover:to-accent-amber-bright transition-all shadow-sm cursor-pointer group"
                   >
                     <span>Discuss Requirements for {aud.role.split('&')[0]}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </button>
                 </div>
               </div>
