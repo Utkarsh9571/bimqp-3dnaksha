@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ExternalLink, MapPin } from 'lucide-react';
 import { BRAND_CONFIG } from '../../data/content';
 import { smoothScrollTo } from '../../lib/animations';
 import { submitNewsletterToHubSpot } from '../../config/forms';
@@ -11,7 +10,6 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = () => {
   const location = useLocation();
-  const [activeLocation, setActiveLocation] = useState<'singapore' | 'jaipur'>('jaipur');
 
   // Newsletter Form State
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -39,23 +37,6 @@ export const Footer: React.FC<FooterProps> = () => {
       setNewsletterEmail('');
     } else {
       setNewsletterStatus({ success: false, message: res.message || 'Failed to subscribe. Please try again.' });
-    }
-  };
-
-  const locations = {
-    singapore: {
-      name: 'Headquarters (Singapore)',
-      city: 'Singapore',
-      address: '390 Victoria Street, Singapore - 188061',
-      mapUrl: 'https://maps.google.com/maps?q=390%20Victoria%20Street,%20Singapore%20188061&t=&z=15&ie=UTF8&iwloc=&output=embed',
-      googleMapsLink: 'https://maps.google.com/?q=390+Victoria+Street,+Singapore+188061'
-    },
-    jaipur: {
-      name: 'Regional Office (Jaipur)',
-      city: 'Jaipur, India',
-      address: 'IT- 9(A), EPIP, IT Park Rd, Sitapura, Jaipur, RJ 302022',
-      mapUrl: 'https://maps.google.com/maps?q=IT-9(A),%20EPIP,%20IT%20Park%20Rd,%20Sitapura,%20Jaipur,%20Rajasthan%20302022&t=&z=14&ie=UTF8&iwloc=&output=embed',
-      googleMapsLink: 'https://maps.google.com/?q=IT-9(A),+EPIP,+IT+Park+Rd,+Sitapura,+Jaipur,+Rajasthan+302022'
     }
   };
 
