@@ -86,6 +86,8 @@ export const PortfolioGallery: React.FC<PortfolioGalleryProps> = ({ onSelectProj
                     src={item.image}
                     alt={item.title}
                     loading="lazy"
+                    width={1200}
+                    height={825}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 group-hover:from-black/80 transition-opacity"></div>

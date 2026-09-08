@@ -116,7 +116,7 @@ export const OperatingRegions: React.FC = () => {
               <span>REGIONAL PRESENCE & COVERAGE</span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-brand-primary">
-              Our Headquarters
+              Our Headquarter
             </h2>
           </div>
 

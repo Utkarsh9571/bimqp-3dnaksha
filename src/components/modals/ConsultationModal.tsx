@@ -1,25 +1,8 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ArrowRight, MessageSquare, Layers, Loader2, AlertCircle } from 'lucide-react';
+import { X, CheckCircle2, ArrowRight, MessageSquare, Layers, Loader2, AlertCircle, ChevronDown } from 'lucide-react';
 import { Badge } from '../ui/Badge';
-import { submitToGoogleAppsScript } from '../../config/forms';
-
-interface ConsultationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  defaultService?: string;
-}
-
-const COUNTRY_CODES = [
-  { code: '+91', country: 'IN (+91)' },
-  { code: '+1', country: 'US/CA (+1)' },
-  { code: '+44', country: 'UK (+44)' },
-  { code: '+971', country: 'UAE (+971)' },
-  { code: '+61', country: 'AU (+61)' },
-  { code: '+49', country: 'DE (+49)' },
-  { code: '+33', country: 'FR (+33)' },
-  { code: '+65', country: 'SG (+65)' },
-  { code: '+86', country: 'CN (+86)' }
-];
+import { submitToHubSpot } from '../../config/forms';
+import { COUNTRY_CODES } from '../../data/countryCodes';
 
 const REFERRAL_OPTIONS = [
   'Google Search',
@@ -28,6 +11,24 @@ const REFERRAL_OPTIONS = [
   'Industry Event / Publication',
   'Other'
 ];
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const sanitizeName = (val: string): string => {
+  // Strip all numeric digits (0-9)
+  return val.replace(/[0-9]/g, '');
+};
+
+const sanitizePhone = (val: string): string => {
+  // Remove all non-digits (spaces, letters, symbols) and cap at 15 digits (ITU international max)
+  return val.replace(/\D/g, '').slice(0, 15);
+};
+
+interface ConsultationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  defaultService?: string;
+}
 
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   isOpen,
@@ -53,17 +54,37 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+
+    const cleanFirstName = formData.firstName.trim();
+    const cleanLastName = formData.lastName.trim();
+    const cleanEmail = formData.email.trim();
+    const cleanPhone = formData.phone.trim();
+
+    if (!cleanFirstName || !cleanLastName) {
+      setErrorMessage('Please enter your first and last name.');
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address (e.g. name@domain.com).');
+      return;
+    }
+
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      setErrorMessage('Please enter a valid phone number (7–15 digits).');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const rawPhone = `${formData.countryCode} ${formData.phone.trim()}`;
-    const fullPhone = rawPhone.startsWith('+') ? `'${rawPhone}` : rawPhone;
+    const fullPhone = `${formData.countryCode} ${cleanPhone}`;
 
-    const res = await submitToGoogleAppsScript({
+    const res = await submitToHubSpot({
       formType: 'modal_consultation',
-      firstName: formData.firstName.trim(),
-      lastName: formData.lastName.trim(),
-      name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
-      email: formData.email.trim(),
+      firstName: cleanFirstName,
+      lastName: cleanLastName,
+      name: `${cleanFirstName} ${cleanLastName}`,
+      email: cleanEmail,
       phone: fullPhone,
       countryCode: formData.countryCode,
       projectDetails: formData.projectDetails.trim(),
@@ -169,7 +190,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     required
                     placeholder="e.g. Rajesh"
                     value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, firstName: sanitizeName(e.target.value) })}
                     className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
@@ -182,7 +203,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     required
                     placeholder="e.g. Mehta"
                     value={formData.lastName}
-                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, lastName: sanitizeName(e.target.value) })}
                     className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
                   />
                 </div>
@@ -199,36 +220,61 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   placeholder="e.g. rajesh@designstudio.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
+                  className={`w-full bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
+                    formData.email && !EMAIL_REGEX.test(formData.email.trim())
+                      ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                      : 'border-gray-300 focus:border-accent-bronze'
+                  }`}
                 />
+                {formData.email && !EMAIL_REGEX.test(formData.email.trim()) && (
+                  <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>Invalid email format (e.g. name@domain.com)</span>
+                  </p>
+                )}
               </div>
 
               {/* Phone Number with Country Code Selector */}
               <div>
                 <label className="block text-xs font-mono-tech text-gray-700 font-semibold mb-1.5 uppercase">
-                  Phone Number *
+                  Phone Number * <span className="text-gray-400 font-normal lowercase">(7–15 digits)</span>
                 </label>
                 <div className="flex gap-2">
-                  <select
-                    value={formData.countryCode}
-                    onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-                    className="bg-[#F9FAFB] border border-gray-300 rounded-sm px-2.5 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors shrink-0"
-                  >
-                    {COUNTRY_CODES.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.country}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative flex items-center shrink-0 w-[125px] sm:w-[135px]">
+                    <select
+                      value={formData.countryCode}
+                      onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                      className="appearance-none bg-[#F9FAFB] border border-gray-300 rounded-sm pl-2.5 pr-6 py-2.5 text-xs font-mono-tech text-brand-primary focus:outline-none focus:border-accent-bronze transition-colors cursor-pointer w-full h-full text-ellipsis overflow-hidden whitespace-nowrap"
+                    >
+                      {COUNTRY_CODES.map((c, i) => (
+                        <option key={`${c.code}-${i}`} value={c.code}>
+                          {c.name} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-500 absolute right-2 pointer-events-none" />
+                  </div>
                   <input
                     type="tel"
                     required
-                    placeholder="98765 43210"
+                    maxLength={15}
+                    inputMode="numeric"
+                    placeholder="e.g. 9876543210"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#F9FAFB] border border-gray-300 rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:border-accent-bronze transition-colors"
+                    onChange={(e) => setFormData({ ...formData, phone: sanitizePhone(e.target.value) })}
+                    className={`flex-1 min-w-0 bg-[#F9FAFB] border rounded-sm px-3.5 py-2.5 text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none transition-colors ${
+                      formData.phone && formData.phone.length < 7
+                        ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                        : 'border-gray-300 focus:border-accent-bronze'
+                    }`}
                   />
                 </div>
+                {formData.phone && formData.phone.length < 7 && (
+                  <p className="text-[11px] font-mono-tech text-rose-600 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>Requires at least 7 digits</span>
+                  </p>
+                )}
               </div>
 
               {/* Tell us about your project and goals (textarea, optional) */}
@@ -268,7 +314,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-2 py-3.5 px-6 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-cta-premium w-full mt-2 py-3.5 px-6 text-xs sm:text-sm flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

@@ -199,7 +199,7 @@ export const ImmersiveVR: React.FC<ImmersiveVRProps> = ({ onOpenConsultation }) 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="09"
+          number="06"
           badgeText="Flagship VR Services"
           badgeVariant="amber"
           title="Don't imagine the space."

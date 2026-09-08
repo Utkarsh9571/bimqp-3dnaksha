@@ -31,8 +31,8 @@ export const ExperienceUnbuilt: React.FC = () => {
       name: 'Residential Architecture Study',
       subtitle: 'Exterior Proportions & Natural Light',
       specs: 'Contemporary Form • Material & Light Study',
-      blueprintImg: '/images/residential_2d.jpg',
-      renderImg: '/images/residential_3d.jpg',
+      blueprintImg: '/images/residential_2d.webp',
+      renderImg: '/images/residential_3d.webp',
       blueprintLabel: '2D Architectural Plan & Grid',
       renderLabel: '3D Photorealistic Lighting & Material View'
     },
@@ -41,8 +41,8 @@ export const ExperienceUnbuilt: React.FC = () => {
       name: 'Interior Living Space Study',
       subtitle: 'Double-Height Living & Joinery Layout',
       specs: 'Material Harmony • Daylight Visualization',
-      blueprintImg: '/images/interior_2d.jpg',
-      renderImg: '/images/interior_3d.jpg',
+      blueprintImg: '/images/interior_2d.webp',
+      renderImg: '/images/interior_3d.webp',
       blueprintLabel: 'Interior Layout & Coordination Drawing',
       renderLabel: 'Interior Material & Ambiance Rendering'
     },
@@ -102,9 +102,12 @@ export const ExperienceUnbuilt: React.FC = () => {
             </div>
             <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white aspect-[16/10] shadow-md">
               <img
-                src="/images/residential_2d.jpg"
+                src="/images/residential_2d.webp"
                 alt="2D Architectural Blueprint"
                 className="w-full h-full object-cover filter contrast-125 saturate-50 hue-rotate-180 brightness-90"
+                loading="lazy"
+                width={800}
+                height={500}
               />
               <div className="absolute inset-0 bg-blueprint-grid opacity-60 pointer-events-none" />
               <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-sm border border-white/20 text-[10px] font-mono-tech text-white">
@@ -137,9 +140,12 @@ export const ExperienceUnbuilt: React.FC = () => {
             </div>
             <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white aspect-[16/10] shadow-md">
               <img
-                src="/images/residential_3d.jpg"
+                src="/images/residential_3d.webp"
                 alt="Coordinated 3D BIM Model"
                 className="w-full h-full object-cover brightness-95 contrast-105"
+                loading="lazy"
+                width={800}
+                height={500}
               />
               <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-sm border border-accent-blue/40 text-[10px] font-mono-tech text-accent-blue-light">
                 02 // COORDINATED 3D BIM GEOMETRY
@@ -171,7 +177,7 @@ export const ExperienceUnbuilt: React.FC = () => {
             </div>
             <div className="relative rounded-lg overflow-hidden border border-gray-200 bg-white aspect-[16/10] shadow-md">
               <img
-                src="/images/residential_3d.jpg"
+                src="/images/residential_3d.webp"
                 alt="Finished Immersive Visualization"
                 className="w-full h-full object-cover"
               />
@@ -331,9 +337,12 @@ export const ExperienceUnbuilt: React.FC = () => {
                     {/* Layer 1: 2D Blueprint */}
                     <div className="absolute inset-0 w-full h-full bg-[#0A1628]">
                       <img
-                        src="/images/residential_2d.jpg"
+                        src={currentProject.blueprintImg}
                         alt="Stage 1: 2D Architectural Blueprint"
                         className="w-full h-full object-cover filter contrast-125 saturate-50 hue-rotate-180 brightness-90"
+                        loading="lazy"
+                        width={800}
+                        height={500}
                       />
                       <div className="absolute inset-0 bg-blueprint-grid opacity-60 pointer-events-none"></div>
                       <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-sm border border-white/20 text-xs font-mono-tech text-white flex items-center gap-2">
@@ -351,9 +360,12 @@ export const ExperienceUnbuilt: React.FC = () => {
                       }}
                     >
                       <img
-                        src="/images/residential_3d.jpg"
+                        src={currentProject.renderImg}
                         alt="Stage 2: 3D BIM Coordinated Model"
                         className="w-full h-full object-cover brightness-95 contrast-105"
+                        loading="lazy"
+                        width={800}
+                        height={500}
                       />
                       <div className="absolute inset-0 bg-gradient-to-tr from-accent-blue/15 via-transparent to-transparent pointer-events-none"></div>
                       <div className="absolute top-4 left-4 bg-black/85 backdrop-blur-md px-3 py-1.5 rounded-sm border border-accent-blue/40 text-xs font-mono-tech text-accent-blue-light flex items-center gap-2">
@@ -371,7 +383,7 @@ export const ExperienceUnbuilt: React.FC = () => {
                       }}
                     >
                       <img
-                        src="/images/residential_3d.jpg"
+                        src={currentProject.renderImg}
                         alt="Stage 3: Finished Immersive Visualization"
                         className="w-full h-full object-cover"
                       />

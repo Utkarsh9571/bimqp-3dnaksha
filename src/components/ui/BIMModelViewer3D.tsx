@@ -7,6 +7,7 @@ import { Box, Layers, RotateCcw, AlertTriangle } from 'lucide-react';
 interface BIMModelViewer3DProps {
   className?: string;
   onCameraChange?: (azimuth: number, elevation: number, distance: number) => void;
+  interactive?: boolean;
 }
 
 /**
@@ -20,7 +21,8 @@ interface BIMModelViewer3DProps {
  */
 export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
   className = '',
-  onCameraChange
+  onCameraChange,
+  interactive = true
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -301,6 +303,7 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
     rendererRef.current = renderer;
 
     const controls = new OrbitControls(camera, canvas);
+    controls.enabled = interactive;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.rotateSpeed = 0.6;
@@ -316,15 +319,18 @@ export const BIMModelViewer3D: React.FC<BIMModelViewer3DProps> = ({
       RIGHT: THREE.MOUSE.PAN
     };
 
-    // Touch support: 2 fingers orbit & zoom on touchscreens, 1 finger scrolls page
-    controls.touches = {
-      TWO: THREE.TOUCH.DOLLY_ROTATE
-    };
-    delete (controls.touches as Record<string, unknown>).ONE;
-    
-    // Explicitly allow vertical page scrolling on canvas
-    canvas.style.touchAction = 'pan-y';
-    canvas.style.pointerEvents = 'auto';
+    if (interactive) {
+      canvas.style.touchAction = 'pan-y';
+      canvas.style.pointerEvents = 'auto';
+      controls.touches = {
+        TWO: THREE.TOUCH.DOLLY_ROTATE
+      };
+      delete (controls.touches as Record<string, unknown>).ONE;
+    } else {
+      canvas.style.touchAction = 'auto';
+      canvas.style.pointerEvents = 'none';
+      controls.touches = {};
+    }
     controlsRef.current = controls;
 
     const handleControlStart = () => {

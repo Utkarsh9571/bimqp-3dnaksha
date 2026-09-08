@@ -13,7 +13,7 @@ export const BRAND_CONFIG = {
   tagline: 'Step Inside Before You Build',
   heroSubtitle: 'Architectural visualization, 3D BIM modeling, and immersive VR services from the BIMQP ecosystem. Helping stakeholders experience spaces, evaluate designs, and make confident construction decisions.',
   ecosystem: 'A Brand of the BIMQP Ecosystem',
-  email: 'contact@3dnaksha.com',
+  email: 'support@3dnaksha.com',
   metrics: [
     { value: 'Pre-Construction', label: 'Spatial Clarity', detail: 'Experience spaces before physical construction begins' },
     { value: 'True Scale', label: 'Human Perspective', detail: 'Understand spatial proportions, clearance, and flow' },
@@ -64,6 +64,7 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
 export const SERVICES: ServiceItem[] = [
   {
     id: 'home-design',
+    slug: 'home-design',
     number: '01',
     title: 'Home Design',
     tagline: 'Residential architectural planning, elevation visualization, and spatial layouts.',
@@ -81,10 +82,11 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Home',
     badge: 'Core Service',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-home-design-vr.jpg'
   },
   {
     id: 'interior-design',
+    slug: 'interior-design',
     number: '02',
     title: 'Interior Design',
     tagline: 'Interior space planning, lighting studies, and material finish visualization.',
@@ -102,10 +104,11 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Armchair',
     badge: 'Interior Focus',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-interior-design-vr.jpg'
   },
   {
     id: 'bim-modelling',
+    slug: 'bim-modelling',
     number: '03',
     title: 'BIM Modelling',
     tagline: 'Structured 3D building information models for multidisciplinary coordination.',
@@ -123,10 +126,11 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Layers',
     badge: 'BIM Coordination',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-bim-modelling-vr.jpg'
   },
   {
     id: 'immersive-vr',
+    slug: 'immersive-vr',
     number: '04',
     title: 'Immersive VR Services',
     tagline: 'Interactive virtual reality walkthroughs to step inside spaces before building.',
@@ -145,10 +149,11 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Glasses',
     badge: 'FLAGSHIP EXPERIENCE',
-    image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&w=1200&q=85'
+    image: '/assets/images/service-immersive-vr.jpg'
   },
   {
     id: 'construction-pm',
+    slug: 'construction-project-management',
     number: '05',
     title: 'Construction Project Management',
     tagline: 'Visualization-assisted planning, sequence modeling, and project coordination.',
@@ -166,7 +171,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: '/images/construction_management.jpg'
+    image: '/assets/images/service-construction-pm-vr.jpg'
   }
 ];
 

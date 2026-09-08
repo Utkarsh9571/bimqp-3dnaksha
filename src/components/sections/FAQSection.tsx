@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { SectionHeading } from '../ui/SectionHeading';
 import { FAQ_ITEMS } from '../../data/content';
-import { ChevronDown } from 'lucide-react';
+import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 
 interface FAQSectionProps {
@@ -35,7 +35,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="13"
+          number=""
           badgeText="Information & Clarifications"
           badgeVariant="amber"
           title="Frequently Answered"
@@ -132,12 +132,13 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onOpenConsultation }) =>
             </div>
           </div>
 
-          <button
-            onClick={onOpenConsultation}
-            className="px-5 py-2.5 rounded-sm bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 font-mono-tech text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer shadow-2xs"
-          >
-            Discuss Your Project
-          </button>
+             <button
+              onClick={onOpenConsultation}
+              className="btn-cta-premium hidden sm:flex items-center gap-2 px-5 py-2.5 text-xs cursor-pointer group"
+            >
+              <span>Discuss Project</span>
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
         </div>
       </div>
     </section>

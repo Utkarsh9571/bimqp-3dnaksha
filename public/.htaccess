@@ -4,9 +4,12 @@
   RewriteEngine On
   RewriteBase /
 
-  # Force HTTPS (Optional - uncomment if SSL is active on your domain)
-  # RewriteCond %{HTTPS} off
-  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Canonical Domain & HTTPS Enforcement (301 Redirect to https://3dnaksha.com/)
+  RewriteCond %{HTTP_HOST} ^www\.3dnaksha\.com$ [NC]
+  RewriteRule ^(.*)$ https://3dnaksha.com/$1 [L,R=301]
+
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://3dnaksha.com/$1 [L,R=301]
 
   # Don't rewrite files or directories that exist
   RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -36,6 +39,24 @@
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Cache-Control Headers for Immutable Hashed Assets and HTML Documents
+<IfModule mod_headers.c>
+  # HTML documents (never store permanently, must revalidate for pre-rendered route updates)
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+
+  # Immutable hashed JavaScript, CSS, and web fonts (1 year cache)
+  <FilesMatch "\.(js|css|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Optimized Images (1 month cache)
+  <FilesMatch "\.(webp|avif|jpg|jpeg|png|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
 </IfModule>
 
 # Enable Gzip / Deflate Compression
