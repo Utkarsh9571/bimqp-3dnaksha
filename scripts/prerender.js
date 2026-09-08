@@ -185,7 +185,7 @@ async function runPrerender() {
       });
 
       // Additional settling window for reactive transitions and lazy DOM mounting
-      await new Promise((r) => setTimeout(r, 600));
+      await new Promise((r) => setTimeout(r, 1200));
 
       // Extract generated HTML from browser
       let rawHtml = await page.content();
