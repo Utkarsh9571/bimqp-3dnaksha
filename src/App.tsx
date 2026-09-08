@@ -19,7 +19,6 @@ const AboutSection = lazy(() => import('./components/sections/AboutSection'));
 const LifecycleJourney = lazy(() => import('./components/sections/LifecycleJourney'));
 //const ScrollWalkthroughViewer = lazy(() => import('./components/sections/ScrollWalkthroughViewer'));
 const Services = lazy(() => import('./components/sections/Services'));
-const ImmersiveVR = lazy(() => import('./components/sections/ImmersiveVR'));
 const TargetAudience = lazy(() => import('./components/sections/TargetAudience'));
 const Process = lazy(() => import('./components/sections/Process'));
 //const PortfolioGallery = lazy(() => import('./components/sections/PortfolioGallery'));
@@ -28,9 +27,6 @@ const CallToAction = lazy(() => import('./components/sections/CallToAction'));
 const Footer = lazy(() => import('./components/layout/Footer'));
 const ConsultationModal = lazy(() => import('./components/modals/ConsultationModal'));
 const LightboxModal = lazy(() => import('./components/modals/LightboxModal'));
-
-// Dedicated Service Detail Page component
-const ServiceDetailPage = lazy(() => import('./components/services/ServiceDetailPage'));
 
 // Lightweight placeholder for smooth suspense hydration
 const SectionFallback = () => (
@@ -124,9 +120,8 @@ export function App() {
                 {/* 1. About Us (#about) */}
                 <AboutSection onOpenConsultation={handleOpenConsultation} />
 
-                {/* 2. Our Services (#services) & Immersive VR Flagship */}
+                {/* 2. Connected Single-Page Services Spectrum (#services) */}
                 <Services onOpenConsultation={handleOpenConsultation} />
-                <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
 
                 {/* 3. Our Mission / AEC Lifecycle Journey (#mission) */}
                 <LifecycleJourney />
@@ -148,17 +143,7 @@ export function App() {
           }
         />
 
-        {/* SERVICE DETAIL PAGES ROUTE */}
-        <Route
-          path="/services/:slug"
-          element={
-            <Suspense fallback={<SectionFallback />}>
-              <ServiceDetailPage onOpenConsultation={handleOpenConsultation} />
-            </Suspense>
-          }
-        />
-
-        {/* FALLBACK REDIRECT ROUTE */}
+        {/* CATCH-ALL SINGLE PAGE REDIRECT ROUTE */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

@@ -17,46 +17,6 @@ const ROUTES = [
     expectedTitleKeyword: '3D Naksha',
     expectedTextKeyword: 'EXPERIENCE',
     requiresImages: true
-  },
-  {
-    path: '/services/home-design',
-    filePath: path.join(DIST_DIR, 'services/home-design/index.html'),
-    canonical: 'https://3dnaksha.com/services/home-design',
-    expectedTitleKeyword: 'Home Design',
-    expectedTextKeyword: 'RESIDENTIAL ARCHITECTURE',
-    requiresImages: true
-  },
-  {
-    path: '/services/interior-design',
-    filePath: path.join(DIST_DIR, 'services/interior-design/index.html'),
-    canonical: 'https://3dnaksha.com/services/interior-design',
-    expectedTitleKeyword: 'Interior Design',
-    expectedTextKeyword: 'INTERIOR SPACE',
-    requiresImages: true
-  },
-  {
-    path: '/services/bim-modelling',
-    filePath: path.join(DIST_DIR, 'services/bim-modelling/index.html'),
-    canonical: 'https://3dnaksha.com/services/bim-modelling',
-    expectedTitleKeyword: 'BIM Modelling',
-    expectedTextKeyword: 'PARAMETRIC 3D BIM',
-    requiresImages: true
-  },
-  {
-    path: '/services/immersive-vr',
-    filePath: path.join(DIST_DIR, 'services/immersive-vr/index.html'),
-    canonical: 'https://3dnaksha.com/services/immersive-vr',
-    expectedTitleKeyword: 'Immersive VR',
-    expectedTextKeyword: 'STEP INSIDE',
-    requiresImages: true
-  },
-  {
-    path: '/services/construction-project-management',
-    filePath: path.join(DIST_DIR, 'services/construction-project-management/index.html'),
-    canonical: 'https://3dnaksha.com/services/construction-project-management',
-    expectedTitleKeyword: 'Construction Project Management',
-    expectedTextKeyword: 'VISUAL CONSTRUCTION',
-    requiresImages: true
   }
 ];
 
@@ -263,10 +223,10 @@ async function runPrerender() {
       failures.push(`Route text keyword '${route.expectedTextKeyword}' not found in raw HTML body.`);
     }
 
-    // 6. Crawlable Internal Links Check (<a href="/services/...">)
-    const hrefServiceLinks = fileHtml.match(/<a[^>]*href=["']\/services\/[a-z0-9-]+["']/gi);
-    if (!hrefServiceLinks || hrefServiceLinks.length === 0) {
-      failures.push(`No crawlable HTML <a href="/services/..."> internal links found in raw HTML.`);
+    // 6. Crawlable Internal Single-Page Links Check (<a href="#..."> or <a href="/#...">)
+    const hrefInternalLinks = fileHtml.match(/<a[^>]*href=["']\/?#[a-z0-9-]+["']/gi);
+    if (!hrefInternalLinks || hrefInternalLinks.length === 0) {
+      failures.push(`No crawlable HTML internal anchor links found in raw HTML.`);
     }
 
     // 7. Content Images Check (where expected)
