@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
-import { Hero } from './components/sections/Hero';
+import { FullBleedShowcase } from './components/sections/FullBleedShowcase';
 //import { OperatingRegions } from './components/sections/OperatingRegions';
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar';
 import { ScrollToTop } from './components/ui/ScrollToTop';
@@ -19,7 +19,6 @@ const AboutSection = lazy(() => import('./components/sections/AboutSection'));
 const LifecycleJourney = lazy(() => import('./components/sections/LifecycleJourney'));
 //const ScrollWalkthroughViewer = lazy(() => import('./components/sections/ScrollWalkthroughViewer'));
 const Services = lazy(() => import('./components/sections/Services'));
-const FullBleedShowcase = lazy(() => import('./components/sections/FullBleedShowcase'));
 const ImmersiveVR = lazy(() => import('./components/sections/ImmersiveVR'));
 const TargetAudience = lazy(() => import('./components/sections/TargetAudience'));
 const Process = lazy(() => import('./components/sections/Process'));
@@ -114,17 +113,14 @@ export function App() {
             <main className="flex-grow">
               <JsonLd data={getHomepageGraph()} />
 
-              {/* Section 1: Critical Above-The-Fold Hero Section */}
-              <Hero
-                onOpenConsultation={() => handleOpenConsultation()}
+              {/* Section 1: Critical Above-The-Fold Hero & Pinned VR 3D Model Showcase */}
+              <FullBleedShowcase
+                onOpenConsultation={handleOpenConsultation}
                 onExploreVR={handleScrollToVR}
               />
 
               {/* Below-the-fold sections wrapped in Suspense for ultra-fast initial mobile paint */}
               <Suspense fallback={<SectionFallback />}>
-                {/* Section 1.5: Pinned Full-Bleed Cinematic Interior Showcase */}
-                <FullBleedShowcase />
-
                 {/* 1. About Us (#about) */}
                 <AboutSection onOpenConsultation={handleOpenConsultation} />
 
