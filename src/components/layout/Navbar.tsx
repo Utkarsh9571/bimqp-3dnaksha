@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Menu, X, ArrowUpRight, ChevronRight, ChevronDown, Home, Armchair, Layers, Glasses, HardHat } from 'lucide-react';
-import { gsap, ScrollTrigger, prefersReducedMotion, smoothScrollTo } from '../../lib/animations';
+import { gsap, prefersReducedMotion, smoothScrollTo, getLenis } from '../../lib/animations';
 import { SERVICES } from '../../data/content';
 
 interface NavbarProps {
@@ -18,8 +18,8 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: 'About Us', href: '#about', id: 'about' },
   { label: 'Our Services', href: '#services', id: 'services', hasDropdown: true },
-  { label: 'Our Clients', href: '#clients', id: 'clients' },
   { label: 'Our Mission', href: '#mission', id: 'mission' },
+  { label: 'Our Clients', href: '#clients', id: 'clients' },
   { label: 'FAQ', href: '#faq', id: 'faq' },
 ];
 
@@ -141,43 +141,60 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ScrollTrigger section in-view detection (only on homepage)
+  // Active section in-view detection on scroll (only on homepage)
   useEffect(() => {
     if (location.pathname !== '/') return;
 
-    const triggers: ScrollTrigger[] = [];
+    const handleScrollUpdate = () => {
+      if (isNavigatingRef.current) return;
 
-    const setupTriggers = () => {
-      NAV_ITEMS.forEach((item) => {
-        const section = document.getElementById(item.id);
-        if (!section) return;
+      const pageHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
 
-        const st = ScrollTrigger.create({
-          trigger: section,
-          start: 'top 55%',
-          end: 'bottom 45%',
-          onEnter: () => {
-            if (!isNavigatingRef.current) setActiveId(item.id);
-          },
-          onEnterBack: () => {
-            if (!isNavigatingRef.current) setActiveId(item.id);
+      // At bottom of page -> set FAQ active
+      if (window.scrollY + viewportHeight >= pageHeight - 80) {
+        setActiveId('faq');
+        return;
+      }
+
+      let foundActiveId: string | null = null;
+      const triggerThreshold = Math.min(250, viewportHeight * 0.35);
+
+      for (let i = 0; i < NAV_ITEMS.length; i++) {
+        const item = NAV_ITEMS[i];
+        const element = document.getElementById(item.id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= triggerThreshold && rect.bottom > 100) {
+            foundActiveId = item.id;
           }
-        });
+        }
+      }
 
-        triggers.push(st);
-      });
-
-      ScrollTrigger.refresh();
-      updateUnderlinePosition('about', true);
+      if (foundActiveId) {
+        setActiveId(foundActiveId);
+      } else if (window.scrollY < 200) {
+        setActiveId('about');
+      }
     };
 
-    const timer = setTimeout(setupTriggers, 300);
+    // Initial check on mount
+    const timer = setTimeout(handleScrollUpdate, 150);
+
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.on('scroll', handleScrollUpdate);
+    }
+    window.addEventListener('scroll', handleScrollUpdate, { passive: true });
 
     return () => {
       clearTimeout(timer);
-      triggers.forEach((trigger) => trigger.kill());
+      if (lenis) {
+        lenis.off('scroll', handleScrollUpdate);
+      }
+      window.removeEventListener('scroll', handleScrollUpdate);
     };
-  }, [location.pathname, updateUnderlinePosition]);
+  }, [location.pathname]);
 
   const handleNavClick = (href: string, id: string) => {
     setIsMobileMenuOpen(false);

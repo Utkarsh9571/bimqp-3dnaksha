@@ -125,40 +125,24 @@ export function App() {
                 {/* Section 1.5: Pinned Full-Bleed Cinematic Interior Showcase */}
                 <FullBleedShowcase />
 
-                {/* Section 2: About 3D Naksha */}
+                {/* 1. About Us (#about) */}
                 <AboutSection onOpenConsultation={handleOpenConsultation} />
 
-                {/* Section 2.5: Experience the Unbuilt 
-                <ExperienceUnbuilt />*/}
-
-                {/* Section 2.5: 3-Column Core Features Grid 
-                <FeatureCardsGrid />*/}
-
-                {/* Section 3: AEC Lifecycle Journey */}
-                <LifecycleJourney />
-
-                {/* Section 3.5: Apple-Style Scroll-Scrubbed Walkthrough Sequence Viewer 
-                <ScrollWalkthroughViewer totalFrames={81} />*/}
-
-                {/* Section 4: 5 Core Services */}
+                {/* 2. Our Services (#services) & Immersive VR Flagship */}
                 <Services onOpenConsultation={handleOpenConsultation} />
-
-                {/* Section 5: Immersive VR Flagship Centerpiece */}
                 <ImmersiveVR onOpenConsultation={() => handleOpenConsultation('Immersive VR Services')} />
 
-                {/* Section 6: Who We Work With (AEC Stakeholders) */}
-                <TargetAudience onOpenConsultation={handleOpenConsultation} />
+                {/* 3. Our Mission / AEC Lifecycle Journey (#mission) */}
+                <LifecycleJourney />
 
-                {/* Section 7: How It Works (5-Step Collaborative Process) */}
+                {/* 4. Our Clients / Stakeholders (#clients) & 5-Step Process */}
+                <TargetAudience onOpenConsultation={handleOpenConsultation} />
                 <Process onOpenConsultation={() => handleOpenConsultation()} />
 
-                {/* Section 8: Selected Visualizations Showcase 
-                <PortfolioGallery onSelectProject={(item) => setSelectedLightboxItem(item)} />*/}
-
-                {/* Section 9: Frequently Answered Questions Accordion */}
+                {/* 5. FAQ (#faq) */}
                 <FAQSection onOpenConsultation={() => handleOpenConsultation()} />
 
-                {/* Section 10: Closing High-Conversion CTA Banner */}
+                {/* Closing High-Conversion CTA Banner */}
                 <CallToAction onOpenConsultation={() => handleOpenConsultation()} />
 
                 {/* Footer & Ecosystem Endorsements */}

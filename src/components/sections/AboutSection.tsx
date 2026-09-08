@@ -404,7 +404,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
           </div>
         </div>
 
-        {/* Closing Vision Banner */}
+        {/* Closing Vision Banner 
         <div className="p-8 sm:p-12 rounded-xl bg-white border border-gray-200 shadow-sm relative overflow-hidden text-center space-y-4 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-accent-bronze font-mono-tech text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 text-accent-bronze" />
@@ -416,7 +416,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
           <p className="text-sm sm:text-base text-brand-muted max-w-2xl mx-auto leading-relaxed font-sans">
             Whether you are a homeowner crafting your dream residence or a real estate developer looking to showcase properties dynamically to buyers, 3D Naksha gives you total control over your spatial future.
           </p>
-        </div>
+        </div>*/}
 
       </div>
     </section>

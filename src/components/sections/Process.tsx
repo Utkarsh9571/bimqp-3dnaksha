@@ -30,7 +30,7 @@ export const Process: React.FC<ProcessProps> = ({ onOpenConsultation }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="08"
+          number="05"
           badgeText="Execution Protocol"
           badgeVariant="amber"
           title="From Concept to"
