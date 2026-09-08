@@ -266,7 +266,7 @@ export const Footer: React.FC<FooterProps> = () => {
                 <button
                   type="submit"
                   disabled={isSubmittingNewsletter}
-                  className="w-full px-4 py-2 bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold hover:from-[#E2B689] hover:to-accent-amber-bright text-[#08090B] font-display font-bold text-xs tracking-wider uppercase rounded-sm transition-all shadow-2xs cursor-pointer disabled:opacity-50"
+                  className="btn-cta-premium w-full px-4 py-2 text-xs cursor-pointer disabled:opacity-50"
                 >
                   {isSubmittingNewsletter ? 'Subscribing...' : 'SUBSCRIBE'}
                 </button>

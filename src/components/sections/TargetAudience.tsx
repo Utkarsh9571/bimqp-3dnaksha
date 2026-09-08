@@ -165,10 +165,10 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
 
                   <button
                     onClick={() => onOpenConsultation(aud.role)}
-                    className="hidden sm:flex items-center justify-center gap-2 w-full px-4 py-2 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-semibold text-xs tracking-wider uppercase hover:from-[#E2B689] hover:to-accent-amber-bright transition-all shadow-sm cursor-pointer group"
+                    className="btn-cta-premium hidden sm:flex items-center justify-center gap-2 w-full px-5 py-2.5 text-xs cursor-pointer group"
                   >
                     <span>Discuss Requirements for {aud.role.split('&')[0]}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>

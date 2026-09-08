@@ -197,18 +197,18 @@ export const FullBleedShowcase: React.FC<FullBleedShowcaseProps> = ({ onOpenCons
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
                 onClick={() => onOpenConsultation && onOpenConsultation()}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-sm bg-gradient-to-r from-accent-bronze-light to-accent-amber-gold text-[#08090B] font-display font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                className="btn-cta-premium w-full sm:w-auto px-7 py-3.5 text-xs flex items-center justify-center gap-2.5 cursor-pointer group"
               >
                 <span>Discuss Your Project</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 onClick={handleExploreServicesClick}
-                className="w-full sm:w-auto px-5 py-3.5 rounded-sm bg-white/10 hover:bg-white/15 text-white font-mono-tech text-xs font-semibold tracking-wider uppercase border border-white/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="btn-cta-secondary w-full sm:w-auto px-6 py-3.5 text-xs flex items-center justify-center gap-2 cursor-pointer group"
               >
-                <Glasses className="w-4 h-4 text-sky-400" />
-                <span>Explore Immersive Services</span>
+                <Glasses className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span>Explore VR Services</span>
               </button>
             </div>
 

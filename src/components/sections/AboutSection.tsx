@@ -201,10 +201,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
 
                   <button
                     onClick={() => onOpenConsultation?.('About 3D Naksha VR Experience')}
-                    className="w-full py-3 px-4 rounded-sm bg-accent-bronze hover:bg-accent-bronze-hover text-white font-display font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg backdrop-blur-xs border border-white/20"
+                    className="btn-cta-premium w-full py-3.5 px-4 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg group"
                   >
                     <span>Discuss Your Project Vision</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>

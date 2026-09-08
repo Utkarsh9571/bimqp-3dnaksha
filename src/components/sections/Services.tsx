@@ -373,10 +373,10 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
               </div>
               <button
                 onClick={() => onOpenConsultation(activeService.title)}
-                className="px-4 py-2 rounded bg-gradient-to-r from-accent-amber-gold to-accent-bronze-light text-[#08090B] font-mono-tech text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shrink-0 flex items-center gap-1.5 cursor-pointer"
+                className="btn-cta-premium px-5 py-2.5 text-xs shrink-0 flex items-center gap-2 cursor-pointer group"
               >
                 <span>Request Consultation</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
 
