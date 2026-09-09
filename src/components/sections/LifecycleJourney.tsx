@@ -98,24 +98,48 @@ export const LifecycleJourney: React.FC = () => {
             </div>
           </div>
 
-          {/* 3 Core Mission Anchors */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {missionPillars.map((pillar, idx) => {
-              const IconComp = pillar.icon;
-              return (
-                <div key={idx} className="p-5 rounded-xl bg-brand-canvas/60 border border-gray-200/70 hover:border-accent-bronze/40 transition-all space-y-3 group">
-                  <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center text-accent-bronze group-hover:scale-105 transition-transform">
-                    <IconComp className="w-5 h-5" />
+          {/* 3 Core Mission Anchors with Visual Lifecycle Graphic */}
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {missionPillars.map((pillar, idx) => {
+                const IconComp = pillar.icon;
+                return (
+                  <div key={idx} className="p-5 rounded-xl bg-brand-canvas/60 border border-gray-200/70 hover:border-accent-bronze/40 transition-all space-y-3 group">
+                    <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center text-accent-bronze group-hover:scale-105 transition-transform">
+                      <IconComp className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-display font-bold text-base text-brand-primary group-hover:text-accent-bronze transition-colors">
+                      {pillar.title}
+                    </h4>
+                    <p className="text-xs text-brand-muted leading-relaxed font-sans">
+                      {pillar.desc}
+                    </p>
                   </div>
-                  <h4 className="font-display font-bold text-base text-brand-primary group-hover:text-accent-bronze transition-colors">
-                    {pillar.title}
-                  </h4>
-                  <p className="text-xs text-brand-muted leading-relaxed font-sans">
-                    {pillar.desc}
-                  </p>
+                );
+              })}
+            </div>
+
+            {/* Lifecycle Infographic Visual Preview Banner */}
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-white p-3 shadow-sm group">
+              <div className="relative aspect-[21/9] sm:aspect-[24/9] w-full rounded-lg overflow-hidden bg-gray-900">
+                <img
+                  src="/assets/images/lifecycle-spatial-flow.jpg"
+                  alt="The Digital Building Lifecycle: 2D Blueprint to 3D BIM to 1:1 VR Immersion"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs font-mono-tech z-10">
+                  <span className="font-bold flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    Visual Workflow: 2D Drafts → Coordinated 3D BIM → 1:1 Spatial Reality
+                  </span>
+                  <span className="hidden sm:inline-block text-amber-300">
+                    BIMQP Technical Standard
+                  </span>
                 </div>
-              );
-            })}
+              </div>
+            </div>
           </div>
         </div>
 

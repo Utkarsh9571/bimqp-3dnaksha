@@ -82,7 +82,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Layers',
     badge: 'BIM Coordination',
-    image: '/assets/images/service-bim-modelling-vr.jpg'
+    image: '/assets/images/service-bim-layers.jpg'
   },
   {
     id: 'immersive-vr',
@@ -105,7 +105,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'Glasses',
     badge: 'FLAGSHIP EXPERIENCE',
-    image: '/assets/images/service-immersive-vr.jpg'
+    image: '/assets/images/service-vr-spatial.jpg'
   },
   {
     id: 'construction-pm',
@@ -127,7 +127,7 @@ export const SERVICES: ServiceItem[] = [
     ],
     icon: 'HardHat',
     badge: 'Project Planning',
-    image: '/assets/images/service-construction-pm-vr.jpg'
+    image: '/assets/images/service-construction-coordination.jpg'
   }
 ];
 
@@ -224,7 +224,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'Stronger design presentations'
     ],
     ctaText: 'Discuss Requirements for Architects',
-    icon: 'Compass'
+    icon: 'Compass',
+    image: '/assets/images/audience-architects.jpg'
   },
   {
     id: 'interior-designers',
@@ -249,7 +250,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'Faster client sign-off'
     ],
     ctaText: 'Discuss Requirements for Interior Designers',
-    icon: 'Palette'
+    icon: 'Palette',
+    image: '/assets/images/audience-interior-designers.jpg'
   },
   {
     id: 'developers',
@@ -274,7 +276,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'More compelling marketing assets'
     ],
     ctaText: 'Discuss Requirements for Developers',
-    icon: 'Building2'
+    icon: 'Building2',
+    image: '/assets/images/audience-developers.jpg'
   },
   {
     id: 'contractors',
@@ -299,7 +302,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'Clearer construction planning'
     ],
     ctaText: 'Discuss Requirements for Contractors',
-    icon: 'Wrench'
+    icon: 'Wrench',
+    image: '/assets/images/audience-contractors.jpg'
   },
   {
     id: 'property-owners',
@@ -324,7 +328,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'Greater clarity before investing'
     ],
     ctaText: 'Discuss Requirements for Property Owners',
-    icon: 'Key'
+    icon: 'Key',
+    image: '/assets/images/audience-property-owners.jpg'
   },
   {
     id: 'project-teams',
@@ -349,7 +354,8 @@ export const AUDIENCE_LIST: AudienceItem[] = [
       'More effective project reviews'
     ],
     ctaText: 'Discuss Requirements for Project Management',
-    icon: 'Users2'
+    icon: 'Users2',
+    image: '/assets/images/audience-project-management.jpg'
   }
 ];
 

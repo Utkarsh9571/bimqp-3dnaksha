@@ -96,6 +96,7 @@ export interface AudienceItem {
   benefits: string[];
   ctaText: string;
   icon: string;
+  image?: string;
   painPoint?: string;
   solution?: string;
   deliverables?: string[];

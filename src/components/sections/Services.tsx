@@ -88,8 +88,8 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
           align="left"
         />
 
-        {/* 1. TOP PRESENTATION CARDS (3 Core Services Grid - Non-clickable with existing visual hover) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+        {/* 1. TOP PRESENTATION CARDS (3 Core Services Grid with High-Fidelity Visuals) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {SERVICES.map((service, idx) => {
             const delay = idx * 80;
 
@@ -97,30 +97,64 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
               <div
                 key={service.id}
                 id={`service-${service.id}`}
-                className="p-5 rounded-lg border text-left transition-all duration-300 relative group cursor-default flex flex-col justify-between bg-white/80 border-gray-200 hover:border-gray-300 hover:bg-white hover:shadow-md hover:-translate-y-1"
+                className="rounded-xl border text-left transition-all duration-300 relative group cursor-default flex flex-col justify-between bg-white border-gray-200/90 hover:border-accent-bronze/50 hover:shadow-xl hover:-translate-y-1.5 overflow-hidden shadow-sm"
                 style={{
                   opacity: isInView ? 1 : 0,
                   transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 20px, 0)',
                   transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms, border-color 0.3s ease, box-shadow 0.3s ease`
                 }}
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-md flex items-center justify-center border transition-all duration-300 bg-gray-100 border-gray-200 text-gray-600 group-hover:text-brand-primary group-hover:bg-amber-50 group-hover:border-accent-bronze/40">
-                      {iconMap[service.icon]}
-                    </div>
-                    <span className="font-mono-tech text-xs text-gray-400 font-bold">
+                {/* Visual Image Header */}
+                <div className="aspect-[16/10] relative overflow-hidden bg-gray-900">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                  {/* Top Badge & Number */}
+                  <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
+                    <span className="font-mono-tech text-[10px] text-amber-300 font-bold tracking-wider uppercase bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-xs border border-amber-300/30">
+                      {service.badge}
+                    </span>
+                    <span className="font-mono-tech text-xs text-white/90 font-bold bg-black/60 backdrop-blur-xs px-2 py-0.5 rounded-xs border border-white/20">
                       {service.number}
                     </span>
                   </div>
 
-                  <div>
-                    <h4 className="font-display font-bold text-base text-gray-800 group-hover:text-brand-primary transition-colors">
+                  {/* Icon & Title Overlay on Image Bottom */}
+                  <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-md flex items-center justify-center bg-white/95 text-accent-bronze shadow-xs shrink-0">
+                      {iconMap[service.icon]}
+                    </div>
+                    <h4 className="font-display font-bold text-base text-white leading-tight drop-shadow-xs">
                       {service.title}
                     </h4>
-                    <p className="text-xs text-brand-muted line-clamp-2 mt-1 leading-relaxed">
-                      {service.tagline}
-                    </p>
+                  </div>
+                </div>
+
+                {/* Card Body & Deliverables */}
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                  <p className="text-xs sm:text-sm text-brand-muted leading-relaxed">
+                    {service.description}
+                  </p>
+
+                  <div className="pt-3 border-t border-gray-100 space-y-1.5">
+                    <div className="text-[10px] font-mono-tech text-accent-bronze uppercase font-bold tracking-wider">
+                      Core Deliverables:
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {service.deliverables.slice(0, 2).map((deliv, dIdx) => (
+                        <span
+                          key={dIdx}
+                          className="text-[11px] font-mono-tech text-gray-700 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-xs"
+                        >
+                          {deliv}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -111,21 +111,43 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
             transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s'
           }}
         >
-          {/* Header & Eyebrow */}
-          <div className="max-w-4xl space-y-3 mb-8">
-            <div className="flex items-center gap-2">
-              <Badge variant="amber" size="sm">
-                {activeAudience.eyebrow}
-              </Badge>
+          {/* Header & Eyebrow with Stakeholder Visual Banner */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8">
+            <div className="lg:col-span-7 space-y-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="amber" size="sm">
+                  {activeAudience.eyebrow}
+                </Badge>
+              </div>
+
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-brand-primary leading-tight">
+                {activeAudience.headline}
+              </h3>
+
+              <p className="text-sm sm:text-base text-brand-muted leading-relaxed">
+                {activeAudience.description}
+              </p>
             </div>
 
-            <h3 className="font-display text-2xl sm:text-3xl font-bold text-brand-primary leading-tight">
-              {activeAudience.headline}
-            </h3>
-
-            <p className="text-sm sm:text-base text-brand-muted leading-relaxed">
-              {activeAudience.description}
-            </p>
+            {/* Dynamic Audience Stakeholder Visual Preview */}
+            {activeAudience.image && (
+              <div className="lg:col-span-5 relative aspect-[16/10] sm:aspect-[16/9] rounded-lg overflow-hidden border border-gray-200/90 shadow-md group">
+                <img
+                  key={activeAudience.id}
+                  src={activeAudience.image}
+                  alt={`${activeAudience.role} - 3D Naksha Architectural Workflow`}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center transition-all duration-700 group-hover:scale-105 animate-fadeIn"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 pointer-events-none" />
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono-tech text-white z-10">
+                  <span className="bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-xs border border-white/20">
+                    {activeAudience.role.split('&')[0]} Workflow Preview
+                  </span>
+                  <span className="text-amber-300 font-bold">1:1 Precision</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Workflow Comparison Grid: Traditional vs With 3D Naksha */}
