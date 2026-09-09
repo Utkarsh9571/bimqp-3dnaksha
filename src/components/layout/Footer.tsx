@@ -93,7 +93,7 @@ export const Footer: React.FC<FooterProps> = () => {
 
               {/* Instagram */}
               <a
-                href="https://www.instagram.com"
+                href="https://www.instagram.com/3dnaksha.co/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -106,7 +106,7 @@ export const Footer: React.FC<FooterProps> = () => {
 
               {/* Facebook */}
               <a
-                href="https://www.facebook.com"
+                href="https://www.facebook.com/profile.php?id=61593940874273"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -119,7 +119,7 @@ export const Footer: React.FC<FooterProps> = () => {
 
               {/* LinkedIn */}
               <a
-                href="https://www.linkedin.com"
+                href="https://www.linkedin.com/company/3d-naksha/about/?viewAsMember=true"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"

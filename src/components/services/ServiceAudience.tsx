@@ -82,7 +82,7 @@ export const ServiceAudience: React.FC<ServiceAudienceProps> = ({ service }) => 
                   Key Deliverables Included:
                 </div>
                 <div className="space-y-1">
-                  {audience.deliverables.map((deliv, dIdx) => (
+                  {(audience.deliverables || audience.benefits || []).map((deliv, dIdx) => (
                     <div key={dIdx} className="flex items-center gap-1.5 text-xs text-gray-800">
                       <Check className="w-3 h-3 text-accent-blue shrink-0" />
                       <span className="truncate">{deliv}</span>

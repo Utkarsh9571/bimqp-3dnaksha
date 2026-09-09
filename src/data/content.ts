@@ -204,62 +204,152 @@ export const AUDIENCE_LIST: AudienceItem[] = [
   {
     id: 'architects',
     role: 'Architects & Design Studios',
-    tagline: 'Communicate design intent with clarity and engage clients through immersive visuals.',
-    description: 'Present architectural ideas in formats that clients intuitively understand. Enable stakeholders to experience spatial volumes, daylighting, and materials before detailing begins.',
-    painPoint: 'Clients struggling to interpret 2D floor plans and requesting changes late in the design cycle.',
-    solution: 'Clear 3D visualizations and interactive walkthroughs for intuitive design consensus.',
-    icon: 'Compass',
-    deliverables: ['Design Presentation Visuals', 'Interactive Spatial Walkthroughs', 'Exterior & Interior Renders']
+    eyebrow: 'STAKEHOLDER // ARCHITECTS & DESIGN STUDIOS',
+    headline: 'Help clients experience the design before approving it.',
+    tagline: 'Turn 2D plans and design intent into an intuitive experience clients can explore before finalizing.',
+    description: 'Turn 2D plans and design intent into an experience clients can understand, explore, and respond to before the design is finalized.',
+    traditionalWorkflow: [
+      'Clients interpret plans, elevations, and static views.',
+      'Spatial ideas often require lengthy explanations.',
+      'Design changes may surface late in the approval cycle.'
+    ],
+    with3DNaksha: [
+      'Explore the proposed space through interactive 3D visualization.',
+      'Experience room volumes, materials, lighting, and spatial relationships.',
+      'Resolve visual uncertainty before detailing and approval.'
+    ],
+    benefits: [
+      'Fewer late-stage revisions',
+      'Faster client approvals',
+      'Stronger design presentations'
+    ],
+    ctaText: 'Discuss Requirements for Architects',
+    icon: 'Compass'
   },
   {
     id: 'interior-designers',
     role: 'Interior Designers & Stylists',
-    tagline: 'Evaluate textures, lighting conditions, and spatial flow before procurement.',
-    description: 'Explore material pairings, millwork details, and lighting configurations in realistic 3D environments before ordering materials and custom furniture.',
-    painPoint: 'Uncertainty around how materials, colors, and lighting will interact in the built room.',
-    solution: 'Realistic lighting and material finish studies for confident selection.',
-    icon: 'Palette',
-    deliverables: ['Material & Lighting Studies', 'Interior Ambiance Visualizations', 'Custom Joinery Previews']
+    eyebrow: 'STAKEHOLDER // INTERIOR DESIGNERS & STYLISTS',
+    headline: 'Make material, lighting, and spatial decisions before procurement.',
+    tagline: 'Visualize complete interior flow and materials together before anything is ordered.',
+    description: 'Visualize the complete interior together so clients can understand how materials, colours, lighting, furniture, and spatial flow work before anything is ordered.',
+    traditionalWorkflow: [
+      'Material samples and references are reviewed separately.',
+      'Clients have to imagine the final combination.',
+      'Changes can become expensive after procurement.'
+    ],
+    with3DNaksha: [
+      'Preview materials and finishes in the actual spatial context.',
+      'Explore lighting and ambience before implementation.',
+      'Validate design choices before procurement.'
+    ],
+    benefits: [
+      'More confident material decisions',
+      'Fewer procurement surprises',
+      'Faster client sign-off'
+    ],
+    ctaText: 'Discuss Requirements for Interior Designers',
+    icon: 'Palette'
   },
   {
     id: 'developers',
     role: 'Real Estate Developers & Builders',
-    tagline: 'Showcase unbuilt developments to buyers, investors, and municipal stakeholders.',
-    description: 'Provide compelling visual representations of upcoming residential and commercial projects to facilitate marketing, investor presentations, and planning discussions.',
-    painPoint: 'Communicating project value and spatial quality prior to physical construction.',
-    solution: 'High-impact 3D imagery and interactive walkthroughs of unbuilt spaces.',
-    icon: 'Building2',
-    deliverables: ['Project Showcase Renders', 'Interactive Unit Walkthroughs', 'Exterior Building Visuals']
+    eyebrow: 'STAKEHOLDER // REAL ESTATE DEVELOPERS & BUILDERS',
+    headline: "Let buyers experience what hasn't been built yet.",
+    tagline: 'Turn unbuilt developments into interactive visual experiences for buyers and investors.',
+    description: 'Turn unbuilt residential and commercial projects into interactive visual experiences for buyers, investors, marketing teams, and stakeholders.',
+    traditionalWorkflow: [
+      'Buyers evaluate projects from plans, brochures, and static images.',
+      'Spatial quality can be difficult to communicate before construction.',
+      'Marketing relies heavily on imagination.'
+    ],
+    with3DNaksha: [
+      'Let prospects explore unbuilt spaces visually.',
+      'Showcase units, interiors, exteriors, and spatial relationships.',
+      'Give sales and marketing teams a more compelling project experience.'
+    ],
+    benefits: [
+      'Stronger project presentations',
+      'Better buyer understanding',
+      'More compelling marketing assets'
+    ],
+    ctaText: 'Discuss Requirements for Developers',
+    icon: 'Building2'
   },
   {
     id: 'contractors',
     role: 'Contractors & Construction Companies',
-    tagline: 'Understand spatial coordination and construction sequences prior to site execution.',
-    description: 'Leverage 3D models and visual phasing to review spatial relationships, identify potential coordination issues, and align site teams around the design intent.',
-    painPoint: 'Drawing misinterpretations and interdisciplinary coordination gaps discovered on site.',
-    solution: 'Coordinated 3D BIM models and visual sequence planning.',
-    icon: 'Wrench',
-    deliverables: ['3D Coordination Models', 'Visual Phasing Studies', 'Spatial Relationship Reviews']
+    eyebrow: 'STAKEHOLDER // CONTRACTORS & CONSTRUCTION COMPANIES',
+    headline: 'Coordinate the build before problems reach the site.',
+    tagline: 'Use coordinated 3D/BIM models to identify spatial conflicts and align site execution.',
+    description: 'Use coordinated 3D/BIM models and visual sequencing to understand spatial relationships, identify potential coordination issues, and align teams before execution.',
+    traditionalWorkflow: [
+      'Teams interpret drawings from different disciplines.',
+      'Spatial conflicts may only become obvious during execution.',
+      'Site teams rely heavily on 2D references and verbal coordination.'
+    ],
+    with3DNaksha: [
+      'Review coordinated 3D/BIM models before execution.',
+      'Visualize spatial relationships and construction sequences.',
+      'Give teams a shared visual reference for coordination.'
+    ],
+    benefits: [
+      'Earlier issue identification',
+      'Better site coordination',
+      'Clearer construction planning'
+    ],
+    ctaText: 'Discuss Requirements for Contractors',
+    icon: 'Wrench'
   },
   {
     id: 'property-owners',
     role: 'Property Owners & Private Clients',
-    tagline: 'Experience your future home or space before building starts.',
-    description: 'Building or renovating is a major investment. Walk through room layouts, check window placements, and understand room sizes in advance to build with confidence.',
-    painPoint: 'Anxiety about whether rooms will feel right, bright, or spacious once constructed.',
-    solution: 'Intuitive visual walkthroughs designed for easy client understanding.',
-    icon: 'Key',
-    deliverables: ['Room-by-Room Walkthroughs', 'Elevation & Floor Visualizations', 'Material Option Previews']
+    eyebrow: 'STAKEHOLDER // PROPERTY OWNERS & PRIVATE CLIENTS',
+    headline: 'Experience your future space before construction begins.',
+    tagline: 'Walk through your proposed home to understand proportions and layouts with confidence.',
+    description: 'Walk through your proposed home or space before it is built so you can understand layouts, proportions, openings, finishes, and spatial flow with greater confidence.',
+    traditionalWorkflow: [
+      'Plans are approved without experiencing the finished space.',
+      'Room proportions and circulation can be difficult to imagine.',
+      'Design changes may become difficult once construction begins.'
+    ],
+    with3DNaksha: [
+      'Walk through the proposed space before construction.',
+      'Understand room sizes, layouts, openings, and visual relationships.',
+      'Review design options before committing to construction decisions.'
+    ],
+    benefits: [
+      'More confident design decisions',
+      'Fewer surprises during construction',
+      'Greater clarity before investing'
+    ],
+    ctaText: 'Discuss Requirements for Property Owners',
+    icon: 'Key'
   },
   {
     id: 'project-teams',
     role: 'Project Management Teams',
-    tagline: 'Maintain visual clarity and milestone alignment across project phases.',
-    description: 'Use coordinated 3D visualization as a shared reference point to support stakeholder communication, milestone planning, and progress reviews.',
-    painPoint: 'Communication disconnects between designers, clients, and execution teams.',
-    solution: 'Shared visual models and milestone representations across the project lifecycle.',
-    icon: 'Users2',
-    deliverables: ['Milestone Visual Planning', 'Stakeholder Review Models', 'Progress Communication Visuals']
+    eyebrow: 'STAKEHOLDER // PROJECT MANAGEMENT TEAMS',
+    headline: 'Give every stakeholder the same visual reference.',
+    tagline: 'Use coordinated 3D visualization as a shared reference for alignment and reviews.',
+    description: 'Use coordinated 3D visualization as a shared reference for stakeholder communication, milestone reviews, progress discussions, and project alignment.',
+    traditionalWorkflow: [
+      'Designers, clients, and execution teams interpret information differently.',
+      'Progress discussions rely heavily on drawings and verbal explanations.',
+      'Misalignment can appear between project phases.'
+    ],
+    with3DNaksha: [
+      'Use shared 3D models as a common visual reference.',
+      'Communicate milestones and spatial changes more clearly.',
+      'Support stakeholder reviews with consistent visual information.'
+    ],
+    benefits: [
+      'Better stakeholder alignment',
+      'Clearer progress communication',
+      'More effective project reviews'
+    ],
+    ctaText: 'Discuss Requirements for Project Management',
+    icon: 'Users2'
   }
 ];
 

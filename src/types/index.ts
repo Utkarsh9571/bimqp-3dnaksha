@@ -87,12 +87,18 @@ export interface FAQItem {
 export interface AudienceItem {
   id: string;
   role: string;
+  eyebrow: string;
+  headline: string;
   tagline: string;
   description: string;
-  painPoint: string;
-  solution: string;
+  traditionalWorkflow: string[];
+  with3DNaksha: string[];
+  benefits: string[];
+  ctaText: string;
   icon: string;
-  deliverables: string[];
+  painPoint?: string;
+  solution?: string;
+  deliverables?: string[];
 }
 
 export interface ProcessStep {
