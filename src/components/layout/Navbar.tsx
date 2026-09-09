@@ -366,8 +366,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
                       <div className="absolute top-full left-0 pt-1 w-72 z-50">
                         <div className="rounded-md bg-white border border-gray-200/90 shadow-xl py-2 z-50 animate-fadeIn border-t-2 border-t-amber-600">
                           <div className="px-3 py-1.5 mb-1 text-[10px] font-mono-tech text-gray-400 uppercase font-bold border-b border-gray-100 flex items-center justify-between">
-                            <span>Capabilities Spectrum</span>
-                            <span className="text-amber-600">5 Services</span>
+                            <span>Our Services</span>
+                            <span className="text-amber-600">{SERVICES.length} Services</span>
                           </div>
 
                           {SERVICES.map((service) => (

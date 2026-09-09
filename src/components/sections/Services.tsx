@@ -24,7 +24,6 @@ import {
   Users,
   Compass,
   Wrench,
-  ChevronRight,
   Target,
   Award
 } from 'lucide-react';
@@ -129,7 +128,7 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
         {/* Section Heading */}
         <SectionHeading
           number="02"
-          badgeText="Capabilities Spectrum"
+          badgeText="Our Services"
           badgeVariant="amber"
           title="Architectural & BIM"
           highlightText="Services."
@@ -137,8 +136,8 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
           align="left"
         />
 
-        {/* 1. TOP SELECTOR CARDS (5 Core Services Grid) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-stretch">
+        {/* 1. TOP SELECTOR CARDS (Core Services Grid) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
           {SERVICES.map((service, idx) => {
             const isSelected = activeServiceId === service.id;
             const delay = idx * 80;
@@ -197,11 +196,6 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                     </p>
                   </div>
                 </div>
-
-                <div className="pt-3 border-t border-gray-100 mt-4 flex items-center justify-between text-xs font-mono-tech font-bold text-accent-bronze">
-                  <span>View Details</span>
-                  <ChevronRight className={`w-4 h-4 transition-transform ${isSelected ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
-                </div>
               </button>
             );
           })}
@@ -230,9 +224,6 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
                 <Badge variant="amber" size="sm">
                   {activeDetailedData.categoryTagline || `SERVICE SPECIFICATION // ${activeService.number}`}
                 </Badge>
-                <span className="text-[11px] font-mono-tech text-amber-400 font-bold uppercase tracking-wider">
-                  BIMQP Certified
-                </span>
               </div>
 
               <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
