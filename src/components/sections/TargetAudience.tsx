@@ -54,7 +54,7 @@ export const TargetAudience: React.FC<TargetAudienceProps> = ({ onOpenConsultati
 
         {/* Stakeholder Segment Tabs (Reflows evenly on mobile & tablet) */}
         <div
-          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-8 transition-all duration-700"
+          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 mb-8 transition-all duration-700"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 20px, 0)',

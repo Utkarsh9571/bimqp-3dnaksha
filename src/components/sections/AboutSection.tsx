@@ -141,17 +141,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
             {/* LEFT CARD: Main About 3D Naksha Content Card */}
             <div className="lg:col-span-7 architectural-panel p-6 sm:p-8 rounded-xl border border-gray-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between space-y-6">
-              <div className="space-y-6 text-base text-brand-muted leading-relaxed font-sans">
+              <div className="space-y-4 text-base text-brand-muted leading-relaxed font-sans">
                 <p className="text-lg text-brand-primary font-medium leading-relaxed">
-                  Welcome to <strong className="text-accent-bronze font-bold">3D Naksha</strong>, a pioneering force transforming how buildings are conceived, evaluated, and constructed across India.
+                  Welcome to <strong className="text-accent-bronze font-bold">3D Naksha</strong>, the architectural visualization and immersive VR spatial experience brand of <strong className="text-brand-primary font-bold">BIMQP</strong>.
                 </p>
 
                 <p>
-                  Backed by Singapore’s <strong className="text-brand-primary font-bold">BIMQP</strong> — a trusted leader with 15 to 20 years of global engineering expertise — we bring world-class digital precision directly to the Indian AEC (Architecture, Engineering, and Construction) landscape.
+                  Headquartered in Singapore, <strong className="text-brand-primary font-bold">BIMQP</strong> is a premier Building Information Modelling (BIM) consultancy and digital delivery partner supporting clients across the global Architecture, Engineering, and Construction (AEC) industry. With over <strong className="text-gray-900 font-semibold">1,200+ projects delivered worldwide</strong> and a trusted community of <strong className="text-gray-900 font-semibold">60,000+ AEC professionals</strong>, BIMQP helps project teams turn complex design data into coordinated, clash-free, and usable digital models throughout the entire project lifecycle.
                 </p>
 
                 <p>
-                  As a pioneering force, 3D Naksha is the first company in India to introduce immersive Virtual Reality (VR) model reviews, allowing clients, design teams, and builders to physically step inside and completely evaluate their project before ground is ever broken.
+                  Through <strong className="text-accent-bronze font-bold">3D Naksha</strong>, we bring this world-class technical precision directly to your projects — transforming parametric BIM datasets, Revit models, and architectural drawings into interactive, 1:1 human-scale Virtual Reality (VR) walkthroughs and high-fidelity 3D visual environments before construction begins.
                 </p>
               </div>
 
@@ -162,8 +162,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenConsultation }
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div className="font-mono-tech text-xs">
-                    <span className="font-bold text-brand-primary block">Backed by Singapore’s BIMQP</span>
-                    <span className="text-gray-600">15–20 Years of Global Digital Engineering & BIM Leadership</span>
+                    <span className="font-bold text-brand-primary block">Powered by Singapore’s BIMQP Ecosystem</span>
+                    <span className="text-gray-600">1,200+ Global Projects Delivered • Multidisciplinary BIM & Digital Delivery</span>
                   </div>
                 </div>
               </div>

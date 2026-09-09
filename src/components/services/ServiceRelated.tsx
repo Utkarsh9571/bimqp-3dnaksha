@@ -42,7 +42,7 @@ export const ServiceRelated: React.FC<ServiceRelatedProps> = ({ currentService }
             to="/"
             className="text-xs font-mono-tech text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold"
           >
-            <span>View All 5 Core Services</span>
+            <span>View All Core Services</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
