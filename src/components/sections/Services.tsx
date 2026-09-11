@@ -88,8 +88,8 @@ export const Services: React.FC<ServicesProps> = ({ onOpenConsultation }) => {
           align="left"
         />
 
-        {/* 1. TOP PRESENTATION CARDS (3 Core Services Grid with High-Fidelity Visuals) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        {/* 1. TOP PRESENTATION CARDS (Core Services Grid with High-Fidelity Visuals) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {SERVICES.map((service, idx) => {
             const delay = idx * 80;
 

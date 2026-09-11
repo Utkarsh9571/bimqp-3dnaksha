@@ -63,9 +63,53 @@ export const LIFECYCLE_PHASES: LifecyclePhase[] = [
 
 export const SERVICES: ServiceItem[] = [
   {
+    id: 'home-design',
+    slug: 'home-design',
+    number: '01',
+    title: 'Home Design',
+    tagline: 'Residential architectural planning, elevation visualization, and spatial layouts.',
+    description: 'Tailored residential design solutions ranging from concept floor layouts and elevation studies to functional spatial planning for private residences.',
+    deliverables: [
+      'Architectural Floor Plan Visualizations',
+      'Exterior 3D Elevation Studies',
+      'Spatial Flow & Layout Planning',
+      'Orientation & Natural Light Studies'
+    ],
+    specs: [
+      { label: 'Project Focus', value: 'Residential Architecture' },
+      { label: 'Deliverable Formats', value: '2D Visual Plans & 3D Renders' },
+      { label: 'Collaboration', value: 'Direct Designer Review' }
+    ],
+    icon: 'Home',
+    badge: 'Core Service',
+    image: '/assets/images/service-home-design-vr.jpg'
+  },
+  {
+    id: 'interior-design',
+    slug: 'interior-design',
+    number: '02',
+    title: 'Interior Design',
+    tagline: 'Interior space planning, lighting studies, and material finish visualization.',
+    description: 'Visualize interior living spaces, kitchen layouts, commercial interiors, and bespoke joinery with realistic lighting, textures, and material palettes.',
+    deliverables: [
+      'High-Resolution Interior Visualizations',
+      'Material, Texture & Finish Studies',
+      'Daylight & Ambient Lighting Exploration',
+      'Joinery & Spatial Layout Visuals'
+    ],
+    specs: [
+      { label: 'Project Focus', value: 'Living, Working & Retail Spaces' },
+      { label: 'Visual Elements', value: 'Materials, Lighting & Styling' },
+      { label: 'Review Mode', value: 'Multiple Angle Perspectives' }
+    ],
+    icon: 'Armchair',
+    badge: 'Interior Focus',
+    image: '/assets/images/service-interior-design-vr.jpg'
+  },
+  {
     id: 'bim-modelling',
     slug: 'bim-modelling',
-    number: '01',
+    number: '03',
     title: 'BIM Modelling',
     tagline: 'Structured 3D building information models for multidisciplinary coordination.',
     description: 'Generate parametric 3D BIM models that represent architectural and structural elements for spatial coordination and design review.',
@@ -87,7 +131,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: 'immersive-vr',
     slug: 'immersive-vr',
-    number: '02',
+    number: '04',
     title: 'Immersive VR Services',
     tagline: 'Interactive virtual reality walkthroughs to step inside spaces before building.',
     description: 'Our flagship visualization experience: interactive spatial walkthroughs enabling clients and teams to explore unbuilt spaces at true human scale.',
@@ -110,7 +154,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: 'construction-pm',
     slug: 'construction-project-management',
-    number: '03',
+    number: '05',
     title: 'Construction Project Management',
     tagline: 'Visualization-assisted planning, sequence modeling, and project coordination.',
     description: 'Support construction planning with visual sequence models, milestone coordination, and spatial clarity for on-site decision-makers.',
